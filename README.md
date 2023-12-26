@@ -3,3 +3,4 @@ Update Stage0 by first partner
 notHellonot NotWorld
 
 It's late now and I want to sleep!
+OK I'm going to sleep. Bye!!!
