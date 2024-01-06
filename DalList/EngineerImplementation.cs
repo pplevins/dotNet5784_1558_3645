@@ -3,7 +3,7 @@ using DO;
 
 namespace Dal;
 
-internal class EngineerImplementation : IEngineer
+public class EngineerImplementation : IEngineer
 {
     public int Create(Engineer item)
     {

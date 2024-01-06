@@ -3,8 +3,8 @@
 /// <summary>
 /// Engineer Entity represents an engineer with all its properties
 /// </summary>
-/// <param name="Id">Unique identifier for the engineer</param>
-/// <param name="Name">Name of the engineer</param>
+/// <param name="Id">Unique identifier for the engineer (as in national id card)</param>
+/// <param name="Name">Name of the engineer (full name)</param>
 /// <param name="Email">Email address of the engineer</param>
 /// <param name="Level">Engineering Level assigned to the engineer</param>
 /// <param name="Cost">Cost of the engineer per hour</param>

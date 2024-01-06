@@ -2,7 +2,7 @@
 
 namespace Dal;
 
-internal class TaskImplementation : ITask
+public class TaskImplementation : ITask
 {
     public int Create(DO.Task item)
     {

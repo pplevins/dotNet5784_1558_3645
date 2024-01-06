@@ -3,7 +3,7 @@
     /// <summary>
     /// Task Entity represents a task with all its properties
     /// </summary>
-    /// <param name="Id">Unique identifier for the task</param>
+    /// <param name="Id">Unique identifier for the task (created automatically)</param>
     /// <param name="Alias">Alias of the task</param>
     /// <param name="Description">Description of the task</param>
     /// <param name="IsMilestone">if its a milestone or not</param>
