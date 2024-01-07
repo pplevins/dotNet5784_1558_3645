@@ -4,13 +4,13 @@
 /// Dependency Entity represents a dependency between tasks in a project.
 /// </summary>
 /// <param name="Id">Unique identifier for the dependency</param>
+/// <param name="DependentTask">The task ID that depends on other task.</param>
 /// <param name="PreviousTask">The task ID that this task depends on (the previous task)</param>
-/// <param name="DependentTask">The task ID that depends on this task.</param>
 public record Dependency
 (
     int Id,
-    int PreviousTask,
-    int DependentTask
+    int DependentTask,
+    int PreviousTask
 )
 {
     /// <summary>

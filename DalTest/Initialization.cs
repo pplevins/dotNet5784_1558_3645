@@ -10,6 +10,26 @@ public static class Initialization
 
     private static readonly Random s_rand = new();
 
+    private static void createDependencies()
+    {
+
+        foreach (var _name in engineerNames)
+        {
+            int _id;
+            do
+                _id = s_rand.Next(200000000, 400000000);
+            while (s_dalEngineer!.Read(_id) != null);
+
+            //string _email = _name.Replace(" ", "").ToLower() + "@gmail.com"; //generate email addresses for the initialization.
+
+            //EngineerExperience _level = (EngineerExperience)(_id % 5); //generate random experience level for the engineer
+
+            Dependency newDep = new(_id, 0, 0);
+
+            s_dalDependency!.Create(newDep);
+        }
+    }
+
     private static void createEngineers()
     {
         string[] engineerNames =
@@ -66,11 +86,23 @@ public static class Initialization
             string _alias = _task.Name;
             string _description = _task.Description;
             string _deliverables = _task.Deliverables;
-            EngineerExperience _level = (EngineerExperience)s_rand.Next(0, 5);
+            EngineerExperience _level = (EngineerExperience)s_rand.Next(5);
+            TimeSpan time = new(s_rand.Next(1, 31), 0, 0, 0, 0);
+            DateTime _taskCreation = DateTime.Now - time;
 
-            Task newTask = new(0, _alias, _description, false, _deliverables, _level);
+            Task newTask = new(0, _alias, _description, false, _deliverables, _level, _taskCreation);
 
             s_dalTask!.Create(newTask);
         }
+    }
+
+    public static void Do(IDependency? dalDependency, IEngineer? dalEngineer, ITask? dalTask)
+    {
+        s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL can not be null!");
+        s_dalEngineer = dalEngineer ?? throw new NullReferenceException("DAL can not be null!");
+        s_dalTask = dalTask ?? throw new NullReferenceException("DAL can not be null!");
+        createTasks();
+        createEngineers();
+        createDependencies();
     }
 }
