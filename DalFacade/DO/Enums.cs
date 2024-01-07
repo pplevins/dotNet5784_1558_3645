@@ -8,10 +8,3 @@ public enum EngineerExperience
     Advanced,
     Expert
 }
-public enum TaskLevel
-{
-    Competent,
-    Novice,
-    Expert
-}
-

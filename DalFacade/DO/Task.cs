@@ -19,8 +19,8 @@
         string Description,
         bool IsMilestone,
         string Deliverables,
-        TaskLevel DifficultyLevel,
-        int EngineerId,
+        EngineerExperience DifficultyLevel,
+        int? EngineerId = null,
         string? Remarks = null,
         int? RequiredEffortTime = null
     )
@@ -54,6 +54,6 @@
         /// <summary>
         /// Empty constructor for Task record.
         /// </summary>
-        public Task() : this(0, "", "", false, "", TaskLevel.Competent, 0, null, null) { }
+        public Task() : this(0, "", "", false, "", EngineerExperience.Beginner, 0, null, null) { }
     }
 }
