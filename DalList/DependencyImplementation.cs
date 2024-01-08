@@ -15,9 +15,9 @@ public class DependencyImplementation : IDependency
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        //Strict(regular) Deletion with proper Exception in case of error
+        DeletionHelper.StrictDelete(DataSource.Dependencies, Read, id);
     }
-
     public Dependency? Read(int id)
     {
         // Find and return the Dependency with the specified ID or null if not found

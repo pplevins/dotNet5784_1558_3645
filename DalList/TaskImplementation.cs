@@ -14,7 +14,8 @@ public class TaskImplementation : ITask
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        //Strict(regular) Deletion with proper Exception in case of error
+        DeletionHelper.StrictDelete(DataSource.Tasks, Read, id);
     }
 
     public DO.Task? Read(int id)

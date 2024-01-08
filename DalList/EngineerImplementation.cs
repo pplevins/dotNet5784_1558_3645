@@ -15,7 +15,8 @@ public class EngineerImplementation : IEngineer
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        //Strict(regular) Deletion with proper Exception in case of error
+        DeletionHelper.StrictDelete(DataSource.Engineers, Read, id);
     }
 
     public Engineer? Read(int id)
