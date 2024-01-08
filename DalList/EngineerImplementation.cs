@@ -43,4 +43,9 @@ public class EngineerImplementation : IEngineer
         }
         else throw new Exception($"Engineer with ID={item.Id} does Not exist");
     }
+
+    public void Reset()
+    {
+        DataSource.Engineers.Clear();
+    }
 }

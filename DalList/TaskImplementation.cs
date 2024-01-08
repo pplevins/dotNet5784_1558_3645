@@ -42,4 +42,9 @@ public class TaskImplementation : ITask
         }
         else throw new Exception($"Task with ID={item.Id} does Not exist");
     }
+
+    public void Reset()
+    {
+        DataSource.Tasks.Clear();
+    }
 }

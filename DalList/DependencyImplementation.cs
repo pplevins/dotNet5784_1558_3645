@@ -42,4 +42,8 @@ public class DependencyImplementation : IDependency
         }
         else throw new Exception($"Dependency with ID={item.Id} does Not exist");
     }
+
+    public void Reset() { 
+        DataSource.Dependencies.Clear();
+    }
 }

@@ -12,4 +12,6 @@ public interface ITask
     List<Task?> ReadAll(); // Reads all Task entity objects (Stage 1 only)
     void Update(Task item); // Updates a Task entity object
     void Delete(int id); // Deletes a Task object by its ID
+
+    void Reset(); //reset all the list
 }
