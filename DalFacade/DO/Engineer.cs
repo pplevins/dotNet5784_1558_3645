@@ -18,7 +18,8 @@ public record Engineer
 )
 {
     /// <summary>
-    /// Empty constructor for Engineer record.
+    /// Initializes an empty instance of the Engineer record for stage 3, as instructed.
+    /// We opted not to create a parameterized constructor since the record type already has one.
     /// </summary>
     public Engineer() : this(0, "", "", EngineerExperience.Beginner, null) { }
 }

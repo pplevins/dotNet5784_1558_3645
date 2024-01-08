@@ -2,6 +2,9 @@
 using DalApi;
 using DO;
 
+/// <summary>
+/// Static class responsible for initializing the data source with sample data.
+/// </summary>
 public static class Initialization
 {
     private static IDependency? s_dalDependency; //stage 1
@@ -10,6 +13,9 @@ public static class Initialization
 
     private static readonly Random s_rand = new();
 
+    /// <summary>
+    /// Creates sample dependencies and adds them to the data source.
+    /// </summary>
     private static void createDependencies()
     {
         var depArr = new[]
@@ -24,18 +30,20 @@ public static class Initialization
             new { Dep = 17, Pre = 16 }, new { Dep = 18, Pre = 2 }, new { Dep = 18, Pre = 4 }, new { Dep = 18, Pre = 6 }, new { Dep = 19, Pre = 8 },
             new { Dep = 19, Pre = 18 }, new { Dep = 20, Pre = 1 }, new { Dep = 20, Pre = 2 }, new { Dep = 20, Pre = 18 }
         };
-      
-        foreach (var _dep in depArr)
+
+        foreach (var dep in depArr)
         {
-            int _depTask = _dep.Dep;
-            int _preTask = _dep.Pre;
-            
-            Dependency newDep = new(0, _depTask, _preTask);
+            int depTask = dep.Dep;
+            int preTask = dep.Pre;
+
+            Dependency newDep = new(0, depTask, preTask);
 
             s_dalDependency!.Create(newDep);
         }
     }
-
+    /// <summary>
+    /// Creates sample engineers and adds them to the data source.
+    /// </summary>
     private static void createEngineers()
     {
         string[] engineerNames =
@@ -44,23 +52,25 @@ public static class Initialization
         "Ariela Levin", "Dina Klein", "Shira Israelof"
         };
 
-        foreach (var _name in engineerNames)
+        foreach (var name in engineerNames)
         {
-            int _id;
+            int id;
             do
-                _id = s_rand.Next(200000000, 400000000);
-            while (s_dalEngineer!.Read(_id) != null);
+                id = s_rand.Next(200000000, 400000000);
+            while (s_dalEngineer!.Read(id) != null);
 
-            string _email = _name.Replace(" ", "").ToLower() + "@gmail.com"; //generate email addresses for the initialization.
+            string email = name.Replace(" ", "").ToLower() + "@gmail.com"; //generate email addresses for the initialization.
 
-            EngineerExperience _level = (EngineerExperience)(_id % 5); //generate random experience level for the engineer
+            EngineerExperience level = (EngineerExperience)(id % 5); //generate random experience level for the engineer
 
-            Engineer newEng = new(_id, _name, _email, _level);
+            Engineer newEng = new(id, name, email, level);
 
             s_dalEngineer!.Create(newEng);
         }
     }
-
+    /// <summary>
+    /// Creates sample tasks and adds them to the data source.
+    /// </summary>
     private static void createTasks()
     {
         var taskArr = new[]
@@ -87,22 +97,24 @@ public static class Initialization
             new { Name = "Optimize Algorithm Performance", Description = "Improve the efficiency of algorithms in the software", Deliverables = "efficient software" }
         };
 
-        foreach (var _task in taskArr)
+        foreach (var task in taskArr)
         {
-            string _alias = _task.Name;
-            string _description = _task.Description;
-            string _deliverables = _task.Deliverables;
-            EngineerExperience _level = (EngineerExperience)s_rand.Next(5);
-            TimeSpan _requiredTime = TimeSpan.FromDays(s_rand.Next(1, 5));
+            string alias = task.Name;
+            string description = task.Description;
+            string deliverables = task.Deliverables;
+            EngineerExperience level = (EngineerExperience)s_rand.Next(5);
+            TimeSpan requiredTime = TimeSpan.FromDays(s_rand.Next(1, 5));
             TimeSpan time = new(s_rand.Next(1, 31), 0, 0, 0, 0);
-            DateTime _taskCreation = DateTime.Now - time;
+            DateTime taskCreation = DateTime.Now - time;
 
-            Task newTask = new(0, _alias, _description, false, _deliverables, _level, _requiredTime, _taskCreation);
+            Task newTask = new(0, alias, description, false, deliverables, level, requiredTime, taskCreation);
 
             s_dalTask!.Create(newTask);
         }
     }
-
+    /// <summary>
+    /// Performs the initialization process by creating sample data.
+    /// </summary>
     public static void Do(IDependency? dalDependency, IEngineer? dalEngineer, ITask? dalTask)
     {
         s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL can not be null!");

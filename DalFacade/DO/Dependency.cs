@@ -14,7 +14,8 @@ public record Dependency
 )
 {
     /// <summary>
-    /// Empty constructor for Dependency record.
+    /// Initializes an empty instance of the Dependency record for stage 3, as instructed.
+    /// We opted not to create a parameterized constructor since the record type already has one.
     /// </summary>
     public Dependency()
            : this(0, 0, 0) { }

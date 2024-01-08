@@ -3,8 +3,12 @@ using DO;
 
 namespace Dal;
 
+/// <summary>
+/// Implementation of the <see cref="IDependency"/> interface to manage dependencies in the data source.
+/// </summary>
 public class DependencyImplementation : IDependency
 {
+    /// <inheritdoc />
     public int Create(Dependency item)
     {
         int id = DataSource.Config.NextDependencyId;
@@ -13,23 +17,29 @@ public class DependencyImplementation : IDependency
         return id;
     }
 
+    /// <inheritdoc />
     public void Delete(int id)
     {
-        //Strict(regular) Deletion with proper Exception in case of error
-        DeletionHelper.StrictDelete(DataSource.Dependencies, Read, id);
+        //regular Deletion with proper Exception in case of error
+        var existingItem = Read(id) ?? throw new Exception($"Dependency with ID={id} does not exist");
+        DataSource.Dependencies.Remove(existingItem);
     }
+
+    /// <inheritdoc />
     public Dependency? Read(int id)
     {
         // Find and return the Dependency with the specified ID or null if not found
         return DataSource.Dependencies.FirstOrDefault(d => d.Id == id);
     }
 
+    /// <inheritdoc />
     public List<Dependency?> ReadAll()
     {
         // Return a new list containing copies of all Dependencies directly as Dependency?
         return DataSource.Dependencies.Select(dependency => Read(dependency.Id)).ToList();
     }
 
+    /// <inheritdoc />
     public void Update(Dependency item)
     {
         // Find the Dependency in the list by ID
@@ -40,10 +50,17 @@ public class DependencyImplementation : IDependency
             // Replace the existing Dependency in the list
             DataSource.Dependencies[existingDependencyIndex] = item;
         }
-        else throw new Exception($"Dependency with ID={item.Id} does Not exist");
+        else
+        {
+            throw new Exception($"Dependency with ID={item.Id} does not exist");
+        }
     }
 
-    public void Reset() { 
+    /// <inheritdoc />
+    public void Reset()
+    {
+        // Clear the list of dependencies
         DataSource.Dependencies.Clear();
     }
 }
+
