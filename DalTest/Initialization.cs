@@ -13,7 +13,7 @@ public static class Initialization
     private static void createDependencies()
     {
 
-        foreach (var _name in engineerNames)
+        for (int i = 0; i < 40; i++)
         {
             int _id;
             do
@@ -87,10 +87,11 @@ public static class Initialization
             string _description = _task.Description;
             string _deliverables = _task.Deliverables;
             EngineerExperience _level = (EngineerExperience)s_rand.Next(5);
+            TimeSpan _requiredTime = TimeSpan.FromDays(s_rand.Next(1, 5));
             TimeSpan time = new(s_rand.Next(1, 31), 0, 0, 0, 0);
             DateTime _taskCreation = DateTime.Now - time;
 
-            Task newTask = new(0, _alias, _description, false, _deliverables, _level, _taskCreation);
+            Task newTask = new(0, _alias, _description, false, _deliverables, _level, _requiredTime, _taskCreation);
 
             s_dalTask!.Create(newTask);
         }

@@ -1,4 +1,6 @@
-﻿namespace DalTest;
+﻿using DO;
+
+namespace DalTest;
 
 internal class Program
 {

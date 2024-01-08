@@ -9,10 +9,10 @@
     /// <param name="IsMilestone">if its a milestone or not</param>
     /// <param name="Deliverables">Deliverables of the task</param>
     /// <param name="DifficultyLevel">Difficulty level of the task</param>
+    /// <param name="RequiredEffortTime">Required numbers of days to complete the task/param>
     /// <param name="CreatedAtDate">The date the task created at</param>
     /// <param name="EngineerId">Identifier of the engineer assigned to the task</param>
     /// <param name="Remarks">Additional remarks related to the task</param>
-    /// <param name="RequiredEffortTime">Required numbers of days to complete the task/param>
     public record Task
     (
         int Id,
@@ -21,10 +21,10 @@
         bool IsMilestone,
         string Deliverables,
         EngineerExperience DifficultyLevel,
+        TimeSpan? RequiredEffortTime = null,
         DateTime? CreatedAtDate = null,
         int? EngineerId = null,
-        string? Remarks = null,
-        int? RequiredEffortTime = null
+        string? Remarks = null
     )
     {
         /// <summary>
@@ -50,6 +50,6 @@
         /// <summary>
         /// Empty constructor for Task record.
         /// </summary>
-        public Task() : this(0, "", "", false, "", EngineerExperience.Beginner, null, 0, null, null) { }
+        public Task() : this(0, "", "", false, "", EngineerExperience.Beginner, TimeSpan.Zero, null, null, null) { }
     }
 }
