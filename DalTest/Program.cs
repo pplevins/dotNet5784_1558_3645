@@ -1,8 +1,6 @@
 ﻿using Dal;
 using DalApi;
 using DO;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 
 namespace DalTest;
 
@@ -12,8 +10,8 @@ namespace DalTest;
 public class Program
 {
     //initializing the fields for the interfaces 
-    private static IEngineer? s_dalEngineer = new EngineerImplementation(); 
-    private static ITask? s_dalTask = new TaskImplementation(); 
+    private static IEngineer? s_dalEngineer = new EngineerImplementation();
+    private static ITask? s_dalTask = new TaskImplementation();
     private static IDependency? s_dalDependency = new DependencyImplementation();
 
     /// <summary>
@@ -23,24 +21,25 @@ public class Program
     private static void Menu()
     {
         Console.WriteLine(@"Welcome to the Project Management Application!
-            Select which entity you want to test:
-            0: Exit
-            1: Engineer
-            2: Task
-            3: Dependency
+Select which entity you want to test:
+    0: Exit
+    1: Engineer
+    2: Task
+    3: Dependency
         ");
-        
+
         int choice;
         try
         {
             do
             {
+                Console.WriteLine("\nselect entity:");
                 if (int.TryParse(Console.ReadLine(), out choice))
                 {
                     switch (choice)
                     {
                         case 0:
-
+                            Console.WriteLine("Bye!");
                             break;
                         case 1:
                             SubMenu("Engineer", s_dalEngineer);
@@ -56,12 +55,11 @@ public class Program
                             break;
                     }
                 }
-                else { throw new Exception("The input must be a number!"); }
+                else { Console.WriteLine("The input must be a number!"); }
             } while (choice != 0);
         }
         catch (Exception Ex)
         {
-
             Console.WriteLine(Ex.Message);
         }
     }
@@ -76,7 +74,7 @@ public class Program
     private static void SubMenu<T>(string entity, T s_dalEntity)
     {
         Console.WriteLine(@$"You chose the {entity} entity!
-    Select the opration you want to preform:
+Select the opration you want to preform:
     0: Back to the main menu
     1: Create {entity}
     2: Read {entity}
@@ -90,6 +88,7 @@ public class Program
         {
             do
             {
+                Console.WriteLine("\nselect your operation:");
                 if (int.TryParse(Console.ReadLine(), out choice))
                 {
                     switch (choice)
@@ -128,7 +127,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -144,7 +142,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -160,7 +157,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -176,7 +172,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -192,7 +187,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -201,7 +195,7 @@ public class Program
                             break;
                     }
                 }
-                else { throw new Exception("The input must be a number!"); }
+                else { Console.WriteLine("The input must be a number!"); }
             } while (choice != 0);
         }
         catch (Exception Ex)
@@ -217,19 +211,24 @@ public class Program
     static void CreateEngineer()
     {
         Console.WriteLine("enter ID");
-        if(!int.TryParse(Console.ReadLine(), out var id))
+        if (!int.TryParse(Console.ReadLine(), out var id))
             throw new Exception("ID must be a number!");
 
         Console.WriteLine("enter name");
         string name = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(name))
+            throw new Exception("you must enter name!");
 
         Console.WriteLine("enter Email");
         string email = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(email))
+            throw new Exception("you must enter email!");
 
         Console.WriteLine("enter experience level in name (e.g. Begginer) or number between 0-4");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
             throw new Exception("it must be title (e.g. Beginner) or number between 0-4!");
 
+        Console.WriteLine("enter cost for hour");
         double.TryParse(Console.ReadLine(), out var cost);
 
         Engineer engineer = new(id, name, email, level, cost);
@@ -245,12 +244,18 @@ public class Program
     {
         Console.WriteLine("enter alias");
         string alias = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(alias))
+            throw new Exception("you must enter alias!");
 
         Console.WriteLine("enter description");
         string description = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(description))
+            throw new Exception("you must enter description!");
 
         Console.WriteLine("enter Deliverables");
         string deliverables = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(deliverables))
+            throw new Exception("you must enter deliverables!");
 
         Console.WriteLine("enter Difficulty Level in name (e.g. Begginer) or number between 0-4");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
@@ -387,9 +392,13 @@ public class Program
 
         Console.WriteLine("enter name:");
         name = Console.ReadLine() ?? ent.Name;
+        if (String.IsNullOrWhiteSpace(name))
+            name = ent.Name;
 
         Console.WriteLine("enter email:");
         email = Console.ReadLine() ?? ent.Email;
+        if (String.IsNullOrWhiteSpace(email))
+            email = ent.Email;
 
         Console.WriteLine("enter level:");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
@@ -425,9 +434,13 @@ public class Program
 
         Console.WriteLine("enter alias:");
         alias = Console.ReadLine() ?? ent.Alias;
+        if (String.IsNullOrWhiteSpace(alias))
+            alias = ent.Alias;
 
         Console.WriteLine("enter description:");
         description = Console.ReadLine() ?? ent.Description;
+        if (String.IsNullOrWhiteSpace(description))
+            description = ent.Description;
 
         Console.WriteLine("enter IsMilestone:");
         if (!bool.TryParse(Console.ReadLine(), out var isMilestone))
@@ -435,6 +448,8 @@ public class Program
 
         Console.WriteLine("enter Deliverables:");
         deliverables = Console.ReadLine() ?? ent.Deliverables;
+        if (String.IsNullOrWhiteSpace(deliverables))
+            deliverables = ent.Deliverables;
 
         Console.WriteLine("enter Difficulty Level:");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
@@ -447,13 +462,15 @@ public class Program
         Console.WriteLine("enter Creation Date:");
         string? crat = Console.ReadLine();
         DateTime? creation = ParseNullableDateTime(crat) ?? ent.CreatedAtDate;
-        
+
         Console.WriteLine("enter engineer id:");
         string? eId = Console.ReadLine();
         int? engineerId = ParseNullableInt(eId) ?? ent.EngineerId;
 
         Console.WriteLine("enter remarks:");
         string? remarks = Console.ReadLine() ?? ent.Remarks;
+        if (String.IsNullOrWhiteSpace(remarks))
+            remarks = ent.Remarks;
 
         Console.WriteLine("enter Scheduled Date:");
         string? schDate = Console.ReadLine();

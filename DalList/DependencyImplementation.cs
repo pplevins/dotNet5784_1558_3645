@@ -1,4 +1,7 @@
-﻿using DalApi;
+﻿using Dal.strategies.create;
+using Dal.strategies.delete;
+using Dal.Strategies.Create;
+using DalApi;
 using DO;
 
 namespace Dal;
@@ -8,21 +11,36 @@ namespace Dal;
 /// </summary>
 public class DependencyImplementation : IDependency
 {
+    private readonly ICreationStrategy<Dependency> _creationStrategy;
+    private readonly IDeletionStrategy<Dependency> _deletionStrategy;
+
+
+    private readonly Func<int, Dependency, Dependency> getUpdatedItem;
+    private readonly Func<int> idGenerator;
+
+    public DependencyImplementation()
+    {
+        // Initializing _getUpdatedItem with DataSource.Config.NextDependencyId
+        getUpdatedItem = (id, item) => item with { Id = DataSource.Config.NextDependencyId };
+
+        // Initializing _idGenerator with a function that creates a new Dependency with the ID set using DataSource.Config.NextDependencyId
+        idGenerator = () => DataSource.Config.NextDependencyId;
+
+        _creationStrategy = new InternalIdCreationStrategy<Dependency>(getUpdatedItem, idGenerator);
+        _deletionStrategy = new StrictDeletionStrategy<Dependency>();
+
+    }
     /// <inheritdoc />
     public int Create(Dependency item)
     {
-        int id = DataSource.Config.NextDependencyId;
-        Dependency copy = item with { Id = id };
-        DataSource.Dependencies.Add(copy);
-        return id;
+        return _creationStrategy.Create(DataSource.Dependencies, item);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        var existingItem = Read(id) ?? throw new Exception($"Dependency with ID={id} does not exist");
-        DataSource.Dependencies.Remove(existingItem);
+        _deletionStrategy.Delete(DataSource.Dependencies, id, Read);
     }
 
     /// <inheritdoc />

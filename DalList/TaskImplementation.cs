@@ -1,4 +1,7 @@
-﻿using DalApi;
+﻿using Dal.strategies.create;
+using Dal.strategies.delete;
+using Dal.Strategies.Create;
+using DalApi;
 
 namespace Dal;
 
@@ -7,21 +10,37 @@ namespace Dal;
 /// </summary>
 public class TaskImplementation : ITask
 {
+
+    private readonly ICreationStrategy<DO.Task> _creationStrategy;
+    private readonly IDeletionStrategy<DO.Task> _deletionStrategy;
+
+
+    private readonly Func<int, DO.Task, DO.Task> getUpdatedItem;
+    private readonly Func<int> idGenerator;
+
+    public TaskImplementation()
+    {
+        // Initializing _getUpdatedItem with DataSource.Config.NextDependencyId
+        getUpdatedItem = (id, item) => item with { Id = id };
+
+        // Initializing _idGenerator with a function that creates a new Dependency with the ID set using DataSource.Config.NextDependencyId
+        idGenerator = () => DataSource.Config.NextTaskId;
+
+        _creationStrategy = new InternalIdCreationStrategy<DO.Task>(getUpdatedItem, idGenerator);
+        _deletionStrategy = new StrictDeletionStrategy<DO.Task>();
+
+    }
     /// <inheritdoc />
     public int Create(DO.Task item)
     {
-        int id = DataSource.Config.NextTaskId;
-        DO.Task copy = item with { Id = id };
-        DataSource.Tasks.Add(copy);
-        return id;
+        return _creationStrategy.Create(DataSource.Tasks, item);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        var existingItem = Read(id) ?? throw new Exception($"Task with ID={id} does not exist");
-        DataSource.Tasks.Remove(existingItem);
+        _deletionStrategy.Delete(DataSource.Tasks, id, Read);
     }
 
     /// <inheritdoc />

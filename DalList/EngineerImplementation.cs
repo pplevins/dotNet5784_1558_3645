@@ -1,4 +1,6 @@
-﻿using DalApi;
+﻿using Dal.strategies.create;
+using Dal.strategies.delete;
+using DalApi;
 using DO;
 
 namespace Dal;
@@ -7,22 +9,34 @@ namespace Dal;
 /// </summary>
 public class EngineerImplementation : IEngineer
 {
+
+    private readonly ICreationStrategy<Engineer> _creationStrategy;
+    private readonly IDeletionStrategy<Engineer> _deletionStrategy;
+
+
+    private readonly Func<int, Engineer, Engineer> getUpdatedItem;
+    private readonly Func<int> idGenerator;
+
+    public EngineerImplementation()
+    {
+        // Initializing getUpdatedItem with coping and adding the id to the new item
+        getUpdatedItem = (id, item) => item with { Id = id };
+
+        _creationStrategy = new ExternalIdCreationStrategy<Engineer>(Read);
+        _deletionStrategy = new StrictDeletionStrategy<Engineer>();
+
+    }
     /// <inheritdoc />
     public int Create(Engineer item)
     {
-        if (Read(item.Id) is not null)
-            throw new Exception($"Engineer with ID={item.Id} already exists");
-
-        DataSource.Engineers.Add(item);
-        return item.Id;
+        return _creationStrategy.Create(DataSource.Engineers, item);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        var existingItem = Read(id) ?? throw new Exception($"Engineer with ID={id} does not exist");
-        DataSource.Engineers.Remove(existingItem);
+        _deletionStrategy.Delete(DataSource.Engineers, id);
     }
 
     /// <inheritdoc />
