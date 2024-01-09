@@ -23,7 +23,7 @@ public class EngineerImplementation : IEngineer
     {
         //regular Deletion with proper Exception in case of error
         var existingItem = Read(id) ?? throw new DalDoesNotExistException($"Engineer with ID={id} does not exist");
-        DataSource.Engineers.Remove(existingItem);
+        DataSource.Engineers.RemoveAll(d => d.Id == id);
     }
 
     /// <inheritdoc />

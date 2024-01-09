@@ -23,7 +23,7 @@ public class DependencyImplementation : IDependency
     {
         //regular Deletion with proper Exception in case of error
         var existingItem = Read(id) ?? throw new DalDoesNotExistException($"Dependency with ID={id} does not exist");
-        DataSource.Dependencies.Remove(existingItem);
+        DataSource.Dependencies.RemoveAll(t => t.Id == id);
     }
     /// <inheritdoc />
     public Dependency? Read(int id)
