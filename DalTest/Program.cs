@@ -1,8 +1,6 @@
 ﻿using Dal;
 using DalApi;
 using DO;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 
 namespace DalTest;
 
@@ -23,11 +21,11 @@ public class Program
     private static void Menu()
     {
         Console.WriteLine(@"Welcome to the Project Management Application!
-            Select which entity you want to test:
-            0: Exit
-            1: Engineer
-            2: Task
-            3: Dependency
+Select which entity you want to test:
+    0: Exit
+    1: Engineer
+    2: Task
+    3: Dependency
         ");
         
         int choice;
@@ -35,12 +33,13 @@ public class Program
         {
             do
             {
+                Console.WriteLine("\nselect entity:");
                 if (int.TryParse(Console.ReadLine(), out choice))
                 {
                     switch (choice)
                     {
                         case 0:
-
+                            Console.WriteLine("Bye!");
                             break;
                         case 1:
                             SubMenu("Engineer", s_dalEngineer);
@@ -61,7 +60,6 @@ public class Program
         }
         catch (Exception Ex)
         {
-
             Console.WriteLine(Ex.Message);
         }
     }
@@ -76,7 +74,7 @@ public class Program
     private static void SubMenu<T>(string entity, T s_dalEntity)
     {
         Console.WriteLine(@$"You chose the {entity} entity!
-    Select the opration you want to preform:
+Select the opration you want to preform:
     0: Back to the main menu
     1: Create {entity}
     2: Read {entity}
@@ -90,6 +88,7 @@ public class Program
         {
             do
             {
+                Console.WriteLine("\nselect your operation:");
                 if (int.TryParse(Console.ReadLine(), out choice))
                 {
                     switch (choice)
@@ -128,7 +127,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -144,7 +142,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -160,7 +157,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -176,7 +172,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -192,7 +187,6 @@ public class Program
                             }
                             catch (Exception Ex)
                             {
-
                                 Console.WriteLine(Ex.Message);
                             }
                             break;
@@ -230,6 +224,7 @@ public class Program
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
             throw new Exception("it must be title (e.g. Beginner) or number between 0-4!");
 
+        Console.WriteLine("enter cost for hour");
         double.TryParse(Console.ReadLine(), out var cost);
 
         Engineer engineer = new(id, name, email, level, cost);
