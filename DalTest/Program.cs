@@ -1,7 +1,6 @@
 ﻿using Dal;
 using DalApi;
 using DO;
-using System.Xml.Linq;
 
 namespace DalTest;
 
@@ -11,8 +10,8 @@ namespace DalTest;
 public class Program
 {
     //initializing the fields for the interfaces 
-    private static IEngineer? s_dalEngineer = new EngineerImplementation(); 
-    private static ITask? s_dalTask = new TaskImplementation(); 
+    private static IEngineer? s_dalEngineer = new EngineerImplementation();
+    private static ITask? s_dalTask = new TaskImplementation();
     private static IDependency? s_dalDependency = new DependencyImplementation();
 
     /// <summary>
@@ -28,7 +27,7 @@ Select which entity you want to test:
     2: Task
     3: Dependency
         ");
-        
+
         int choice;
         try
         {
@@ -135,11 +134,13 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    ReadAllEntities(s_dalEngineer!.ReadAll);
+                                {
+                                    ReadAllEntities(s_dalEngineer!.ReadAll());
+                                }
                                 else if (typeof(T) == typeof(ITask))
-                                    ReadAllEntities(s_dalTask!.ReadAll);
+                                    ReadAllEntities(s_dalTask!.ReadAll());
                                 else if (typeof(T) == typeof(IDependency))
-                                    ReadAllEntities(s_dalDependency!.ReadAll);
+                                    ReadAllEntities(s_dalDependency!.ReadAll());
                             }
                             catch (Exception Ex)
                             {
@@ -212,7 +213,7 @@ Select the opration you want to preform:
     static void CreateEngineer()
     {
         Console.WriteLine("enter ID");
-        if(!int.TryParse(Console.ReadLine(), out var id))
+        if (!int.TryParse(Console.ReadLine(), out var id))
             throw new Exception("ID must be a number!");
 
         Console.WriteLine("enter name");
@@ -346,15 +347,13 @@ Select the opration you want to preform:
     /// </summary>
     /// <typeparam name="T">generic</typeparam>
     /// <param name="readAll">the readAll function from the entity's interface</param>
-    static void ReadAllEntities<T>(Func<List<T?>> readAll)
+    static void ReadAllEntities<T>(IEnumerable<T?> entities)
     {
-        List<T?> entities = readAll();
         foreach (var item in entities)
         {
             Console.WriteLine(item);
         }
     }
-
     /// <summary>
     /// a generic deletion function to delete entity from the list
     /// </summary>
@@ -463,7 +462,7 @@ Select the opration you want to preform:
         Console.WriteLine("enter Creation Date:");
         string? crat = Console.ReadLine();
         DateTime? creation = ParseNullableDateTime(crat) ?? ent.CreatedAtDate;
-        
+
         Console.WriteLine("enter engineer id:");
         string? eId = Console.ReadLine();
         int? engineerId = ParseNullableInt(eId) ?? ent.EngineerId;
