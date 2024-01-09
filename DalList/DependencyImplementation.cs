@@ -1,5 +1,6 @@
 ﻿using DalApi;
 using DO;
+using static DO.Exceptions;
 
 namespace Dal;
 
@@ -21,23 +22,27 @@ public class DependencyImplementation : IDependency
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        var existingItem = Read(id) ?? throw new Exception($"Dependency with ID={id} does not exist");
+        var existingItem = Read(id) ?? throw new DalDoesNotExistException($"Dependency with ID={id} does not exist");
         DataSource.Dependencies.Remove(existingItem);
     }
-
     /// <inheritdoc />
     public Dependency? Read(int id)
     {
         // Find and return the Dependency with the specified ID or null if not found
         return DataSource.Dependencies.FirstOrDefault(d => d.Id == id);
     }
+    /// <inheritdoc />
+    public Dependency? Read(Func<Dependency, bool> filter)
+    {
+        return DataSource.Dependencies.FirstOrDefault(filter);
+    }
 
     /// <inheritdoc />
-    public List<Dependency?> ReadAll()
+    public IEnumerable<Dependency?> ReadAll(Func<Dependency, bool>? filter = null) //stage 2
     {
-        // Return a new list containing copies of all Dependencies directly as Dependency?
-        return DataSource.Dependencies.Select(dependency => Read(dependency.Id)).ToList();
+        return DataSource.Dependencies.Where(item => filter?.Invoke(item) ?? true);
     }
+
 
     /// <inheritdoc />
     public void Update(Dependency item)
@@ -52,7 +57,7 @@ public class DependencyImplementation : IDependency
         }
         else
         {
-            throw new Exception($"Dependency with ID={item.Id} does not exist");
+            throw new DalDoesNotExistException($"Dependency with ID={item.Id} does not exist");
         }
     }
 
@@ -62,5 +67,6 @@ public class DependencyImplementation : IDependency
         // Clear the list of dependencies
         DataSource.Dependencies.Clear();
     }
+
 }
 

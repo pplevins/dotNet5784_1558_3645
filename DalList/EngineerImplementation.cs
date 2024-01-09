@@ -1,5 +1,6 @@
 ﻿using DalApi;
 using DO;
+using static DO.Exceptions;
 
 namespace Dal;
 /// <summary>
@@ -11,7 +12,7 @@ public class EngineerImplementation : IEngineer
     public int Create(Engineer item)
     {
         if (Read(item.Id) is not null)
-            throw new Exception($"Engineer with ID={item.Id} already exists");
+            throw new DalAlreadyExistsException($"Engineer with ID={item.Id} already exists");
 
         DataSource.Engineers.Add(item);
         return item.Id;
@@ -21,7 +22,7 @@ public class EngineerImplementation : IEngineer
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        var existingItem = Read(id) ?? throw new Exception($"Engineer with ID={id} does not exist");
+        var existingItem = Read(id) ?? throw new DalDoesNotExistException($"Engineer with ID={id} does not exist");
         DataSource.Engineers.Remove(existingItem);
     }
 
@@ -33,10 +34,15 @@ public class EngineerImplementation : IEngineer
     }
 
     /// <inheritdoc />
-    public List<Engineer?> ReadAll()
+    public Engineer? Read(Func<Engineer, bool> filter)
     {
-        // Return a new list containing copies of all Engineers directly as Engineer?
-        return DataSource.Engineers.Select(engineer => Read(engineer.Id)).ToList();
+        return DataSource.Engineers.FirstOrDefault(filter);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
+    {
+        return DataSource.Engineers.Where(item => filter?.Invoke(item) ?? true);
     }
 
     /// <inheritdoc />
@@ -52,7 +58,7 @@ public class EngineerImplementation : IEngineer
         }
         else
         {
-            throw new Exception($"Engineer with ID={item.Id} does not exist");
+            throw new DalDoesNotExistException($"Engineer with ID={item.Id} does not exist");
         }
     }
 

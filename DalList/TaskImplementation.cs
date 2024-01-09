@@ -1,4 +1,5 @@
 ﻿using DalApi;
+using static DO.Exceptions;
 
 namespace Dal;
 
@@ -20,8 +21,8 @@ public class TaskImplementation : ITask
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        var existingItem = Read(id) ?? throw new Exception($"Task with ID={id} does not exist");
-        DataSource.Tasks.Remove(existingItem);
+        var existingItem = Read(id) ?? throw new DalDoesNotExistException($"Task with ID={id} does not exist");
+        DataSource.Tasks.RemoveAll(t => t.Id == id);
     }
 
     /// <inheritdoc />
@@ -32,10 +33,15 @@ public class TaskImplementation : ITask
     }
 
     /// <inheritdoc />
-    public List<DO.Task?> ReadAll()
+    public DO.Task? Read(Func<DO.Task, bool> filter)
     {
-        // Return a new list containing copies of all Tasks directly as Task?
-        return DataSource.Tasks.Select(task => Read(task.Id)).ToList();
+        return DataSource.Tasks.FirstOrDefault(filter);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<DO.Task?> ReadAll(Func<DO.Task, bool>? filter = null) //stage 2
+    {
+        return DataSource.Tasks.Where(item => filter?.Invoke(item) ?? true);
     }
 
     /// <inheritdoc />
@@ -51,7 +57,7 @@ public class TaskImplementation : ITask
         }
         else
         {
-            throw new Exception($"Task with ID={item.Id} does not exist");
+            throw new DalDoesNotExistException($"Task with ID={item.Id} does not exist");
         }
     }
 
