@@ -1,6 +1,7 @@
 ﻿using Dal;
 using DalApi;
 using DO;
+using System.Xml.Linq;
 
 namespace DalTest;
 
@@ -55,7 +56,7 @@ Select which entity you want to test:
                             break;
                     }
                 }
-                else { throw new Exception("The input must be a number!"); }
+                else { Console.WriteLine("The input must be a number!"); }
             } while (choice != 0);
         }
         catch (Exception Ex)
@@ -195,7 +196,7 @@ Select the opration you want to preform:
                             break;
                     }
                 }
-                else { throw new Exception("The input must be a number!"); }
+                else { Console.WriteLine("The input must be a number!"); }
             } while (choice != 0);
         }
         catch (Exception Ex)
@@ -216,9 +217,13 @@ Select the opration you want to preform:
 
         Console.WriteLine("enter name");
         string name = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(name))
+            throw new Exception("you must enter name!");
 
         Console.WriteLine("enter Email");
         string email = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(email))
+            throw new Exception("you must enter email!");
 
         Console.WriteLine("enter experience level in name (e.g. Begginer) or number between 0-4");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
@@ -240,12 +245,18 @@ Select the opration you want to preform:
     {
         Console.WriteLine("enter alias");
         string alias = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(alias))
+            throw new Exception("you must enter alias!");
 
         Console.WriteLine("enter description");
         string description = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(description))
+            throw new Exception("you must enter description!");
 
         Console.WriteLine("enter Deliverables");
         string deliverables = Console.ReadLine() ?? throw new Exception("it can't be null!");
+        if (String.IsNullOrWhiteSpace(deliverables))
+            throw new Exception("you must enter deliverables!");
 
         Console.WriteLine("enter Difficulty Level in name (e.g. Begginer) or number between 0-4");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
@@ -382,9 +393,13 @@ Select the opration you want to preform:
 
         Console.WriteLine("enter name:");
         name = Console.ReadLine() ?? ent.Name;
+        if (String.IsNullOrWhiteSpace(name))
+            name = ent.Name;
 
         Console.WriteLine("enter email:");
         email = Console.ReadLine() ?? ent.Email;
+        if (String.IsNullOrWhiteSpace(email))
+            email = ent.Email;
 
         Console.WriteLine("enter level:");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
@@ -420,9 +435,13 @@ Select the opration you want to preform:
 
         Console.WriteLine("enter alias:");
         alias = Console.ReadLine() ?? ent.Alias;
+        if (String.IsNullOrWhiteSpace(alias))
+            alias = ent.Alias;
 
         Console.WriteLine("enter description:");
         description = Console.ReadLine() ?? ent.Description;
+        if (String.IsNullOrWhiteSpace(description))
+            description = ent.Description;
 
         Console.WriteLine("enter IsMilestone:");
         if (!bool.TryParse(Console.ReadLine(), out var isMilestone))
@@ -430,6 +449,8 @@ Select the opration you want to preform:
 
         Console.WriteLine("enter Deliverables:");
         deliverables = Console.ReadLine() ?? ent.Deliverables;
+        if (String.IsNullOrWhiteSpace(deliverables))
+            deliverables = ent.Deliverables;
 
         Console.WriteLine("enter Difficulty Level:");
         if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
@@ -449,6 +470,8 @@ Select the opration you want to preform:
 
         Console.WriteLine("enter remarks:");
         string? remarks = Console.ReadLine() ?? ent.Remarks;
+        if (String.IsNullOrWhiteSpace(remarks))
+            remarks = ent.Remarks;
 
         Console.WriteLine("enter Scheduled Date:");
         string? schDate = Console.ReadLine();
