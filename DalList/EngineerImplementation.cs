@@ -13,18 +13,10 @@ public class EngineerImplementation : IEngineer
     private readonly ICreationStrategy<Engineer> _creationStrategy;
     private readonly IDeletionStrategy<Engineer> _deletionStrategy;
 
-
-    private readonly Func<int, Engineer, Engineer> getUpdatedItem;
-    private readonly Func<int> idGenerator;
-
     public EngineerImplementation()
     {
-        // Initializing getUpdatedItem with coping and adding the id to the new item
-        getUpdatedItem = (id, item) => item with { Id = id };
-
         _creationStrategy = new ExternalIdCreationStrategy<Engineer>(Read);
-        _deletionStrategy = new StrictDeletionStrategy<Engineer>();
-
+        _deletionStrategy = new SoftDeletionStrategy<Engineer>(Read, Update);
     }
     /// <inheritdoc />
     public int Create(Engineer item)

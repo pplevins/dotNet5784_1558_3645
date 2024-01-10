@@ -4,7 +4,7 @@
 /// </summary>
 public class RestrictedDeletionStrategy<T> : IDeletionStrategy<T>
 {
-    public void Delete(List<T> items, int id, Func<int, T?>? getItem)
+    public void Delete(List<T> items, int id)
     {
         throw new Exception($"Deletion of item with ID={id} is not allowed");
     }

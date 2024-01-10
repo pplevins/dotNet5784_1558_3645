@@ -14,21 +14,11 @@ public class DependencyImplementation : IDependency
     private readonly ICreationStrategy<Dependency> _creationStrategy;
     private readonly IDeletionStrategy<Dependency> _deletionStrategy;
 
-
-    private readonly Func<int, Dependency, Dependency> getUpdatedItem;
-    private readonly Func<int> idGenerator;
-
     public DependencyImplementation()
     {
-        // Initializing _getUpdatedItem with DataSource.Config.NextDependencyId
-        getUpdatedItem = (id, item) => item with { Id = DataSource.Config.NextDependencyId };
+        _creationStrategy = new InternalIdCreationStrategy<Dependency>(idGenerator: () => DataSource.Config.NextDependencyId);
 
-        // Initializing _idGenerator with a function that creates a new Dependency with the ID set using DataSource.Config.NextDependencyId
-        idGenerator = () => DataSource.Config.NextDependencyId;
-
-        _creationStrategy = new InternalIdCreationStrategy<Dependency>(getUpdatedItem, idGenerator);
-        _deletionStrategy = new StrictDeletionStrategy<Dependency>();
-
+        _deletionStrategy = new StrictDeletionStrategy<Dependency>(Read);
     }
     /// <inheritdoc />
     public int Create(Dependency item)
@@ -40,7 +30,7 @@ public class DependencyImplementation : IDependency
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        _deletionStrategy.Delete(DataSource.Dependencies, id, Read);
+        _deletionStrategy.Delete(DataSource.Dependencies, id);
     }
 
     /// <inheritdoc />

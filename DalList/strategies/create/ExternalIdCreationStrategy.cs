@@ -4,21 +4,14 @@ namespace Dal.strategies.create;
 /// <summary>
 /// Creation strategy that checks if an item with the specified external ID already exists before adding it.
 /// </summary>
-public class ExternalIdCreationStrategy<T>(Func<int, T?> getItem) : ICreationStrategy<T>
+public class ExternalIdCreationStrategy<T>(Func<int, T?> existsCheck) : ICreationStrategy<T>
 {
-    private Func<int, T?> _getItem = getItem ?? throw new ArgumentNullException(nameof(getItem));
-
-    public ExternalIdCreationStrategy<T> SetGetItem(Func<int, T?> getItem)
-    {
-        _getItem = getItem ?? throw new ArgumentNullException(nameof(getItem));
-        return this;
-    }
 
     public int Create(List<T> items, T item)
     {
         int itemId = GetItemId(item);
 
-        if (_getItem(itemId) is not null)
+        if (existsCheck(itemId) is not null)
             throw new Exception($"{typeof(T).Name} with external ID={itemId} already exists");
 
         items.Add(item);

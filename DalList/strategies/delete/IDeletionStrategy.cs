@@ -7,5 +7,5 @@ namespace Dal.strategies.delete;
 /// <typeparam name="T">The type of the items in the list.</typeparam>
 public interface IDeletionStrategy<T>
 {
-    public void Delete(List<T> items, int id, Func<int, T?>? getItem = null);
+    public void Delete(List<T> items, int id);
 }

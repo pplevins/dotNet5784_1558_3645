@@ -15,20 +15,13 @@ public class TaskImplementation : ITask
     private readonly IDeletionStrategy<DO.Task> _deletionStrategy;
 
 
-    private readonly Func<int, DO.Task, DO.Task> getUpdatedItem;
-    private readonly Func<int> idGenerator;
-
     public TaskImplementation()
     {
-        // Initializing _getUpdatedItem with DataSource.Config.NextDependencyId
-        getUpdatedItem = (id, item) => item with { Id = id };
+        _creationStrategy = new InternalIdCreationStrategy<DO.Task>(
+            idGenerator: () => DataSource.Config.NextDependencyId
+        );
 
-        // Initializing _idGenerator with a function that creates a new Dependency with the ID set using DataSource.Config.NextDependencyId
-        idGenerator = () => DataSource.Config.NextTaskId;
-
-        _creationStrategy = new InternalIdCreationStrategy<DO.Task>(getUpdatedItem, idGenerator);
-        _deletionStrategy = new StrictDeletionStrategy<DO.Task>();
-
+        _deletionStrategy = new StrictDeletionStrategy<DO.Task>(Read);
     }
     /// <inheritdoc />
     public int Create(DO.Task item)
@@ -40,7 +33,7 @@ public class TaskImplementation : ITask
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        _deletionStrategy.Delete(DataSource.Tasks, id, Read);
+        _deletionStrategy.Delete(DataSource.Tasks, id);
     }
 
     /// <inheritdoc />
