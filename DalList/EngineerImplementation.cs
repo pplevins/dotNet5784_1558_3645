@@ -10,13 +10,14 @@ namespace Dal;
 /// </summary>
 public class EngineerImplementation : IEngineer
 {
-
     private readonly ICreationStrategy<Engineer> _creationStrategy;
     private readonly IDeletionStrategy<Engineer> _deletionStrategy;
 
     public EngineerImplementation()
     {
+        //External id creation so we get the id frm outside in the entity itself
         _creationStrategy = new ExternalIdCreationStrategy<Engineer>(Read);
+        //soft Deletion(only marks the entity as non-active) with proper Exception in case of error
         _deletionStrategy = new SoftDeletionStrategy<Engineer>(Read, Update);
     }
     /// <inheritdoc />

@@ -7,7 +7,7 @@ namespace Dal.strategies.delete;
 /// It ensures that the item with the specified ID exists in the list, throwing an DalDoesNotExistException if not found.
 /// This strategy adheres to a more rigorous and immediate deletion approach, suitable for cases requiring precise removal of items.
 /// </summary>
-public class StrictDeletionStrategy<T>(Func<int, T?> getEntity, Action<T>? collectionUpdater = null) : IDeletionStrategy<T>
+public class StrictDeletionStrategy<T>(Func<int, T?> getEntity) : IDeletionStrategy<T>
 {
     public void Delete(List<T> items, int id)
     {

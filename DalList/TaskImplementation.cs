@@ -11,17 +11,14 @@ namespace Dal;
 /// </summary>
 public class TaskImplementation : ITask
 {
-
     private readonly ICreationStrategy<DO.Task> _creationStrategy;
     private readonly IDeletionStrategy<DO.Task> _deletionStrategy;
 
-
     public TaskImplementation()
     {
-        _creationStrategy = new InternalIdCreationStrategy<DO.Task>(
-            idGenerator: () => DataSource.Config.NextTaskId
-        );
-
+        //Internal id creation(running id) so we don't get the id in the entity itself, but we need to provide a method for the creation of it
+        _creationStrategy = new InternalIdCreationStrategy<DO.Task>(idGenerator: () => DataSource.Config.NextTaskId);
+        //regular Deletion with proper Exception in case of error
         _deletionStrategy = new StrictDeletionStrategy<DO.Task>(Read);
     }
     /// <inheritdoc />

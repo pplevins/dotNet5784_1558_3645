@@ -17,8 +17,9 @@ public class DependencyImplementation : IDependency
 
     public DependencyImplementation()
     {
+        //Internal id creation(running id) so we don't get the id in the entity itself, but we need to provide a method for the creation of it
         _creationStrategy = new InternalIdCreationStrategy<Dependency>(idGenerator: () => DataSource.Config.NextDependencyId);
-
+        //regular Deletion with proper Exception in case of error
         _deletionStrategy = new StrictDeletionStrategy<Dependency>(Read);
     }
     /// <inheritdoc />
@@ -30,7 +31,6 @@ public class DependencyImplementation : IDependency
     /// <inheritdoc />
     public void Delete(int id)
     {
-        //regular Deletion with proper Exception in case of error
         _deletionStrategy.Delete(DataSource.Dependencies, id);
     }
     /// <inheritdoc />

@@ -6,7 +6,7 @@ namespace Dal.strategies.delete;
 /// Instead of removing items from the list, it marks them as inactive, allowing for the preservation of historical data while indicating non-active status.
 /// This strategy promotes a more nuanced and reversible approach to deletion in scenarios where keeping a record of inactive items is beneficial.
 /// </summary>
-public class SoftDeletionStrategy<T>(Func<int, T?> getEntity, Action<T>? collectionUpdater = null) : IDeletionStrategy<T>
+public class SoftDeletionStrategy<T>(Func<int, T?> getEntity, Action<T> collectionUpdater) : IDeletionStrategy<T>
 {
     public void Delete(List<T> items, int id)
     {
