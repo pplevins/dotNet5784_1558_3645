@@ -2,6 +2,7 @@
 using Dal.strategies.delete;
 using DalApi;
 using DO;
+using static DO.Exceptions;
 
 namespace Dal;
 /// <summary>
@@ -39,10 +40,15 @@ public class EngineerImplementation : IEngineer
     }
 
     /// <inheritdoc />
-    public List<Engineer?> ReadAll()
+    public Engineer? Read(Func<Engineer, bool> filter)
     {
-        // Return a new list containing copies of all Engineers directly as Engineer?
-        return DataSource.Engineers.Select(engineer => Read(engineer.Id)).ToList();
+        return DataSource.Engineers.FirstOrDefault(filter);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
+    {
+        return DataSource.Engineers.Where(item => filter?.Invoke(item) ?? true);
     }
 
     /// <inheritdoc />
@@ -58,7 +64,7 @@ public class EngineerImplementation : IEngineer
         }
         else
         {
-            throw new Exception($"Engineer with ID={item.Id} does not exist");
+            throw new DalDoesNotExistException($"Engineer with ID={item.Id} does not exist");
         }
     }
 

@@ -1,32 +1,25 @@
 ﻿
 
+using DO;
+
 namespace Dal.strategies.create;
 /// <summary>
-/// Creation strategy that checks if an item with the specified external ID already exists before adding it.
+/// ExternalIdCreationStrategy ensures the uniqueness of external IDs before adding an item.
+/// It uses an external existence check to prevent the creation of duplicate items based on external IDs.
+/// If a conflict is detected, it raises a DalAlreadyExistsException.
+/// Otherwise, the item is added to the list, and its external ID is returned.
 /// </summary>
 public class ExternalIdCreationStrategy<T>(Func<int, T?> existsCheck) : ICreationStrategy<T>
 {
 
     public int Create(List<T> items, T item)
     {
-        int itemId = GetItemId(item);
+        int itemId = StrategiesHelper<T>.GetEntityId(item);
 
         if (existsCheck(itemId) is not null)
-            throw new Exception($"{typeof(T).Name} with external ID={itemId} already exists");
+            throw new Exceptions.DalAlreadyExistsException($"{typeof(T).Name} with external ID={itemId} already exists");
 
         items.Add(item);
         return itemId;
-    }
-
-    private int GetItemId(T item)
-    {
-        // Assuming items have an "Id" property
-        var idProperty = item?.GetType().GetProperty("Id")
-                         ?? throw new InvalidOperationException($"Type {typeof(T).Name} does not have an 'Id' property.");
-
-        var idValue = idProperty.GetValue(item, null)
-                      ?? throw new InvalidOperationException($"The 'Id' property of {typeof(T).Name} is null.");
-
-        return (int)idValue;
     }
 }

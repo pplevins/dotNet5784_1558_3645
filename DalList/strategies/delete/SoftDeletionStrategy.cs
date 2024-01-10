@@ -1,29 +1,19 @@
-﻿namespace Dal.strategies.delete;
+﻿using DO;
+
+namespace Dal.strategies.delete;
 /// <summary>
-/// Deletion strategy that marks an item as inactive for soft deletion.
+/// The SoftDeletionStrategy implements a deletion strategy by marking items as inactive, enabling a soft deletion approach.
+/// Instead of removing items from the list, it marks them as inactive, allowing for the preservation of historical data while indicating non-active status.
+/// This strategy promotes a more nuanced and reversible approach to deletion in scenarios where keeping a record of inactive items is beneficial.
 /// </summary>
 public class SoftDeletionStrategy<T>(Func<int, T?> getEntity, Action<T>? collectionUpdater = null) : IDeletionStrategy<T>
 {
     public void Delete(List<T> items, int id)
     {
-        var existingEntity = getEntity(id) ?? throw new Exception($"Item with ID={id} does not exist");
+        var existingEntity = getEntity(id) ?? throw new Exception($"{typeof(T).Name} with ID={id} does not exist");
 
-        T updatedItem = UpdateEntity(existingEntity, "IsActive", false) ?? throw new Exception($"Deletion of item with ID={id} failed because failure to update the necessary fields");
+        T updatedItem = StrategiesHelper<T>.UpdateEntity(existingEntity, "IsActive", false) ?? throw new Exceptions.DalDeletionImpossibleException($"Deletion of {typeof(T).Name} with ID={id} failed because failure to update the necessary fields");
 
         collectionUpdater?.Invoke(updatedItem);
     }
-
-    private T UpdateEntity(T existingEntity, string propertyName, object valueToUpdate)
-    {
-        var propertyInfo = typeof(T).GetProperty(propertyName)
-                           ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{typeof(T).FullName}'", nameof(propertyName));
-
-        return Activator.CreateInstance<T>().GetType().GetProperties()
-            .Aggregate(existingEntity, (acc, prop) =>
-            {
-                prop.SetValue(acc, prop == propertyInfo ? valueToUpdate : prop.GetValue(existingEntity));
-                return acc;
-            });
-    }
-
 }

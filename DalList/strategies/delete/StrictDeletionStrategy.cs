@@ -1,13 +1,17 @@
 ﻿
+using static DO.Exceptions;
+
 namespace Dal.strategies.delete;
 /// <summary>
-/// Deletion strategy that strictly deletes an item based on its ID.
+/// The StrictDeletionStrategy implements a deletion strategy that strictly removes an item based on its ID.
+/// It ensures that the item with the specified ID exists in the list, throwing an DalDoesNotExistException if not found.
+/// This strategy adheres to a more rigorous and immediate deletion approach, suitable for cases requiring precise removal of items.
 /// </summary>
-public class StrictDeletionStrategy<T>(Func<int, T?> getEntity) : IDeletionStrategy<T>
+public class StrictDeletionStrategy<T>(Func<int, T?> getEntity, Action<T>? collectionUpdater = null) : IDeletionStrategy<T>
 {
     public void Delete(List<T> items, int id)
     {
-        var existingItem = getEntity(id) ?? throw new Exception($"Item with ID={id} does not exist");
-        items.Remove(existingItem);
+        _ = getEntity(id) ?? throw new DalDoesNotExistException($"{typeof(T).Name} with ID={id} does not exist");
+        items.RemoveAll(t => StrategiesHelper<T>.GetEntityId(t) == id);
     }
 }

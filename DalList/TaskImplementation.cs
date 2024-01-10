@@ -2,6 +2,7 @@
 using Dal.strategies.delete;
 using Dal.Strategies.Create;
 using DalApi;
+using static DO.Exceptions;
 
 namespace Dal;
 
@@ -18,7 +19,7 @@ public class TaskImplementation : ITask
     public TaskImplementation()
     {
         _creationStrategy = new InternalIdCreationStrategy<DO.Task>(
-            idGenerator: () => DataSource.Config.NextDependencyId
+            idGenerator: () => DataSource.Config.NextTaskId
         );
 
         _deletionStrategy = new StrictDeletionStrategy<DO.Task>(Read);
@@ -44,10 +45,15 @@ public class TaskImplementation : ITask
     }
 
     /// <inheritdoc />
-    public List<DO.Task?> ReadAll()
+    public DO.Task? Read(Func<DO.Task, bool> filter)
     {
-        // Return a new list containing copies of all Tasks directly as Task?
-        return DataSource.Tasks.Select(task => Read(task.Id)).ToList();
+        return DataSource.Tasks.FirstOrDefault(filter);
+    }
+
+    /// <inheritdoc />
+    public IEnumerable<DO.Task?> ReadAll(Func<DO.Task, bool>? filter = null) //stage 2
+    {
+        return DataSource.Tasks.Where(item => filter?.Invoke(item) ?? true);
     }
 
     /// <inheritdoc />
@@ -63,7 +69,7 @@ public class TaskImplementation : ITask
         }
         else
         {
-            throw new Exception($"Task with ID={item.Id} does not exist");
+            throw new DalDoesNotExistException($"Task with ID={item.Id} does not exist");
         }
     }
 
