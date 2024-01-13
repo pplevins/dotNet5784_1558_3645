@@ -9,7 +9,7 @@ namespace Dal;
 /// <summary>
 /// Implementation of the <see cref="ITask"/> interface to manage tasks in the data source.
 /// </summary>
-public class TaskImplementation : ITask
+internal class TaskImplementation : ITask
 {
     private readonly ICreationStrategy<DO.Task> _creationStrategy;
     private readonly IDeletionStrategy<DO.Task> _deletionStrategy;
@@ -18,8 +18,8 @@ public class TaskImplementation : ITask
     {
         //Internal id creation(running id) so we don't get the id in the entity itself, but we need to provide a method for the creation of it
         _creationStrategy = new InternalIdCreationStrategy<DO.Task>(idGenerator: () => DataSource.Config.NextTaskId);
-        //regular Deletion with proper Exception in case of error
-        _deletionStrategy = new StrictDeletionStrategy<DO.Task>(Read);
+        //soft Deletion(only marks the entity as non-active) with proper Exception in case of error
+        _deletionStrategy = new SoftDeletionStrategy<DO.Task>(Read, Update);
     }
     /// <inheritdoc />
     public int Create(DO.Task item)
@@ -38,7 +38,7 @@ public class TaskImplementation : ITask
     public DO.Task? Read(int id)
     {
         // Find and return the Task with the specified ID or null if not found
-        return DataSource.Tasks.FirstOrDefault(d => d.Id == id);
+        return DataSource.Tasks.FirstOrDefault(d => d.Id == id && d.IsActive);
     }
 
     /// <inheritdoc />

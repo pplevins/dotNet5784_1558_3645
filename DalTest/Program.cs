@@ -10,9 +10,11 @@ namespace DalTest;
 public class Program
 {
     //initializing the fields for the interfaces 
-    private static IEngineer? s_dalEngineer = new EngineerImplementation();
-    private static ITask? s_dalTask = new TaskImplementation();
-    private static IDependency? s_dalDependency = new DependencyImplementation();
+    //private static IEngineer? s_dalEngineer = new EngineerImplementation();
+    //private static ITask? s_dalTask = new TaskImplementation();
+    //private static IDependency? s_dalDependency = new DependencyImplementation();
+
+    static readonly IDal s_dal = new DalList(); //stage 2
 
     /// <summary>
     /// The main menu to choose an entity
@@ -42,13 +44,13 @@ Select which entity you want to test:
                             Console.WriteLine("Bye!");
                             break;
                         case 1:
-                            SubMenu("Engineer", s_dalEngineer);
+                            SubMenu("Engineer", s_dal.Engineer);
                             break;
                         case 2:
-                            SubMenu("Task", s_dalTask);
+                            SubMenu("Task", s_dal.Task);
                             break;
                         case 3:
-                            SubMenu("Dependency", s_dalDependency);
+                            SubMenu("Dependency", s_dal.Dependency);
                             break;
                         default:
                             Console.WriteLine("it must be a number between 0-3!");
@@ -117,13 +119,13 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    ReadEntity("engineer", s_dalEngineer!.Read);
+                                    ReadEntity("engineer", s_dal!.Engineer.Read);
 
                                 else if (typeof(T) == typeof(ITask))
-                                    ReadEntity("task", s_dalTask!.Read);
+                                    ReadEntity("task", s_dal!.Task.Read);
 
                                 else if (typeof(T) == typeof(IDependency))
-                                    ReadEntity("dependency", s_dalDependency!.Read);
+                                    ReadEntity("dependency", s_dal!.Dependency.Read);
                             }
                             catch (Exception Ex)
                             {
@@ -135,12 +137,12 @@ Select the opration you want to preform:
                             {
                                 if (typeof(T) == typeof(IEngineer))
                                 {
-                                    ReadAllEntities(s_dalEngineer!.ReadAll());
+                                    ReadAllEntities(s_dal!.Engineer.ReadAll());
                                 }
                                 else if (typeof(T) == typeof(ITask))
-                                    ReadAllEntities(s_dalTask!.ReadAll());
+                                    ReadAllEntities(s_dal!.Task.ReadAll());
                                 else if (typeof(T) == typeof(IDependency))
-                                    ReadAllEntities(s_dalDependency!.ReadAll());
+                                    ReadAllEntities(s_dal!.Dependency.ReadAll());
                             }
                             catch (Exception Ex)
                             {
@@ -151,11 +153,11 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    UpdateEngineer(s_dalEngineer!.Read);
+                                    UpdateEngineer(s_dal!.Engineer.Read);
                                 else if (typeof(T) == typeof(ITask))
-                                    UpdateTask(s_dalTask!.Read);
+                                    UpdateTask(s_dal!.Task.Read);
                                 else if (typeof(T) == typeof(IDependency))
-                                    UpdateDependency(s_dalDependency!.Read);
+                                    UpdateDependency(s_dal!.Dependency.Read);
                             }
                             catch (Exception Ex)
                             {
@@ -166,11 +168,11 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    DeleteEntity<IEngineer?>("Engineer", s_dalEngineer!.Delete);
+                                    DeleteEntity<IEngineer?>("Engineer", s_dal!.Engineer.Delete);
                                 else if (typeof(T) == typeof(ITask))
-                                    DeleteEntity<ITask?>("Task", s_dalTask!.Delete);
+                                    DeleteEntity<ITask?>("Task", s_dal!.Task.Delete);
                                 else if (typeof(T) == typeof(IDependency))
-                                    DeleteEntity<IDependency?>("Dependency", s_dalDependency!.Delete);
+                                    DeleteEntity<IDependency?>("Dependency", s_dal!.Dependency.Delete);
                             }
                             catch (Exception Ex)
                             {
@@ -181,11 +183,11 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    s_dalEngineer!.Reset();
+                                    s_dal!.Engineer.Reset();
                                 else if (typeof(T) == typeof(ITask))
-                                    s_dalTask!.Reset();
+                                    s_dal!.Task.Reset();
                                 else if (typeof(T) == typeof(IDependency))
-                                    s_dalDependency!.Reset();
+                                    s_dal!.Dependency.Reset();
                             }
                             catch (Exception Ex)
                             {
@@ -234,7 +236,7 @@ Select the opration you want to preform:
         double.TryParse(Console.ReadLine(), out var cost);
 
         Engineer engineer = new(id, name, email, level, true, cost);
-        int newId = s_dalEngineer!.Create(engineer);
+        int newId = s_dal!.Engineer.Create(engineer);
         Console.WriteLine($"engineer created ID {newId}\n");
     }
 
@@ -299,7 +301,7 @@ Select the opration you want to preform:
         DateTime? completeDate = ParseNullableDateTime(complete);
 
         DO.Task task = new(0, alias, description, isMilestone, deliverables, level, effortTime, creation, engineerId, remarks, scheduledDate, startDate, deadlineDate, completeDate);
-        int newId = s_dalTask!.Create(task);
+        int newId = s_dal!.Task.Create(task);
         Console.WriteLine($"task created ID {newId}\n");
     }
 
@@ -318,7 +320,7 @@ Select the opration you want to preform:
             throw new Exception("ID must be a number!");
 
         Dependency dependency = new(0, dependent, previous);
-        int newId = s_dalDependency!.Create(dependency);
+        int newId = s_dal!.Dependency.Create(dependency);
         Console.WriteLine($"Dependency created ID {newId}");
     }
 
@@ -408,7 +410,7 @@ Select the opration you want to preform:
         double.TryParse(Console.ReadLine(), out var cost);
 
         //setting the updated engineer
-        s_dalEngineer!.Update(new(ent.Id, name, email, level, true, cost));
+        s_dal!.Engineer.Update(new(ent.Id, name, email, level, true, cost));
     }
 
     /// <summary>
@@ -488,7 +490,7 @@ Select the opration you want to preform:
         string? complete = Console.ReadLine();
         DateTime? completeDate = ParseNullableDateTime(complete) ?? ent.CompleteDate;
 
-        s_dalTask!.Update(new(ent.Id, alias, description, isMilestone, deliverables, level, effortTime, creation, engineerId, remarks, scheduledDate, startDate, deadlineDate, completeDate));
+        s_dal!.Task.Update(new(ent.Id, alias, description, isMilestone, deliverables, level, effortTime, creation, engineerId, remarks, scheduledDate, startDate, deadlineDate, completeDate));
     }
 
     /// <summary>
@@ -554,7 +556,7 @@ Select the opration you want to preform:
         if (!int.TryParse(Console.ReadLine(), out int previous))
             previous = ent.PreviousTask;
 
-        s_dalDependency!.Update(new(ent.Id, dependent, previous));
+        s_dal!.Dependency.Update(new(ent.Id, dependent, previous));
     }
 
     /// <summary>
@@ -563,7 +565,7 @@ Select the opration you want to preform:
     /// <param name="args"></param>
     static void Main(string[] args)
     {
-        Initialization.Do(s_dalDependency, s_dalEngineer, s_dalTask);
+        Initialization.Do(s_dal);
         Menu();
     }
 }

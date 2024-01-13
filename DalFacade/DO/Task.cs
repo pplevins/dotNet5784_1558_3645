@@ -17,7 +17,7 @@
     /// <param name="StartDate">Actual start date of the task</param>
     /// <param name="DeadlineDate">Planned deadline date of the task</param>
     /// <param name="CompleteDate">Actual Completion date of the task</param>
-    /// /// <param name="IsActive">The field to check if the entity is removed or not</param>
+    /// <param name="IsActive">The field to check if the entity is removed or not</param>
     public record Task
     (
         int Id,

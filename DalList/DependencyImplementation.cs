@@ -10,7 +10,7 @@ namespace Dal;
 /// <summary>
 /// Implementation of the <see cref="IDependency"/> interface to manage dependencies in the data source.
 /// </summary>
-public class DependencyImplementation : IDependency
+internal class DependencyImplementation : IDependency
 {
     private readonly ICreationStrategy<Dependency> _creationStrategy;
     private readonly IDeletionStrategy<Dependency> _deletionStrategy;
@@ -19,8 +19,8 @@ public class DependencyImplementation : IDependency
     {
         //Internal id creation(running id) so we don't get the id in the entity itself, but we need to provide a method for the creation of it
         _creationStrategy = new InternalIdCreationStrategy<Dependency>(idGenerator: () => DataSource.Config.NextDependencyId);
-        //regular Deletion with proper Exception in case of error
-        _deletionStrategy = new StrictDeletionStrategy<Dependency>(Read);
+        //soft Deletion(only marks the entity as non-active) with proper Exception in case of error
+        _deletionStrategy = new SoftDeletionStrategy<Dependency>(Read, Update);
     }
     /// <inheritdoc />
     public int Create(Dependency item)
@@ -37,7 +37,7 @@ public class DependencyImplementation : IDependency
     public Dependency? Read(int id)
     {
         // Find and return the Dependency with the specified ID or null if not found
-        return DataSource.Dependencies.FirstOrDefault(d => d.Id == id);
+        return DataSource.Dependencies.FirstOrDefault(d => d.Id == id && d.IsActive);
     }
     /// <inheritdoc />
     public Dependency? Read(Func<Dependency, bool> filter)

@@ -8,7 +8,7 @@ namespace Dal;
 /// <summary>
 /// Implementation of the <see cref="IEngineer"/> interface to manage engineers in the data source.
 /// </summary>
-public class EngineerImplementation : IEngineer
+internal class EngineerImplementation : IEngineer
 {
     private readonly ICreationStrategy<Engineer> _creationStrategy;
     private readonly IDeletionStrategy<Engineer> _deletionStrategy;
@@ -37,7 +37,7 @@ public class EngineerImplementation : IEngineer
     public Engineer? Read(int id)
     {
         // Find and return the Engineer with the specified ID or null if not found
-        return DataSource.Engineers.FirstOrDefault(d => d.Id == id);
+        return DataSource.Engineers.FirstOrDefault(d => d.Id == id && d.IsActive);
     }
 
     /// <inheritdoc />
