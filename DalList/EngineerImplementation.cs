@@ -49,7 +49,7 @@ internal class EngineerImplementation : IEngineer
     /// <inheritdoc />
     public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
     {
-        return DataSource.Engineers.Where(item => filter?.Invoke(item) ?? true);
+        return DataSource.Engineers.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
     }
 
     /// <inheritdoc />

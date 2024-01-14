@@ -14,7 +14,7 @@ public class InternalIdCreationStrategy<T>(Func<int> idGenerator)
     public int Create(List<T> items, T item)
     {
         int id = idGenerator(); // Generate the ID using the provided function
-        Console.WriteLine($"running id is in: {typeof(T).Name} are now: {id}");
+        //Console.WriteLine($"running id is in: {typeof(T).Name} are now: {id}");
         T updatedItem = StrategiesHelper<T>.UpdateEntity(item, "Id", id);
 
         // Add the updated item directly to the list

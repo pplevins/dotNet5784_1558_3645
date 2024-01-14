@@ -47,7 +47,7 @@ internal class DependencyImplementation : IDependency
     /// <inheritdoc />
     public IEnumerable<Dependency?> ReadAll(Func<Dependency, bool>? filter = null) //stage 2
     {
-        return DataSource.Dependencies.Where(item => filter?.Invoke(item) ?? true);
+        return DataSource.Dependencies.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
     }
 
 

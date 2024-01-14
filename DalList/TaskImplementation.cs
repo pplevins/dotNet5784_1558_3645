@@ -49,7 +49,7 @@ internal class TaskImplementation : ITask
     /// <inheritdoc />
     public IEnumerable<DO.Task?> ReadAll(Func<DO.Task, bool>? filter = null) //stage 2
     {
-        return DataSource.Tasks.Where(item => filter?.Invoke(item) ?? true);
+        return DataSource.Tasks.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
     }
 
     /// <inheritdoc />
