@@ -1,6 +1,6 @@
 ﻿using DO;
 
-namespace Dal.strategies.delete;
+namespace Dal.Strategies.Delete;
 /// <summary>
 /// The SoftDeletionStrategy implements a deletion strategy by marking items as inactive, enabling a soft deletion approach.
 /// Instead of removing items from the list, it marks them as inactive, allowing for the preservation of historical data while indicating non-active status.

@@ -1,4 +1,4 @@
-﻿namespace Dal.strategies.delete;
+﻿namespace Dal.Strategies.Delete;
 /// <summary>
 /// The IDeletionStrategy interface defines a strategy pattern for deleting items of type T.
 /// It declares a Delete method, accepting a list of items and the ID of the item to be deleted.

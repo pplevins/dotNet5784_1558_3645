@@ -1,5 +1,5 @@
 ﻿
-namespace Dal.strategies.create;
+namespace Dal.Strategies.Create;
 using System.Collections.Generic;
 
 /// <summary>

@@ -1,7 +1,7 @@
 ﻿
 using static DO.Exceptions;
 
-namespace Dal.strategies.delete;
+namespace Dal.Strategies.Delete;
 /// <summary>
 /// The StrictDeletionStrategy implements a deletion strategy that strictly removes an item based on its ID.
 /// It ensures that the item with the specified ID exists in the list, throwing an DalDoesNotExistException if not found.

@@ -1,6 +1,6 @@
 ﻿using DO;
 
-namespace Dal.strategies.delete;
+namespace Dal.Strategies.Delete;
 /// <summary>
 /// The RestrictedDeletionStrategy enforces a deletion restriction by throwing an exception, indicating that deletion is not allowed for the specified item.
 /// This strategy is useful in scenarios where certain items should be protected from deletion, providing a mechanism to control and prevent undesired removal actions.

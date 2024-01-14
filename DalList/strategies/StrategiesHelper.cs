@@ -2,7 +2,7 @@
 
 using System.Reflection;
 
-namespace Dal.strategies;
+namespace Dal.Strategies;
 /// <summary>
 /// Utility class providing helper methods for common tasks related to generics
 /// </summary>

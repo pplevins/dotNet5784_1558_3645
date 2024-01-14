@@ -2,7 +2,7 @@
 
 using DO;
 
-namespace Dal.strategies.create;
+namespace Dal.Strategies.Create;
 /// <summary>
 /// ExternalIdCreationStrategy ensures the uniqueness of external IDs before adding an item.
 /// It uses an external existence check to prevent the creation of duplicate items based on external IDs.

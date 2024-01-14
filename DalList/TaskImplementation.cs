@@ -1,6 +1,5 @@
-﻿using Dal.strategies.create;
-using Dal.strategies.delete;
-using Dal.Strategies.Create;
+﻿using Dal.Strategies.Create;
+using Dal.Strategies.Delete;
 using DalApi;
 using static DO.Exceptions;
 
