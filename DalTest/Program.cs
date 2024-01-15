@@ -218,7 +218,7 @@ public class Program
         int id = GetValue<int>("Id", input => int.TryParse(input, out var parsedId) ? parsedId : throw new FormatException("invalid ID input"));
         string name = GetValue<string>("Name");
         string email = GetValue<string>("Email");
-        EngineerExperience level = GetValue<EngineerExperience>("Level", input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("input must be title (e.g. Beginner) or number between 0-4!"));
+        EngineerExperience level = GetValue<EngineerExperience>("Level", input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
         double? cost = GetNullableValue<double>("Cost");
 
         Engineer engineer = new(id, name, email, level, true, cost);
@@ -238,7 +238,7 @@ public class Program
         string alias = GetValue<string>("Alias");
         string description = GetValue<string>("Description");
         string deliverables = GetValue<string>("Deliverables");
-        EngineerExperience level = GetValue<EngineerExperience>("DifficultyLevel", input => Enum.TryParse(input, out DO.EngineerExperience parsedLevel) ? parsedLevel : throw new FormatException("input must be title (e.g. Beginner) or number between 0-4!"));
+        EngineerExperience level = GetValue<EngineerExperience>("DifficultyLevel", input => Enum.TryParse(input, out DO.EngineerExperience parsedLevel) ? parsedLevel : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
         bool isMilestone = GetValue("isMilestone", input => bool.TryParse(input, out bool parsedInput) ? parsedInput : false);
         TimeSpan? effortTime = GetValue("RequiredEffortTime", input => TimeSpan.TryParse(input, out var parsedTimeSpan) ? parsedTimeSpan : (TimeSpan?)null);
         DateTime? creation = GetValue("CreatedAtDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
@@ -341,7 +341,7 @@ public class Program
         // Update engineer properties
         string name = GetUpdatedValue("Name", existingEngineer.Name);
         string email = GetUpdatedValue("Email", existingEngineer.Email);
-        EngineerExperience level = GetUpdatedValue("Level", existingEngineer.Level, input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("invalid input"));
+        EngineerExperience level = GetUpdatedValue("Level", existingEngineer.Level, input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("invalid input for level"));
         double? cost = GetUpdatedValue("Cost", existingEngineer.Cost, input => double.TryParse(input, out var parsedDouble) ? parsedDouble : (double?)null);
 
         //setting the updated engineer
@@ -450,17 +450,10 @@ public class Program
         Console.Write($"{propertyName}: ");
         string? input = Console.ReadLine();
         
-        try
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                throw new FormatException($"You must enter {propertyName}!");
+        if (string.IsNullOrWhiteSpace(input))
+            throw new FormatException($"You must enter {propertyName}!");
 
-            return ConvertType(input, parser);
-        }
-        catch (Exception)
-        {
-            throw new FormatException($"Invalid input for {propertyName}.");
-        }
+        return ConvertType(input, parser);
     }
 
     /// <summary>
@@ -480,14 +473,7 @@ public class Program
         if (string.IsNullOrWhiteSpace(input))
             return null;
 
-        try
-        {
-            return ConvertType(input, parser);
-        }
-        catch (Exception)
-        {
-            throw new FormatException($"Invalid input for {propertyName}.");
-        }
+        return ConvertType(input, parser);
     }
 
     /// <summary>
