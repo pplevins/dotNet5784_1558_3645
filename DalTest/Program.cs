@@ -209,12 +209,14 @@ public class Program
     }
 
     /// <summary>
-    /// create function for task entity
+    /// create function for engineer entity
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="Exception">in case the parse didn't succeed</exception>
     static void CreateEngineer()
     {
         Console.WriteLine("Creating engineer");
+
+        //getting the values from the user, throwing exception if the parse didn't succeed
         int id = GetValue<int>("Id", input => int.TryParse(input, out var parsedId) ? parsedId : throw new FormatException("invalid ID input"));
         string name = GetValue<string>("Name");
         string email = GetValue<string>("Email");
@@ -227,12 +229,14 @@ public class Program
     }
 
     /// <summary>
-    /// create function for engineer entity
+    /// create function for task entity
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="Exception">in case the parse didn't succeed</exception>
     static void CreateTask()
     {
         Console.WriteLine("Creating task");
+
+        //getting the values from the user, throwing exception if the parse didn't succeed, or null if nullable
         string alias = GetValue<string>("Alias");
         string description = GetValue<string>("Description");
         string deliverables = GetValue<string>("Deliverables");
@@ -241,7 +245,7 @@ public class Program
         TimeSpan? effortTime = GetValue("RequiredEffortTime", input => TimeSpan.TryParse(input, out var parsedTimeSpan) ? parsedTimeSpan : (TimeSpan?)null);
         DateTime? creation = GetValue("CreatedAtDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
         int? engineerId = GetValue("EngineerId", input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
-        string? remarks = GetUpdatedValue<string?>("Remarks", null);
+        string? remarks = GetUpdatedValue<string?>("Remarks", null); //for nullable string
         DateTime? scheduledDate = GetValue("ScheduledDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
         DateTime? startDate = GetValue("StartDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
         DateTime? deadlineDate = GetValue("DeadlineDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
@@ -255,10 +259,12 @@ public class Program
     /// <summary>
     /// create function for dependency entity
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="Exception">in case the parse didn't succeed</exception>
     static void CreateDependency()
     {
         Console.WriteLine("Creating dependency");
+
+        //getting the values from the user, throwing exception if the parse didn't succeed, or null if nullable
         int dependent = GetValue("DependentTask", input =>  int.TryParse(input, out var parsedInt) ? parsedInt : throw new Exception("invalid input for dependentTask ID"));
         int previous = GetValue("PreviousTask", input => int.TryParse(input, out var parsedInt) ? parsedInt : throw new Exception("invalid input for previousTask ID"));
 
@@ -274,7 +280,7 @@ public class Program
     /// <typeparam name="T">generic</typeparam>
     /// <param name="entity">engineer/task/dependency</param>
     /// <param name="read">the read function from the entity's interface</param>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="Exception">in case the entity with this ID not exist</exception>
     static void ReadEntity<T>(string entity, Func<int, T?> read)
     {
         Console.WriteLine($"You chose read. Enter ID for {entity}");
@@ -303,7 +309,7 @@ public class Program
     /// <typeparam name="T">generic</typeparam>
     /// <param name="entity">engineer/task/dependency</param>
     /// <param name="delete">the delete function from the entity's interface</param>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="Exception">in case the parse didn't succeed</exception>
     static void DeleteEntity<T>(string entity, Action<int> delete)
     {
         Console.WriteLine($"enter the {entity} ID");
@@ -402,16 +408,6 @@ public class Program
 
         s_dal!.Dependency.Update(new(existingDependency.Id, dependent, previous));
     }
-
-    /// <summary>
-    /// The main of the program. Only operating the initialization and the menu.
-    /// </summary>
-    /// <param name="args"></param>
-    static void Main(string[] args)
-    {
-        Initialization.Do(s_dal);
-        Menu();
-    }
     
     /// <summary>
     /// Helper method to get an updated value from the user.
@@ -444,6 +440,14 @@ public class Program
         }
     }
 
+    /// <summary>
+    /// Helper method to get an new value from the user.
+    /// </summary>
+    /// <typeparam name="T">Type of the property being created.</typeparam>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="parser">Parser function for the property type.</param>
+    /// <returns>The new value</returns>
+    /// <exception cref="FormatException">if the user provided no input or bad input.</exception>
     private static T GetValue<T>(string propertyName, Func<string, T>? parser = null)
     {
         Console.Write($"{propertyName}: ");
@@ -466,6 +470,15 @@ public class Program
         }
     }
 
+    /// <summary>
+    /// Helper method to get an new nullable (optional) value from the user.
+    /// The function work on struct only. For string? use the GetUpdatedValue function
+    /// </summary>
+    /// <typeparam name="T">Type of the property being created.</typeparam>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="parser">Parser function for the property type.</param>
+    /// <returns>The updated value or the current value if the user provided no input.</returns>
+    /// <exception cref="FormatException">if the parsing/converting didn't succeed.</exception>
     private static T? GetNullableValue<T>(string propertyName, Func<string, T>? parser = null) where T : struct
     {
         Console.Write($"{propertyName}: ");
@@ -486,5 +499,15 @@ public class Program
         {
             throw new FormatException($"Invalid input for {propertyName}.");
         }
+    }
+
+    /// <summary>
+    /// The main of the program. Only operating the initialization and the menu.
+    /// </summary>
+    /// <param name="args"></param>
+    static void Main(string[] args)
+    {
+        Initialization.Do(s_dal);
+        Menu();
     }
 }
