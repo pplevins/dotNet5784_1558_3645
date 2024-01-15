@@ -32,11 +32,17 @@ internal class DependencyImplementation : IDependency
     {
         _deletionStrategy.Delete(DataSource.Dependencies, id);
     }
+    
     /// <inheritdoc />
     public Dependency? Read(int id)
     {
         // Find and return the Dependency with the specified ID or null if not found
         return DataSource.Dependencies.FirstOrDefault(d => d.Id == id && d.IsActive);
+    }
+    /// <inheritdoc />
+    public Dependency? Read(Func<Dependency, bool> filter)
+    {
+        return DataSource.Dependencies.FirstOrDefault(filter);
     }
     /// <inheritdoc />
     public Dependency? Read(Func<Dependency, bool> filter)
@@ -74,5 +80,6 @@ internal class DependencyImplementation : IDependency
         // Clear the list of dependencies
         DataSource.Dependencies.Clear();
     }
+
 }
 

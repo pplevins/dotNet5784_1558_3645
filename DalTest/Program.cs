@@ -301,7 +301,7 @@ public class Program
     {
         entities.ToList().ForEach(item => Console.WriteLine(item));
     }
-
+                                  
     /// <summary>
     /// a generic deletion function to delete entity from the list
     /// </summary>
