@@ -16,7 +16,6 @@ public class Program
     /// <summary>
     /// The main menu to choose an entity
     /// </summary>
-    /// <exception cref="Exception">in case the choice was not a number</exception>
     private static void Menu()
     {
         Console.WriteLine("Welcome to the Project Management Application!");
@@ -67,7 +66,6 @@ public class Program
     /// <typeparam name="T">The generic type for the function</typeparam>
     /// <param name="entity">engineer / task / dependency</param>
     /// <param name="s_dalEntity">the interface field</param>
-    /// <exception cref="Exception">in case the choice is not a number</exception>
     private static void SubMenu<T>(string entity, T s_dalEntity)
     {
         Console.WriteLine($"You chose the {entity} entity!");
@@ -211,7 +209,7 @@ public class Program
     /// <summary>
     /// create function for engineer entity
     /// </summary>
-    /// <exception cref="Exception">in case the parse didn't succeed</exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void CreateEngineer()
     {
         Console.WriteLine("Creating engineer");
@@ -231,7 +229,7 @@ public class Program
     /// <summary>
     /// create function for task entity
     /// </summary>
-    /// <exception cref="Exception">in case the parse didn't succeed</exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void CreateTask()
     {
         Console.WriteLine("Creating task");
@@ -259,14 +257,14 @@ public class Program
     /// <summary>
     /// create function for dependency entity
     /// </summary>
-    /// <exception cref="Exception">in case the parse didn't succeed</exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void CreateDependency()
     {
         Console.WriteLine("Creating dependency");
 
         //getting the values from the user, throwing exception if the parse didn't succeed, or null if nullable
-        int dependent = GetValue("DependentTask", input =>  int.TryParse(input, out var parsedInt) ? parsedInt : throw new Exception("invalid input for dependentTask ID"));
-        int previous = GetValue("PreviousTask", input => int.TryParse(input, out var parsedInt) ? parsedInt : throw new Exception("invalid input for previousTask ID"));
+        int dependent = GetValue("DependentTask", input =>  int.TryParse(input, out var parsedInt) ? parsedInt : throw new FormatException("invalid input for dependentTask ID"));
+        int previous = GetValue("PreviousTask", input => int.TryParse(input, out var parsedInt) ? parsedInt : throw new FormatException("invalid input for previousTask ID"));
 
         Dependency dependency = new(0, dependent, previous);
         int newId = s_dal!.Dependency.Create(dependency);
@@ -280,7 +278,8 @@ public class Program
     /// <typeparam name="T">generic</typeparam>
     /// <param name="entity">engineer/task/dependency</param>
     /// <param name="read">the read function from the entity's interface</param>
-    /// <exception cref="Exception">in case the entity with this ID not exist</exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
+    /// <exception cref="DalDoesNotExistException">in case the entity with this ID not exist</exception>
     static void ReadEntity<T>(string entity, Func<int, T?> read)
     {
         Console.WriteLine($"You chose read. Enter ID for {entity}");
@@ -297,7 +296,7 @@ public class Program
     /// a generic function to read all the list of entities
     /// </summary>
     /// <typeparam name="T">generic</typeparam>
-    /// <param name="readAll">the readAll function from the entity's interface</param>
+    /// <param name="entities">the readAll function from the entity's interface</param>
     static void ReadAllEntities<T>(IEnumerable<T?> entities)
     {
         entities.ToList().ForEach(item => Console.WriteLine(item));
@@ -309,7 +308,7 @@ public class Program
     /// <typeparam name="T">generic</typeparam>
     /// <param name="entity">engineer/task/dependency</param>
     /// <param name="delete">the delete function from the entity's interface</param>
-    /// <exception cref="Exception">in case the parse didn't succeed</exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void DeleteEntity<T>(string entity, Action<int> delete)
     {
         Console.WriteLine($"enter the {entity} ID");
@@ -322,8 +321,8 @@ public class Program
     /// <summary>
     /// Updates an existing engineer based on user input.
     /// </summary>
-    /// <param name="read">the read function from the engineer's interface</param>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed.</exception>
+    /// <exception cref="DalDoesNotExistException">When the engineer with this ID is not found in the list.</exception>
     static void UpdateEngineer()
     {
         // Get the ID from the user
@@ -343,7 +342,7 @@ public class Program
         string name = GetUpdatedValue("Name", existingEngineer.Name);
         string email = GetUpdatedValue("Email", existingEngineer.Email);
         EngineerExperience level = GetUpdatedValue("Level", existingEngineer.Level, input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("invalid input"));
-        double? cost = GetUpdatedValue("", existingEngineer.Cost, input => double.TryParse(input, out var parsedDouble) ? parsedDouble : (double?)null);
+        double? cost = GetUpdatedValue("Cost", existingEngineer.Cost, input => double.TryParse(input, out var parsedDouble) ? parsedDouble : (double?)null);
 
         //setting the updated engineer
         s_dal!.Engineer.Update(new(existingEngineer.Id, name, email, level, true, cost));
@@ -352,7 +351,8 @@ public class Program
     /// <summary>
     /// Updates an existing task based on user input.
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed.</exception>
+    /// <exception cref="DalDoesNotExistException">When the task with this ID is not found in the list.</exception>
     static void UpdateTask()
     {
         // Get the ID from the user
@@ -389,7 +389,8 @@ public class Program
     /// <summary>
     /// Updates an existing dependency based on user input.
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed.</exception>
+    /// <exception cref="DalDoesNotExistException">When the dependency with this ID is not found in the list.</exception>
     static void UpdateDependency()
     {
         // Get the ID from the user
@@ -408,7 +409,7 @@ public class Program
 
         s_dal!.Dependency.Update(new(existingDependency.Id, dependent, previous));
     }
-    
+
     /// <summary>
     /// Helper method to get an updated value from the user.
     /// </summary>
@@ -422,16 +423,12 @@ public class Program
         Console.Write($"{propertyName} ({currentValue}): ");
         string? input = Console.ReadLine();
 
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrWhiteSpace(input))
             return currentValue;
 
         try
         {
-            if (parser != null)
-                return parser(input);
-
-            Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-            return (T)Convert.ChangeType(input, targetType);
+            return ConvertType(input, parser);
         }
         catch (Exception)
         {
@@ -455,14 +452,10 @@ public class Program
         
         try
         {
-            if (string.IsNullOrEmpty(input))
+            if (string.IsNullOrWhiteSpace(input))
                 throw new FormatException($"You must enter {propertyName}!");
 
-            if (parser != null)
-                return parser(input);
-
-            Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-            return (T)Convert.ChangeType(input, targetType);
+            return ConvertType(input, parser);
         }
         catch (Exception)
         {
@@ -484,21 +477,33 @@ public class Program
         Console.Write($"{propertyName}: ");
         string? input = Console.ReadLine();
 
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrWhiteSpace(input))
             return null;
 
         try
         {
-            if (parser != null)
-                return parser(input);
-
-            Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-            return (T)Convert.ChangeType(input, targetType);
+            return ConvertType(input, parser);
         }
         catch (Exception)
         {
             throw new FormatException($"Invalid input for {propertyName}.");
         }
+    }
+
+    /// <summary>
+    /// Helper function to parse and convert input to a specific type
+    /// </summary>
+    /// <typeparam name="T">generic</typeparam>
+    /// <param name="input">the input form the user</param>
+    /// <param name="parser">the parse method or null</param>
+    /// <returns></returns>
+    private static T ConvertType<T>(string input, Func<string, T>? parser = null)
+    {
+        if (parser != null)
+            return parser(input);
+
+        Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+        return (T)Convert.ChangeType(input, targetType);
     }
 
     /// <summary>
