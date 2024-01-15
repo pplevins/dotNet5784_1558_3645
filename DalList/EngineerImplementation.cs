@@ -1,4 +1,6 @@
-﻿using DalApi;
+﻿using Dal.Strategies.Create;
+using Dal.Strategies.Delete;
+using DalApi;
 using DO;
 using static DO.Exceptions;
 
@@ -6,31 +8,36 @@ namespace Dal;
 /// <summary>
 /// Implementation of the <see cref="IEngineer"/> interface to manage engineers in the data source.
 /// </summary>
-public class EngineerImplementation : IEngineer
+internal class EngineerImplementation : IEngineer
 {
+    private readonly ICreationStrategy<Engineer> _creationStrategy;
+    private readonly IDeletionStrategy<Engineer> _deletionStrategy;
+
+    public EngineerImplementation()
+    {
+        //External id creation so we get the id frm outside in the entity itself
+        _creationStrategy = new ExternalIdCreationStrategy<Engineer>(Read);
+        //soft Deletion(only marks the entity as non-active) with proper Exception in case of error
+        _deletionStrategy = new SoftDeletionStrategy<Engineer>(Read, Update);
+    }
     /// <inheritdoc />
     public int Create(Engineer item)
     {
-        if (Read(item.Id) is not null)
-            throw new DalAlreadyExistsException($"Engineer with ID={item.Id} already exists");
-
-        DataSource.Engineers.Add(item);
-        return item.Id;
+        return _creationStrategy.Create(DataSource.Engineers, item);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        var existingItem = Read(id) ?? throw new DalDoesNotExistException($"Engineer with ID={id} does not exist");
-        DataSource.Engineers.RemoveAll(d => d.Id == id);
+        _deletionStrategy.Delete(DataSource.Engineers, id);
     }
 
     /// <inheritdoc />
     public Engineer? Read(int id)
     {
         // Find and return the Engineer with the specified ID or null if not found
-        return DataSource.Engineers.FirstOrDefault(d => d.Id == id);
+        return DataSource.Engineers.FirstOrDefault(d => d.Id == id && d.IsActive);
     }
 
     /// <inheritdoc />
@@ -42,7 +49,7 @@ public class EngineerImplementation : IEngineer
     /// <inheritdoc />
     public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
     {
-        return DataSource.Engineers.Where(item => filter?.Invoke(item) ?? true);
+        return DataSource.Engineers.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
     }
 
     /// <inheritdoc />

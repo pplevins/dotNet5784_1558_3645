@@ -6,11 +6,13 @@
 /// <param name="Id">Unique identifier for the dependency</param>
 /// <param name="DependentTask">The task ID that depends on other task.</param>
 /// <param name="PreviousTask">The task ID that this task depends on (the previous task)</param>
+/// <param name="IsActive">The field to check if the entity is removed or not</param>
 public record Dependency
 (
     int Id,
     int DependentTask,
-    int PreviousTask
+    int PreviousTask,
+    bool IsActive = true
 )
 {
     /// <summary>
@@ -18,5 +20,5 @@ public record Dependency
     /// We opted not to create a parameterized constructor since the record type already has one.
     /// </summary>
     public Dependency()
-           : this(0, 0, 0) { }
+           : this(0, 0, 0, true) { }
 }

@@ -1,6 +1,7 @@
 ﻿using Dal;
 using DalApi;
 using DO;
+using static DO.Exceptions;
 
 namespace DalTest;
 
@@ -9,31 +10,26 @@ namespace DalTest;
 /// </summary>
 public class Program
 {
-    //initializing the fields for the interfaces 
-    private static IEngineer? s_dalEngineer = new EngineerImplementation();
-    private static ITask? s_dalTask = new TaskImplementation();
-    private static IDependency? s_dalDependency = new DependencyImplementation();
+    //initializing the fields for the interfaces
+    static readonly IDal s_dal = new DalList(); //stage 2
 
     /// <summary>
     /// The main menu to choose an entity
     /// </summary>
-    /// <exception cref="Exception">in case the choice was not a number</exception>
     private static void Menu()
     {
-        Console.WriteLine(@"Welcome to the Project Management Application!
-Select which entity you want to test:
-    0: Exit
-    1: Engineer
-    2: Task
-    3: Dependency
-        ");
-
+        Console.WriteLine("Welcome to the Project Management Application!");
         int choice;
         try
         {
             do
             {
-                Console.WriteLine("\nselect entity:");
+                Console.WriteLine(@"Select which entity you want to test:
+    0: Exit
+    1: Engineer
+    2: Task
+    3: Dependency
+        ");
                 if (int.TryParse(Console.ReadLine(), out choice))
                 {
                     switch (choice)
@@ -42,13 +38,13 @@ Select which entity you want to test:
                             Console.WriteLine("Bye!");
                             break;
                         case 1:
-                            SubMenu("Engineer", s_dalEngineer);
+                            SubMenu("Engineer", s_dal.Engineer);
                             break;
                         case 2:
-                            SubMenu("Task", s_dalTask);
+                            SubMenu("Task", s_dal.Task);
                             break;
                         case 3:
-                            SubMenu("Dependency", s_dalDependency);
+                            SubMenu("Dependency", s_dal.Dependency);
                             break;
                         default:
                             Console.WriteLine("it must be a number between 0-3!");
@@ -70,11 +66,15 @@ Select which entity you want to test:
     /// <typeparam name="T">The generic type for the function</typeparam>
     /// <param name="entity">engineer / task / dependency</param>
     /// <param name="s_dalEntity">the interface field</param>
-    /// <exception cref="Exception">in case the choice is not a number</exception>
     private static void SubMenu<T>(string entity, T s_dalEntity)
     {
-        Console.WriteLine(@$"You chose the {entity} entity!
-Select the opration you want to preform:
+        Console.WriteLine($"You chose the {entity} entity!");
+        int choice;
+        try
+        {
+            do
+            {
+                Console.WriteLine(@$"Select the opration you want to preform:
     0: Back to the main menu
     1: Create {entity}
     2: Read {entity}
@@ -83,18 +83,12 @@ Select the opration you want to preform:
     5: Delete {entity}
     6: Reset all {entity} list
         ");
-        int choice;
-        try
-        {
-            do
-            {
-                Console.WriteLine("\nselect your operation:");
                 if (int.TryParse(Console.ReadLine(), out choice))
                 {
                     switch (choice)
                     {
                         case 0:
-                            Console.WriteLine("Back to the main menu. choose your entity:");
+                            Console.WriteLine("Back to the main menu.");
                             break;
                         case 1:
                             try
@@ -117,13 +111,13 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    ReadEntity("engineer", s_dalEngineer!.Read);
+                                    ReadEntity("engineer", s_dal!.Engineer.Read);
 
                                 else if (typeof(T) == typeof(ITask))
-                                    ReadEntity("task", s_dalTask!.Read);
+                                    ReadEntity("task", s_dal!.Task.Read);
 
                                 else if (typeof(T) == typeof(IDependency))
-                                    ReadEntity("dependency", s_dalDependency!.Read);
+                                    ReadEntity("dependency", s_dal!.Dependency.Read);
                             }
                             catch (Exception Ex)
                             {
@@ -134,13 +128,13 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                {
-                                    ReadAllEntities(s_dalEngineer!.ReadAll());
-                                }
+                                    ReadAllEntities(s_dal!.Engineer.ReadAll());
+
                                 else if (typeof(T) == typeof(ITask))
-                                    ReadAllEntities(s_dalTask!.ReadAll());
+                                    ReadAllEntities(s_dal!.Task.ReadAll());
+                                
                                 else if (typeof(T) == typeof(IDependency))
-                                    ReadAllEntities(s_dalDependency!.ReadAll());
+                                    ReadAllEntities(s_dal!.Dependency.ReadAll());
                             }
                             catch (Exception Ex)
                             {
@@ -151,11 +145,13 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    UpdateEngineer(s_dalEngineer!.Read);
+                                    UpdateEngineer();
+
                                 else if (typeof(T) == typeof(ITask))
-                                    UpdateTask(s_dalTask!.Read);
+                                    UpdateTask();
+                                
                                 else if (typeof(T) == typeof(IDependency))
-                                    UpdateDependency(s_dalDependency!.Read);
+                                    UpdateDependency();
                             }
                             catch (Exception Ex)
                             {
@@ -166,11 +162,13 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    DeleteEntity<IEngineer?>("Engineer", s_dalEngineer!.Delete);
+                                    DeleteEntity<IEngineer?>("Engineer", s_dal!.Engineer.Delete);
+                                
                                 else if (typeof(T) == typeof(ITask))
-                                    DeleteEntity<ITask?>("Task", s_dalTask!.Delete);
+                                    DeleteEntity<ITask?>("Task", s_dal!.Task.Delete);
+                                
                                 else if (typeof(T) == typeof(IDependency))
-                                    DeleteEntity<IDependency?>("Dependency", s_dalDependency!.Delete);
+                                    DeleteEntity<IDependency?>("Dependency", s_dal!.Dependency.Delete);
                             }
                             catch (Exception Ex)
                             {
@@ -181,11 +179,13 @@ Select the opration you want to preform:
                             try
                             {
                                 if (typeof(T) == typeof(IEngineer))
-                                    s_dalEngineer!.Reset();
+                                    s_dal!.Engineer.Reset();
+                                
                                 else if (typeof(T) == typeof(ITask))
-                                    s_dalTask!.Reset();
+                                    s_dal!.Task.Reset();
+                                
                                 else if (typeof(T) == typeof(IDependency))
-                                    s_dalDependency!.Reset();
+                                    s_dal!.Dependency.Reset();
                             }
                             catch (Exception Ex)
                             {
@@ -207,118 +207,67 @@ Select the opration you want to preform:
     }
 
     /// <summary>
-    /// create function for task entity
+    /// create function for engineer entity
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void CreateEngineer()
     {
-        Console.WriteLine("enter ID");
-        if (!int.TryParse(Console.ReadLine(), out var id))
-            throw new Exception("ID must be a number!");
+        Console.WriteLine("Creating engineer");
 
-        Console.WriteLine("enter name");
-        string name = Console.ReadLine() ?? throw new Exception("it can't be null!");
-        if (String.IsNullOrWhiteSpace(name))
-            throw new Exception("you must enter name!");
+        //getting the values from the user, throwing exception if the parse didn't succeed
+        int id = GetValue<int>("Id", input => int.TryParse(input, out var parsedId) ? parsedId : throw new FormatException("invalid ID input"));
+        string name = GetValue<string>("Name");
+        string email = GetValue<string>("Email");
+        EngineerExperience level = GetValue<EngineerExperience>("Level", input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
+        double? cost = GetNullableValue<double>("Cost");
 
-        Console.WriteLine("enter Email");
-        string email = Console.ReadLine() ?? throw new Exception("it can't be null!");
-        if (String.IsNullOrWhiteSpace(email))
-            throw new Exception("you must enter email!");
-
-        Console.WriteLine("enter experience level in name (e.g. Begginer) or number between 0-4");
-        if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
-            throw new Exception("it must be title (e.g. Beginner) or number between 0-4!");
-
-        Console.WriteLine("enter cost for hour");
-        double.TryParse(Console.ReadLine(), out var cost);
-
-        Engineer engineer = new(id, name, email, level, cost);
-        int newId = s_dalEngineer!.Create(engineer);
+        Engineer engineer = new(id, name, email, level, true, cost);
+        int newId = s_dal!.Engineer.Create(engineer);
         Console.WriteLine($"engineer created ID {newId}\n");
     }
 
     /// <summary>
-    /// create function for engineer entity
+    /// create function for task entity
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void CreateTask()
     {
-        Console.WriteLine("enter alias");
-        string alias = Console.ReadLine() ?? throw new Exception("it can't be null!");
-        if (String.IsNullOrWhiteSpace(alias))
-            throw new Exception("you must enter alias!");
+        Console.WriteLine("Creating task");
 
-        Console.WriteLine("enter description");
-        string description = Console.ReadLine() ?? throw new Exception("it can't be null!");
-        if (String.IsNullOrWhiteSpace(description))
-            throw new Exception("you must enter description!");
-
-        Console.WriteLine("enter Deliverables");
-        string deliverables = Console.ReadLine() ?? throw new Exception("it can't be null!");
-        if (String.IsNullOrWhiteSpace(deliverables))
-            throw new Exception("you must enter deliverables!");
-
-        Console.WriteLine("enter Difficulty Level in name (e.g. Begginer) or number between 0-4");
-        if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
-            throw new Exception("it must be title (e.g. Beginner) or number between 0-4!");
-
-        Console.WriteLine("enter IsMilestone:");
-        if (!bool.TryParse(Console.ReadLine(), out var isMilestone))
-            isMilestone = false;
-
-        Console.WriteLine("enter Required Effort Time in TimeSpan format:");
-        string? tring = Console.ReadLine();
-        TimeSpan? effortTime = ParseNullableTimeSpan(tring);
-
-        Console.WriteLine("enter Creation Date:");
-        string? crat = Console.ReadLine();
-        DateTime? creation = ParseNullableDateTime(crat);
-
-        Console.WriteLine("enter engineer id:");
-        string? eId = Console.ReadLine();
-        int? engineerId = ParseNullableInt(eId);
-
-        Console.WriteLine("enter remarks:");
-        string? remarks = Console.ReadLine();
-
-        Console.WriteLine("enter Scheduled Date:");
-        string? schDate = Console.ReadLine();
-        DateTime? scheduledDate = ParseNullableDateTime(schDate);
-
-        Console.WriteLine("enter Start Date:");
-        string? start = Console.ReadLine();
-        DateTime? startDate = ParseNullableDateTime(start);
-
-        Console.WriteLine("enter Deadline Date:");
-        string? deadline = Console.ReadLine();
-        DateTime? deadlineDate = ParseNullableDateTime(deadline);
-
-        Console.WriteLine("enter Complete Date:");
-        string? complete = Console.ReadLine();
-        DateTime? completeDate = ParseNullableDateTime(complete);
+        //getting the values from the user, throwing exception if the parse didn't succeed, or null if nullable
+        string alias = GetValue<string>("Alias");
+        string description = GetValue<string>("Description");
+        string deliverables = GetValue<string>("Deliverables");
+        EngineerExperience level = GetValue<EngineerExperience>("DifficultyLevel", input => Enum.TryParse(input, out DO.EngineerExperience parsedLevel) ? parsedLevel : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
+        bool isMilestone = GetValue("isMilestone", input => bool.TryParse(input, out bool parsedInput) ? parsedInput : false);
+        TimeSpan? effortTime = GetValue("RequiredEffortTime", input => TimeSpan.TryParse(input, out var parsedTimeSpan) ? parsedTimeSpan : (TimeSpan?)null);
+        DateTime? creation = GetValue("CreatedAtDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        int? engineerId = GetValue("EngineerId", input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
+        string? remarks = GetUpdatedValue<string?>("Remarks", null); //for nullable string
+        DateTime? scheduledDate = GetValue("ScheduledDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? startDate = GetValue("StartDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? deadlineDate = GetValue("DeadlineDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? completeDate = GetValue("CompleteDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
 
         DO.Task task = new(0, alias, description, isMilestone, deliverables, level, effortTime, creation, engineerId, remarks, scheduledDate, startDate, deadlineDate, completeDate);
-        int newId = s_dalTask!.Create(task);
+        int newId = s_dal!.Task.Create(task);
         Console.WriteLine($"task created ID {newId}\n");
     }
 
     /// <summary>
     /// create function for dependency entity
     /// </summary>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void CreateDependency()
     {
-        Console.WriteLine("enter Dependent Task ID");
-        if (!int.TryParse(Console.ReadLine(), out var dependent))
-            throw new Exception("ID must be a number!");
+        Console.WriteLine("Creating dependency");
 
-        Console.WriteLine("enter Previous Task ID");
-        if (!int.TryParse(Console.ReadLine(), out var previous))
-            throw new Exception("ID must be a number!");
+        //getting the values from the user, throwing exception if the parse didn't succeed, or null if nullable
+        int dependent = GetValue("DependentTask", input =>  int.TryParse(input, out var parsedInt) ? parsedInt : throw new FormatException("invalid input for dependentTask ID"));
+        int previous = GetValue("PreviousTask", input => int.TryParse(input, out var parsedInt) ? parsedInt : throw new FormatException("invalid input for previousTask ID"));
 
         Dependency dependency = new(0, dependent, previous);
-        int newId = s_dalDependency!.Create(dependency);
+        int newId = s_dal!.Dependency.Create(dependency);
         Console.WriteLine($"Dependency created ID {newId}");
     }
 
@@ -329,232 +278,218 @@ Select the opration you want to preform:
     /// <typeparam name="T">generic</typeparam>
     /// <param name="entity">engineer/task/dependency</param>
     /// <param name="read">the read function from the entity's interface</param>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
+    /// <exception cref="DalDoesNotExistException">in case the entity with this ID not exist</exception>
     static void ReadEntity<T>(string entity, Func<int, T?> read)
     {
         Console.WriteLine($"You chose read. Enter ID for {entity}");
         if (!int.TryParse(Console.ReadLine(), out var id))
-            throw new Exception("ID must be a number!");
+            throw new FormatException("ID must be a number!");
         T? ent = read(id);
         if (ent is not null)
             Console.WriteLine(ent);
         else
-            throw new Exception($"{entity} not found");
+            throw new DalDoesNotExistException($"{entity} with ID={id} not found");
     }
 
     /// <summary>
     /// a generic function to read all the list of entities
     /// </summary>
     /// <typeparam name="T">generic</typeparam>
-    /// <param name="readAll">the readAll function from the entity's interface</param>
+    /// <param name="entities">the readAll function from the entity's interface</param>
     static void ReadAllEntities<T>(IEnumerable<T?> entities)
     {
-        foreach (var item in entities)
-        {
-            Console.WriteLine(item);
-        }
+        entities.ToList().ForEach(item => Console.WriteLine(item));
     }
+                                  
     /// <summary>
     /// a generic deletion function to delete entity from the list
     /// </summary>
     /// <typeparam name="T">generic</typeparam>
     /// <param name="entity">engineer/task/dependency</param>
     /// <param name="delete">the delete function from the entity's interface</param>
-    /// <exception cref="Exception"></exception>
+    /// <exception cref="FormatException">in case the parse didn't succeed</exception>
     static void DeleteEntity<T>(string entity, Action<int> delete)
     {
         Console.WriteLine($"enter the {entity} ID");
         if (!int.TryParse(Console.ReadLine(), out var id))
-            throw new Exception("ID must be a number!");
+            throw new FormatException("ID must be a number!");
         delete(id);
     }
 
 
     /// <summary>
-    /// an update function for the engineer entity
+    /// Updates an existing engineer based on user input.
     /// </summary>
-    /// <param name="read">the read function from the engineer's interface</param>
-    /// <exception cref="Exception"></exception>
-    static void UpdateEngineer(Func<int, Engineer?> read)
+    /// <exception cref="FormatException">in case the parse didn't succeed.</exception>
+    /// <exception cref="DalDoesNotExistException">When the engineer with this ID is not found in the list.</exception>
+    static void UpdateEngineer()
     {
-        Console.WriteLine("You chose update. Enter ID for engineer");
-        if (!int.TryParse(Console.ReadLine(), out var id))
-            throw new Exception("ID must be a number!");
-        Engineer? ent = read(id);
-        if (ent is not null)
-            Console.WriteLine(ent);
+        // Get the ID from the user
+        Console.Write("Enter the Engineer ID to update: ");
+        if (!int.TryParse(Console.ReadLine(), out var engineerId))
+            throw new FormatException("Invalid input. Please enter a valid engineer ID.");
+        DO.Engineer? existingEngineer = s_dal.Engineer.Read(engineerId);
+        if (existingEngineer is not null)
+            Console.WriteLine(existingEngineer);
         else
-            throw new Exception("engineer not found");
+            throw new DalDoesNotExistException($"Engineer with ID={engineerId} does not exist.");
 
-        //asking each property from the user.
-        string name;
-        string email;
+        // Ask the user for updated information
+        Console.WriteLine("Enter updated information (press Enter to keep current value):");
 
-        Console.WriteLine("enter name:");
-        name = Console.ReadLine() ?? ent.Name;
-        if (String.IsNullOrWhiteSpace(name))
-            name = ent.Name;
-
-        Console.WriteLine("enter email:");
-        email = Console.ReadLine() ?? ent.Email;
-        if (String.IsNullOrWhiteSpace(email))
-            email = ent.Email;
-
-        Console.WriteLine("enter level:");
-        if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
-            level = ent.Level;
-
-        Console.WriteLine("enter cost:");
-        double.TryParse(Console.ReadLine(), out var cost);
+        // Update engineer properties
+        string name = GetUpdatedValue("Name", existingEngineer.Name);
+        string email = GetUpdatedValue("Email", existingEngineer.Email);
+        EngineerExperience level = GetUpdatedValue("Level", existingEngineer.Level, input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("invalid input for level"));
+        double? cost = GetUpdatedValue("Cost", existingEngineer.Cost, input => double.TryParse(input, out var parsedDouble) ? parsedDouble : (double?)null);
 
         //setting the updated engineer
-        s_dalEngineer!.Update(new(ent.Id, name, email, level, cost));
+        s_dal!.Engineer.Update(new(existingEngineer.Id, name, email, level, true, cost));
     }
 
     /// <summary>
-    /// an update function for the task entity
+    /// Updates an existing task based on user input.
     /// </summary>
-    /// <param name="read">the read function from the task's interface</param>
-    /// <exception cref="Exception"></exception>
-    static void UpdateTask(Func<int, DO.Task?> read)
+    /// <exception cref="FormatException">in case the parse didn't succeed.</exception>
+    /// <exception cref="DalDoesNotExistException">When the task with this ID is not found in the list.</exception>
+    static void UpdateTask()
     {
-        Console.WriteLine("You chose update. Enter ID for task");
-        if (!int.TryParse(Console.ReadLine(), out var id))
-            throw new Exception("ID must be a number!");
-        DO.Task? ent = read(id);
-        if (ent is not null)
-            Console.WriteLine(ent);
+        // Get the ID from the user
+        Console.Write("Enter the Task ID to update: ");
+        if (!int.TryParse(Console.ReadLine(), out var taskId))
+            throw new FormatException("Invalid input. Please enter a valid Task ID.");
+        DO.Task? existingTask = s_dal.Task.Read(taskId);
+        if (existingTask is not null)
+            Console.WriteLine(existingTask);
         else
-            throw new Exception("engineer not found");
+            throw new DalDoesNotExistException($"Task with ID={taskId} does not exist.");
 
-        //asking each property from the user
-        string alias;
-        string description;
-        string deliverables;
+        // Ask the user for updated information
+        Console.WriteLine("Enter updated information (press Enter to keep current value):");
 
-        Console.WriteLine("enter alias:");
-        alias = Console.ReadLine() ?? ent.Alias;
-        if (String.IsNullOrWhiteSpace(alias))
-            alias = ent.Alias;
+        // Update task properties
+        string alias = GetUpdatedValue("Alias", existingTask.Alias);
+        string description = GetUpdatedValue("Description", existingTask.Description);
+        bool isMilestone = GetUpdatedValue("IsMilestone", existingTask.IsMilestone);
+        string deliverables = GetUpdatedValue("Deliverables", existingTask.Deliverables);
+        EngineerExperience level = GetUpdatedValue("DifficultyLevel", existingTask.DifficultyLevel, input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : existingTask.DifficultyLevel);
+        TimeSpan? effortTime = GetUpdatedValue("RequiredEffortTime", existingTask.RequiredEffortTime, input => TimeSpan.TryParse(input, out var parsedTimeSpan) ? parsedTimeSpan : (TimeSpan?)null);
+        DateTime? creation = GetUpdatedValue("CreatedAtDate", existingTask.CreatedAtDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        int? engineerId = GetUpdatedValue("EngineerId", existingTask.EngineerId, input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
+        string? remarks = GetUpdatedValue("Remarks", existingTask.Remarks);
+        DateTime? scheduledDate = GetUpdatedValue("ScheduledDate", existingTask.ScheduledDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? startDate = GetUpdatedValue("StartDate", existingTask.StartDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? deadlineDate = GetUpdatedValue("DeadlineDate", existingTask.DeadlineDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? completeDate = GetUpdatedValue("CompleteDate", existingTask.CompleteDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
 
-        Console.WriteLine("enter description:");
-        description = Console.ReadLine() ?? ent.Description;
-        if (String.IsNullOrWhiteSpace(description))
-            description = ent.Description;
-
-        Console.WriteLine("enter IsMilestone:");
-        if (!bool.TryParse(Console.ReadLine(), out var isMilestone))
-            isMilestone = ent.IsMilestone;
-
-        Console.WriteLine("enter Deliverables:");
-        deliverables = Console.ReadLine() ?? ent.Deliverables;
-        if (String.IsNullOrWhiteSpace(deliverables))
-            deliverables = ent.Deliverables;
-
-        Console.WriteLine("enter Difficulty Level:");
-        if (!Enum.TryParse(Console.ReadLine(), out EngineerExperience level))
-            level = ent.DifficultyLevel;
-
-        Console.WriteLine("enter Required Effort Time in TimeSpan format:");
-        string? tring = Console.ReadLine();
-        TimeSpan? effortTime = ParseNullableTimeSpan(tring) ?? ent.RequiredEffortTime;
-
-        Console.WriteLine("enter Creation Date:");
-        string? crat = Console.ReadLine();
-        DateTime? creation = ParseNullableDateTime(crat) ?? ent.CreatedAtDate;
-
-        Console.WriteLine("enter engineer id:");
-        string? eId = Console.ReadLine();
-        int? engineerId = ParseNullableInt(eId) ?? ent.EngineerId;
-
-        Console.WriteLine("enter remarks:");
-        string? remarks = Console.ReadLine() ?? ent.Remarks;
-        if (String.IsNullOrWhiteSpace(remarks))
-            remarks = ent.Remarks;
-
-        Console.WriteLine("enter Scheduled Date:");
-        string? schDate = Console.ReadLine();
-        DateTime? scheduledDate = ParseNullableDateTime(schDate) ?? ent.ScheduledDate;
-
-        Console.WriteLine("enter Start Date:");
-        string? start = Console.ReadLine();
-        DateTime? startDate = ParseNullableDateTime(start) ?? ent.StartDate;
-
-        Console.WriteLine("enter Deadline Date:");
-        string? deadline = Console.ReadLine();
-        DateTime? deadlineDate = ParseNullableDateTime(deadline) ?? ent.DeadlineDate;
-
-        Console.WriteLine("enter Complete Date:");
-        string? complete = Console.ReadLine();
-        DateTime? completeDate = ParseNullableDateTime(complete) ?? ent.CompleteDate;
-
-        s_dalTask!.Update(new(ent.Id, alias, description, isMilestone, deliverables, level, effortTime, creation, engineerId, remarks, scheduledDate, startDate, deadlineDate, completeDate));
+        s_dal!.Task.Update(new(existingTask.Id, alias, description, isMilestone, deliverables, level, effortTime, creation, engineerId, remarks, scheduledDate, startDate, deadlineDate, completeDate));
     }
 
     /// <summary>
-    /// an helper function to convert TimeSpan to nullabe Timespan
+    /// Updates an existing dependency based on user input.
     /// </summary>
-    /// <param name="input">input string from the user</param>
-    /// <returns>or a TimeSpan? or null</returns>
-    static TimeSpan? ParseNullableTimeSpan(string? input)
+    /// <exception cref="FormatException">in case the parse didn't succeed.</exception>
+    /// <exception cref="DalDoesNotExistException">When the dependency with this ID is not found in the list.</exception>
+    static void UpdateDependency()
     {
-        if (TimeSpan.TryParse(input, out TimeSpan result))
-            return result;
+        // Get the ID from the user
+        Console.Write("Enter the Dependency ID to update: ");
+        if (!int.TryParse(Console.ReadLine(), out var dependencyId))
+            throw new FormatException("Invalid input. Please enter a valid Task ID.");
+        DO.Dependency? existingDependency = s_dal.Dependency.Read(dependencyId);
+        if (existingDependency is not null)
+            Console.WriteLine(existingDependency);
         else
+            throw new DalDoesNotExistException($"Task with ID={dependencyId} does not exist.");
+
+        // Update dependency properties
+        int dependent = GetUpdatedValue("DependentTask", existingDependency.DependentTask, input => int.TryParse(input, out var parsedInt) ? parsedInt : existingDependency.DependentTask);
+        int previous = GetUpdatedValue("PreviousTask", existingDependency.PreviousTask, input => int.TryParse(input, out var parsedInt) ? parsedInt : existingDependency.PreviousTask);
+
+        s_dal!.Dependency.Update(new(existingDependency.Id, dependent, previous));
+    }
+
+    /// <summary>
+    /// Helper method to get an updated value from the user.
+    /// </summary>
+    /// <typeparam name="T">Type of the property being updated.</typeparam>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="currentValue">Current value of the property.</param>
+    /// <param name="parser">Parser function for the property type.</param>
+    /// <returns>The updated value or the current value if the user provided no input.</returns>
+    private static T GetUpdatedValue<T>(string propertyName, T currentValue, Func<string, T>? parser = null)
+    {
+        Console.Write($"{propertyName} ({currentValue}): ");
+        string? input = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(input))
+            return currentValue;
+
+        try
+        {
+            return ConvertType(input, parser);
+        }
+        catch (Exception)
+        {
+            Console.WriteLine($"Invalid input for {propertyName}. Keeping current value.");
+            return currentValue;
+        }
+    }
+
+    /// <summary>
+    /// Helper method to get an new value from the user.
+    /// </summary>
+    /// <typeparam name="T">Type of the property being created.</typeparam>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="parser">Parser function for the property type.</param>
+    /// <returns>The new value</returns>
+    /// <exception cref="FormatException">if the user provided no input or bad input.</exception>
+    private static T GetValue<T>(string propertyName, Func<string, T>? parser = null)
+    {
+        Console.Write($"{propertyName}: ");
+        string? input = Console.ReadLine();
+        
+        if (string.IsNullOrWhiteSpace(input))
+            throw new FormatException($"You must enter {propertyName}!");
+
+        return ConvertType(input, parser);
+    }
+
+    /// <summary>
+    /// Helper method to get an new nullable (optional) value from the user.
+    /// The function work on struct only. For string? use the GetUpdatedValue function
+    /// </summary>
+    /// <typeparam name="T">Type of the property being created.</typeparam>
+    /// <param name="propertyName">Name of the property.</param>
+    /// <param name="parser">Parser function for the property type.</param>
+    /// <returns>The updated value or the current value if the user provided no input.</returns>
+    /// <exception cref="FormatException">if the parsing/converting didn't succeed.</exception>
+    private static T? GetNullableValue<T>(string propertyName, Func<string, T>? parser = null) where T : struct
+    {
+        Console.Write($"{propertyName}: ");
+        string? input = Console.ReadLine();
+
+        if (string.IsNullOrWhiteSpace(input))
             return null;
+
+        return ConvertType(input, parser);
     }
 
     /// <summary>
-    /// an helper function to convert DateTime to nullabe DateTime
+    /// Helper function to parse and convert input to a specific type
     /// </summary>
-    /// <param name="input">input string from the user</param>
-    /// <returns>or DateTime? or null</returns>
-    static DateTime? ParseNullableDateTime(string? input)
+    /// <typeparam name="T">generic</typeparam>
+    /// <param name="input">the input form the user</param>
+    /// <param name="parser">the parse method or null</param>
+    /// <returns></returns>
+    private static T ConvertType<T>(string input, Func<string, T>? parser = null)
     {
-        if (DateTime.TryParse(input, out DateTime result))
-            return result;
-        else
-            return null;
-    }
+        if (parser != null)
+            return parser(input);
 
-    /// <summary>
-    /// an helper function to convert int to nullabe int
-    /// </summary>
-    /// <param name="input">input string from the user</param>
-    /// <returns>or int? or null</returns>
-    static int? ParseNullableInt(string? input)
-    {
-        if (int.TryParse(input, out int result))
-            return result;
-        else
-            return null;
-    }
-
-    /// <summary>
-    /// an update function for the dependency entity
-    /// </summary>
-    /// <param name="read">the read function from the dependency's interface</param>
-    /// <exception cref="Exception"></exception>
-    static void UpdateDependency(Func<int, DO.Dependency?> read)
-    {
-        Console.WriteLine("You chose update. Enter ID for dependency");
-        if (!int.TryParse(Console.ReadLine(), out var id))
-            throw new Exception("ID must be a number!");
-        DO.Dependency? ent = read(id);
-        if (ent is not null)
-            Console.WriteLine(ent);
-        else
-            throw new Exception("dependency not found");
-
-        Console.WriteLine("enter dependent task:");
-        if (!int.TryParse(Console.ReadLine(), out int dependent))
-            dependent = ent.DependentTask;
-
-        Console.WriteLine("enter previous task:");
-        if (!int.TryParse(Console.ReadLine(), out int previous))
-            previous = ent.PreviousTask;
-
-        s_dalDependency!.Update(new(ent.Id, dependent, previous));
+        Type targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+        return (T)Convert.ChangeType(input, targetType);
     }
 
     /// <summary>
@@ -563,7 +498,7 @@ Select the opration you want to preform:
     /// <param name="args"></param>
     static void Main(string[] args)
     {
-        Initialization.Do(s_dalDependency, s_dalEngineer, s_dalTask);
+        Initialization.Do(s_dal);
         Menu();
     }
 }

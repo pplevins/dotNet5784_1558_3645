@@ -12,4 +12,3 @@ public interface ICrud<T> where T : class
 
     void Reset(); //reset all the list
 }
-

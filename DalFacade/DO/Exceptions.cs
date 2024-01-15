@@ -1,6 +1,5 @@
-﻿
+﻿namespace DO;
 
-namespace DO;
 public class Exceptions
 {
     [Serializable]
