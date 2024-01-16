@@ -18,8 +18,8 @@ internal class DependencyImplementation : IDependency
     {
         //Internal id creation(running id) so we don't get the id in the entity itself, but we need to provide a method for the creation of it
         _creationStrategy = new InternalIdCreationStrategy<Dependency>(idGenerator: () => DataSource.Config.NextDependencyId);
-        //soft Deletion(only marks the entity as non-active) with proper Exception in case of error
-        _deletionStrategy = new SoftDeletionStrategy<Dependency>(Read, Update);
+        //strict Deletion for dependency entity (no need for soft deletion)
+        _deletionStrategy = new StrictDeletionStrategy<Dependency>(Read);
     }
     /// <inheritdoc />
     public int Create(Dependency item)
@@ -37,12 +37,7 @@ internal class DependencyImplementation : IDependency
     public Dependency? Read(int id)
     {
         // Find and return the Dependency with the specified ID or null if not found
-        return DataSource.Dependencies.FirstOrDefault(d => d.Id == id && d.IsActive);
-    }
-    /// <inheritdoc />
-    public Dependency? Read(Func<Dependency, bool> filter)
-    {
-        return DataSource.Dependencies.FirstOrDefault(filter);
+        return DataSource.Dependencies.FirstOrDefault(d => d.Id == id);
     }
     /// <inheritdoc />
     public Dependency? Read(Func<Dependency, bool> filter)
@@ -53,7 +48,7 @@ internal class DependencyImplementation : IDependency
     /// <inheritdoc />
     public IEnumerable<Dependency?> ReadAll(Func<Dependency, bool>? filter = null) //stage 2
     {
-        return DataSource.Dependencies.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
+        return DataSource.Dependencies.Where(item => filter?.Invoke(item) ?? true);
     }
 
 

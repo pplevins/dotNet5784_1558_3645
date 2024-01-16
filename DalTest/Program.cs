@@ -273,7 +273,7 @@ public class Program
 
 
     /// <summary>
-    /// a generic function to read entity
+    /// a generic function to read entity (even if it's inactive in engineer / task)
     /// </summary>
     /// <typeparam name="T">generic</typeparam>
     /// <param name="entity">engineer/task/dependency</param>
@@ -286,10 +286,34 @@ public class Program
         if (!int.TryParse(Console.ReadLine(), out var id))
             throw new FormatException("ID must be a number!");
         T? ent = read(id);
-        if (ent is not null)
+
+        // Check if the entity has an "isActive" property, and print note about it
+        CheckActive(entity, ent);
+
+            if (ent is not null)
             Console.WriteLine(ent);
         else
             throw new DalDoesNotExistException($"{entity} with ID={id} not found");
+    }
+
+    /// <summary>
+    /// Helper function to check if the read entity is inactive, and prints note to the user about it
+    /// </summary>
+    /// <typeparam name="T">generic</typeparam>
+    /// <param name="entity">engineer/task/dependency (not relevant)</param>
+    /// <param name="ent">the entity itself</param>
+    static void CheckActive<T>(string entity, T? ent)
+    {
+        var isActiveProperty = typeof(T).GetProperty("IsActive");
+
+        if (isActiveProperty is not null && isActiveProperty.PropertyType == typeof(bool))
+        {
+            // If "isActive" property exists and is of type bool, check its value
+            bool isActive = (bool)isActiveProperty.GetValue(ent);
+
+            if (!isActive)
+                Console.WriteLine($"NOTE: This is an inactive {entity}!");
+        }
     }
 
     /// <summary>

@@ -11,8 +11,7 @@ public record Dependency
 (
     int Id,
     int DependentTask,
-    int PreviousTask,
-    bool IsActive = true
+    int PreviousTask
 )
 {
     /// <summary>
@@ -20,5 +19,5 @@ public record Dependency
     /// We opted not to create a parameterized constructor since the record type already has one.
     /// </summary>
     public Dependency()
-           : this(0, 0, 0, true) { }
+           : this(0, 0, 0) { }
 }

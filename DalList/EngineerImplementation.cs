@@ -36,8 +36,9 @@ internal class EngineerImplementation : IEngineer
     /// <inheritdoc />
     public Engineer? Read(int id)
     {
-        // Find and return the Engineer with the specified ID or null if not found
-        return DataSource.Engineers.FirstOrDefault(d => d.Id == id && d.IsActive);
+        // Find and return the Engineer with the specified ID or null if not found.
+        //Even when the engineer is inactive, returns the entity with isActive = false
+        return DataSource.Engineers.FirstOrDefault(d => d.Id == id);
     }
 
     /// <inheritdoc />
@@ -49,6 +50,7 @@ internal class EngineerImplementation : IEngineer
     /// <inheritdoc />
     public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null) //stage 2
     {
+        //returns all the active engineers
         return DataSource.Engineers.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
     }
 

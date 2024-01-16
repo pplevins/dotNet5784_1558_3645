@@ -37,7 +37,8 @@ internal class TaskImplementation : ITask
     public DO.Task? Read(int id)
     {
         // Find and return the Task with the specified ID or null if not found
-        return DataSource.Tasks.FirstOrDefault(d => d.Id == id && d.IsActive);
+        //Even when the task is inactive, returns the entity with isActive = false
+        return DataSource.Tasks.FirstOrDefault(d => d.Id == id);
     }
 
     /// <inheritdoc />
@@ -49,6 +50,7 @@ internal class TaskImplementation : ITask
     /// <inheritdoc />
     public IEnumerable<DO.Task?> ReadAll(Func<DO.Task, bool>? filter = null) //stage 2
     {
+        //returns all the active tasks
         return DataSource.Tasks.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
     }
 
