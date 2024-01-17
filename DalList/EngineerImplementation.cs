@@ -23,14 +23,14 @@ internal class EngineerImplementation : IEngineer
     /// <inheritdoc />
     public int Create(Engineer item)
     {
-        return _creationStrategy.Create(DataSource.Engineers, item);
+        return _creationStrategy.Create(item, DataSource.Engineers);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        _deletionStrategy.Delete(DataSource.Engineers, id);
+        _deletionStrategy.Delete(id, DataSource.Engineers);
     }
 
     /// <inheritdoc />

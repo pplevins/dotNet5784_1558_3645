@@ -23,14 +23,14 @@ internal class TaskImplementation : ITask
     /// <inheritdoc />
     public int Create(DO.Task item)
     {
-        return _creationStrategy.Create(DataSource.Tasks, item);
+        return _creationStrategy.Create(item, DataSource.Tasks);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
         //regular Deletion with proper Exception in case of error
-        _deletionStrategy.Delete(DataSource.Tasks, id);
+        _deletionStrategy.Delete(id, DataSource.Tasks);
     }
 
     /// <inheritdoc />

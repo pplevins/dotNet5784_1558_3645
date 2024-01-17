@@ -1,7 +1,7 @@
 ﻿
-namespace Dal.Strategies.Create;
-using System.Collections.Generic;
+using System.Xml.Linq;
 
+namespace Dal.Strategies.Create;
 /// <summary>
 /// The ICreationStrategy interface defines a strategy pattern for creating items of type T.
 /// It features a Create method, accepting a list of items and a specific item to be created.
@@ -10,6 +10,7 @@ using System.Collections.Generic;
 /// </summary>
 public interface ICreationStrategy<T>
 {
-    int Create(List<T> items, T item);
+    int Create(T item, List<T> source);
+    int Create(T item, XElement source, Action<XElement, string>? saveFunction = null);
 }
 

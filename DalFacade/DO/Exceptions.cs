@@ -10,4 +10,7 @@ public class Exceptions
 
     [Serializable]
     public class DalDeletionImpossibleException(string? message) : Exception(message);
+
+    [Serializable]
+    public class DalXMLFileLoadCreateException(string? message) : Exception(message);
 }

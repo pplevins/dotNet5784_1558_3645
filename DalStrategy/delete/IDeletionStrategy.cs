@@ -1,4 +1,6 @@
-﻿namespace Dal.Strategies.Delete;
+﻿using System.Xml.Linq;
+
+namespace Dal.Strategies.Delete;
 /// <summary>
 /// The IDeletionStrategy interface defines a strategy pattern for deleting items of type T.
 /// It declares a Delete method, accepting a list of items and the ID of the item to be deleted.
@@ -7,5 +9,6 @@
 /// </summary>
 public interface IDeletionStrategy<T>
 {
-    public void Delete(List<T> items, int id);
+    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null);
+    public void Delete(int id, XElement? source = null, Action<XElement, string>? saveFunction = null);
 }

@@ -1,4 +1,5 @@
 ﻿using DO;
+using System.Xml.Linq;
 
 namespace Dal.Strategies.Delete;
 /// <summary>
@@ -7,7 +8,12 @@ namespace Dal.Strategies.Delete;
 /// </summary>
 public class RestrictedDeletionStrategy<T> : IDeletionStrategy<T>
 {
-    public void Delete(List<T> items, int id)
+    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null)
+    {
+        throw new Exceptions.DalDeletionImpossibleException($"Deletion of {typeof(T).Name} with ID={id} is not allowed");
+    }
+
+    public void Delete(int id, XElement? source, Action<XElement, string>? saveFunction = null)
     {
         throw new Exceptions.DalDeletionImpossibleException($"Deletion of {typeof(T).Name} with ID={id} is not allowed");
     }

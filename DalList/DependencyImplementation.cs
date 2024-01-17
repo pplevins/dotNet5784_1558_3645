@@ -24,15 +24,15 @@ internal class DependencyImplementation : IDependency
     /// <inheritdoc />
     public int Create(Dependency item)
     {
-        return _creationStrategy.Create(DataSource.Dependencies, item);
+        return _creationStrategy.Create(item, DataSource.Dependencies);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
-        _deletionStrategy.Delete(DataSource.Dependencies, id);
+        _deletionStrategy.Delete(id, DataSource.Dependencies);
     }
-    
+
     /// <inheritdoc />
     public Dependency? Read(int id)
     {

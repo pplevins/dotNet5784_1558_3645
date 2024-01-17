@@ -1,13 +1,14 @@
 ﻿
 
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace Dal.Strategies;
 /// <summary>
 /// Utility class providing helper methods for common tasks related to generics
 /// </summary>
 /// <typeparam name="T">The type of the entities.</typeparam>
-public static class StrategiesHelper<T>
+public static class StrategyHelper<T>
 {
     /// <summary>
     /// Retrieves the ID property value of a given entity.
@@ -65,5 +66,20 @@ public static class StrategiesHelper<T>
         return propertyInfo.GetValue(entity, null)
                           ?? throw new InvalidOperationException($"The {propertyInfo.Name} property of {typeof(T).Name} is null.");
 
+    }
+
+
+    public static XElement ParseXElement(T item)
+    {
+        Type itemType = typeof(T);
+
+        var elements = itemType.GetProperties()
+            .Select(property =>
+            {
+                object value = StrategyHelper<T>.GetPropertyValue(item, property);
+                return new XElement(property.Name, value.ToString());
+            });
+
+        return new XElement(itemType.Name, elements);
     }
 }
