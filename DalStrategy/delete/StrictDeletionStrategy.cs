@@ -20,13 +20,13 @@ public class StrictDeletionStrategy<T>(Func<int, T?> getEntity) : IDeletionStrat
     /// An optional function to save the modified list. If provided, it will be invoked
     /// with the modified list and a string identifier.
     /// </param>
-    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null)
+    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null, string? fileName = null)
     {
         _ = getEntity(id) ?? throw new DalDoesNotExistException($"{typeof(T).Name} with ID={id} does not exist");
         if (source is null) return;
         source?.RemoveAll(t => StrategyHelper<T>.GetEntityId(t) == id);
 
-        saveFunction?.Invoke(source, $"{typeof(T).Name}+s");
+        saveFunction?.Invoke(source, fileName);
     }
 
     /// <summary>
@@ -39,12 +39,12 @@ public class StrictDeletionStrategy<T>(Func<int, T?> getEntity) : IDeletionStrat
     /// An optional function to save the modified XML element. If provided, it will be invoked
     /// with the modified XML element. and a string identifier for the location of the file.
     /// </param>
-    public void Delete(int id, XElement? source, Action<XElement, string>? saveFunction = null)
+    public void Delete(int id, XElement? source, Action<XElement, string>? saveFunction = null, string? fileName = null)
     {
         _ = getEntity(id) ?? throw new DalDoesNotExistException($"{typeof(T).Name} with ID={id} does not exist");
         var dependencyElement = GetXElement(source, id);
         dependencyElement?.Remove();
-        saveFunction?.Invoke(source, $"{typeof(T).Name}+s");
+        saveFunction?.Invoke(source, fileName);
     }
     /// <summary>
     /// Retrieves the XML element with the specified ID from the given XML element.

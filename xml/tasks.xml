@@ -1,3 +1,323 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ArrayOfTask>
+<ArrayOfTask xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Task>
+    <Id>1</Id>
+    <Alias>Complete Coding Assignment</Alias>
+    <Description>Finish the coding task for the project</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>finished code</Deliverables>
+    <DifficultyLevel>Beginner</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-20T03:50:39.2880705+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>2</Id>
+    <Alias>Test Software Components</Alias>
+    <Description>Verify the functionality of software modules</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>completed tests</Deliverables>
+    <DifficultyLevel>Advanced</DifficultyLevel>
+    <RequiredEffortTime>P2D</RequiredEffortTime>
+    <CreatedAtDate>2023-12-28T03:50:39.3153851+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>3</Id>
+    <Alias>Write Test Cases</Alias>
+    <Description>Develop test cases for software testing</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>finished test cases</Deliverables>
+    <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
+    <RequiredEffortTime>P1D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-15T03:50:39.3747132+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>4</Id>
+    <Alias>Perform Code Review</Alias>
+    <Description>Evaluate and provide feedback on code written by team members</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>feedbacked code</Deliverables>
+    <DifficultyLevel>Expert</DifficultyLevel>
+    <RequiredEffortTime>P1D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-19T03:50:39.4047802+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>5</Id>
+    <Alias>Debug Code Issues</Alias>
+    <Description>Identify and fix bugs in the source code</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>debuged code</Deliverables>
+    <DifficultyLevel>Beginner</DifficultyLevel>
+    <RequiredEffortTime>P4D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-11T03:50:39.425258+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>6</Id>
+    <Alias>Implement New Feature</Alias>
+    <Description>Add a new functionality to the existing software</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>New feature</Deliverables>
+    <DifficultyLevel>Intermediate</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-16T03:50:39.4474838+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>7</Id>
+    <Alias>Optimize Database Queries</Alias>
+    <Description>Improve the efficiency of database queries</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>Improved database queries</Deliverables>
+    <DifficultyLevel>Intermediate</DifficultyLevel>
+    <RequiredEffortTime>P2D</RequiredEffortTime>
+    <CreatedAtDate>2023-12-27T03:50:39.4763386+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>8</Id>
+    <Alias>Conduct Research for Project</Alias>
+    <Description>Gather information for a specific project aspect</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>new information</Deliverables>
+    <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
+    <RequiredEffortTime>P2D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-09T03:50:39.4984579+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>9</Id>
+    <Alias>Write Unit Tests</Alias>
+    <Description>Develop unit tests to ensure code quality</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>unit tests</Deliverables>
+    <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
+    <RequiredEffortTime>P4D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-03T03:50:39.5222239+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>10</Id>
+    <Alias>Attend Team Meeting</Alias>
+    <Description>Participate in a scheduled team discussion</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>meeting Participation</Deliverables>
+    <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
+    <RequiredEffortTime>P4D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-05T03:50:39.5438896+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>11</Id>
+    <Alias>Create Project Timeline</Alias>
+    <Description>Outline the timeline for project milestones</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>project timeline</Deliverables>
+    <DifficultyLevel>Beginner</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2023-12-27T03:50:39.5697191+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>12</Id>
+    <Alias>Review User Feedback</Alias>
+    <Description>Examine feedback from users and make improvements</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>feedback improvement</Deliverables>
+    <DifficultyLevel>Advanced</DifficultyLevel>
+    <RequiredEffortTime>P1D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-09T03:50:39.5932209+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>13</Id>
+    <Alias>Collaborate with Team Members</Alias>
+    <Description>Work together with team members on a specific task</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>Collaboration work</Deliverables>
+    <DifficultyLevel>Expert</DifficultyLevel>
+    <RequiredEffortTime>P4D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-09T03:50:39.6184584+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>14</Id>
+    <Alias>Review Documentation</Alias>
+    <Description>Check and update project documentation</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>updated documentation</Deliverables>
+    <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-17T03:50:39.640279+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>15</Id>
+    <Alias>Document API Endpoints</Alias>
+    <Description>Create documentation for the API endpoints</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>API endpoints documentation</Deliverables>
+    <DifficultyLevel>Beginner</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-17T03:50:39.6703256+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>16</Id>
+    <Alias>Create User Interface Mockups</Alias>
+    <Description>Design mockups for the user interface</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>UI mockup</Deliverables>
+    <DifficultyLevel>Expert</DifficultyLevel>
+    <RequiredEffortTime>P2D</RequiredEffortTime>
+    <CreatedAtDate>2023-12-24T03:50:39.6936832+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>17</Id>
+    <Alias>Prepare Presentation Slides</Alias>
+    <Description>Create slides for the upcoming presentation</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>Presentation Slides</Deliverables>
+    <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-04T03:50:39.7165183+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>18</Id>
+    <Alias>Troubleshoot Production Issues</Alias>
+    <Description>Investigate and resolve issues in the production environment</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>resolve issues</Deliverables>
+    <DifficultyLevel>Intermediate</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2024-01-01T03:50:39.7394488+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
+  <Task>
+    <Id>19</Id>
+    <Alias>Attend Training</Alias>
+    <Description>Participate in a training to enhance skills</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>training session attendence</Deliverables>
+    <DifficultyLevel>Intermediate</DifficultyLevel>
+    <RequiredEffortTime>PT1H</RequiredEffortTime>
+    <CreatedAtDate>2024-01-08T03:50:39.7721161+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>false</IsActive>
+  </Task>
+  <Task>
+    <Id>20</Id>
+    <Alias>Optimize Algorithm Performance</Alias>
+    <Description>Improve the efficiency of algorithms in the software</Description>
+    <IsMilestone>false</IsMilestone>
+    <Deliverables>efficient software</Deliverables>
+    <DifficultyLevel>Expert</DifficultyLevel>
+    <RequiredEffortTime>P1D</RequiredEffortTime>
+    <CreatedAtDate>2023-12-25T03:50:39.7958916+02:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
+    <ScheduledDate xsi:nil="true" />
+    <StartDate xsi:nil="true" />
+    <DeadlineDate xsi:nil="true" />
+    <CompleteDate xsi:nil="true" />
+    <IsActive>true</IsActive>
+  </Task>
 </ArrayOfTask>

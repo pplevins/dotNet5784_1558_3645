@@ -18,7 +18,7 @@ public class InternalIdCreationStrategy<T>(Func<int> idGenerator)
     /// <typeparam name="T">The type of items in the list.</typeparam>
     /// <param name="item">The item to be added to the list.</param>
     /// <param name="source">The list to which the item should be added.</param>
-    public int Create(T item, List<T> source)
+    public int Create(T item, List<T> source, Action<List<T>, string>? saveFunction = null, string? fileName = null)
     {
         int id = idGenerator(); // Generate the ID using the provided function
         //Console.WriteLine($"running id is in: {typeof(T).Name} are now: {id}");
@@ -26,7 +26,7 @@ public class InternalIdCreationStrategy<T>(Func<int> idGenerator)
 
         // Add the updated item directly to the list
         source.Add(updatedItem);
-
+        saveFunction?.Invoke(source, fileName);
         return id;
     }
 
@@ -40,7 +40,7 @@ public class InternalIdCreationStrategy<T>(Func<int> idGenerator)
     /// An optional function to save the modified XML element. If provided, it will be invoked
     /// with the modified XML element and a string identifier for the file location.
     /// </param>
-    public int Create(T item, XElement source, Action<XElement, string>? saveFunction = null)
+    public int Create(T item, XElement source, Action<XElement, string>? saveFunction = null, string? fileName = null)
     {
         int id = idGenerator(); // Generate the ID using the provided function
         //Console.WriteLine($"running id is in: {typeof(T).Name} are now: {id}");
@@ -49,7 +49,7 @@ public class InternalIdCreationStrategy<T>(Func<int> idGenerator)
 
         // Add the updated item directly source
         source.Add(dependency);
-        saveFunction?.Invoke(source, $"{typeof(T).Name}+s");
+        saveFunction?.Invoke(source, fileName);
         return id;
     }
 

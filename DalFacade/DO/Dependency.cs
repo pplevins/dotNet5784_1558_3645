@@ -6,7 +6,6 @@
 /// <param name="Id">Unique identifier for the dependency</param>
 /// <param name="DependentTask">The task ID that depends on other task.</param>
 /// <param name="PreviousTask">The task ID that this task depends on (the previous task)</param>
-/// <param name="IsActive">The field to check if the entity is removed or not</param>
 public record Dependency
 (
     int Id,

@@ -20,7 +20,7 @@ public class SoftDeletionStrategy<T>(Func<int, T?> getEntity, Action<T> collecti
     /// An optional function to save the modified list. If provided, it will be invoked
     /// with the modified list and a string identifier.
     /// </param>
-    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null)
+    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null, string? fileName = null)
     {
         var existingEntity = getEntity(id) ?? throw new Exception($"{typeof(T).Name} with ID={id} does not exist");
 
@@ -38,7 +38,7 @@ public class SoftDeletionStrategy<T>(Func<int, T?> getEntity, Action<T> collecti
     /// An optional function to save the modified XML element. If provided, it will be invoked
     /// with the modified XML element. and a string identifier for the location of the file.
     /// </param>
-    public void Delete(int id, XElement? source = null, Action<XElement, string>? saveFunction = null)
+    public void Delete(int id, XElement? source = null, Action<XElement, string>? saveFunction = null, string? fileName = null)
     {
         var existingEntity = getEntity(id) ?? throw new Exception($"{typeof(T).Name} with ID={id} does not exist");
 

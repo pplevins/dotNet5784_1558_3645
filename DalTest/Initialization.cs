@@ -116,6 +116,8 @@ public static class Initialization
     /// <summary>
     /// Performs the initialization process by creating sample data.
     /// </summary>
+    /// <param name="dal">The dal interface</param>
+    /// <exception cref="NullReferenceException">in case the dal argument is null</exception>
     public static void Do(IDal dal)
     {
         //s_dalDependency = dalDependency ?? throw new NullReferenceException("DAL can not be null!");
@@ -124,6 +126,10 @@ public static class Initialization
 
         s_dal = dal ?? throw new NullReferenceException("DAL object can not be null!"); //stage 2
 
+        s_dal.Engineer.Reset();
+        s_dal.Task.Reset();
+        s_dal.Dependency.Reset();
+        
         createTasks();
         createEngineers();
         createDependencies();

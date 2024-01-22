@@ -10,7 +10,7 @@ namespace Dal.Strategies.Create;
 /// </summary>
 public interface ICreationStrategy<T>
 {
-    int Create(T item, List<T> source);
-    int Create(T item, XElement source, Action<XElement, string>? saveFunction = null);
+    int Create(T item, List<T> source, Action<List<T>, string>? saveFunction = null, string? fileName = null);
+    int Create(T item, XElement source, Action<XElement, string>? saveFunction = null, string? fileName = null);
 }
 

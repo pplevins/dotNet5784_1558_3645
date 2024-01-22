@@ -11,7 +11,8 @@ namespace DalTest;
 public class Program
 {
     //initializing the fields for the interfaces
-    static readonly IDal s_dal = new DalList(); //stage 2
+    //static readonly IDal s_dal = new DalList(); //stage 2
+    static readonly IDal s_dal = new DalXml(); //stage 3
 
     /// <summary>
     /// The main menu to choose an entity
@@ -219,7 +220,7 @@ public class Program
         string name = GetValue<string>("Name");
         string email = GetValue<string>("Email");
         EngineerExperience level = GetValue<EngineerExperience>("Level", input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
-        double? cost = GetNullableValue<double>("Cost");
+        double? cost = GetUpdatedValue("Cost", null, input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
 
         Engineer engineer = new(id, name, email, level, true, cost);
         int newId = s_dal!.Engineer.Create(engineer);
@@ -240,14 +241,14 @@ public class Program
         string deliverables = GetValue<string>("Deliverables");
         EngineerExperience level = GetValue<EngineerExperience>("DifficultyLevel", input => Enum.TryParse(input, out DO.EngineerExperience parsedLevel) ? parsedLevel : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
         bool isMilestone = GetValue("isMilestone", input => bool.TryParse(input, out bool parsedInput) ? parsedInput : false);
-        TimeSpan? effortTime = GetValue("RequiredEffortTime", input => TimeSpan.TryParse(input, out var parsedTimeSpan) ? parsedTimeSpan : (TimeSpan?)null);
-        DateTime? creation = GetValue("CreatedAtDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        int? engineerId = GetValue("EngineerId", input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
+        TimeSpan? effortTime = GetUpdatedValue("RequiredEffortTime", null, input => TimeSpan.TryParse(input, out var parsedTimeSpan) ? parsedTimeSpan : (TimeSpan?)null);
+        DateTime? creation = GetUpdatedValue("CreatedAtDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        int? engineerId = GetUpdatedValue("EngineerId", null, input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
         string? remarks = GetUpdatedValue<string?>("Remarks", null); //for nullable string
-        DateTime? scheduledDate = GetValue("ScheduledDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        DateTime? startDate = GetValue("StartDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        DateTime? deadlineDate = GetValue("DeadlineDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        DateTime? completeDate = GetValue("CompleteDate", input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? scheduledDate = GetUpdatedValue("ScheduledDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? startDate = GetUpdatedValue("StartDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? deadlineDate = GetUpdatedValue("DeadlineDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
+        DateTime? completeDate = GetUpdatedValue("CompleteDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
 
         DO.Task task = new(0, alias, description, isMilestone, deliverables, level, effortTime, creation, engineerId, remarks, scheduledDate, startDate, deadlineDate, completeDate);
         int newId = s_dal!.Task.Create(task);
@@ -435,7 +436,7 @@ public class Program
     }
 
     /// <summary>
-    /// Helper method to get an updated value from the user.
+    /// Helper method to get an updated or nullable (optional) value from the user.
     /// </summary>
     /// <typeparam name="T">Type of the property being updated.</typeparam>
     /// <param name="propertyName">Name of the property.</param>
@@ -481,26 +482,6 @@ public class Program
     }
 
     /// <summary>
-    /// Helper method to get an new nullable (optional) value from the user.
-    /// The function work on struct only. For string? use the GetUpdatedValue function
-    /// </summary>
-    /// <typeparam name="T">Type of the property being created.</typeparam>
-    /// <param name="propertyName">Name of the property.</param>
-    /// <param name="parser">Parser function for the property type.</param>
-    /// <returns>The updated value or the current value if the user provided no input.</returns>
-    /// <exception cref="FormatException">if the parsing/converting didn't succeed.</exception>
-    private static T? GetNullableValue<T>(string propertyName, Func<string, T>? parser = null) where T : struct
-    {
-        Console.Write($"{propertyName}: ");
-        string? input = Console.ReadLine();
-
-        if (string.IsNullOrWhiteSpace(input))
-            return null;
-
-        return ConvertType(input, parser);
-    }
-
-    /// <summary>
     /// Helper function to parse and convert input to a specific type
     /// </summary>
     /// <typeparam name="T">generic</typeparam>
@@ -522,7 +503,11 @@ public class Program
     /// <param name="args"></param>
     static void Main(string[] args)
     {
-        Initialization.Do(s_dal);
+        Console.Write("Would you like to create Initial data? (Y/N)"); //stage 3
+        string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
+        if (ans == "Y" || ans == "y") //stage 3
+            Initialization.Do(s_dal); //stage 2
+
         Menu();
     }
 }

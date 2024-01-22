@@ -4,11 +4,12 @@ using Dal.Strategies.Delete;
 using DalApi;
 using DO;
 using System.Xml.Linq;
+using static DO.Exceptions;
 
 namespace Dal;
 internal class DependencyImplementation : IDependency
 {
-    const string s_dependencies_file_name = "dependencies";
+    readonly string s_dependencies_xml = "dependencies";
     private readonly ICreationStrategy<Dependency> _creationStrategy;
     private readonly IDeletionStrategy<Dependency> _deletionStrategy;
 
@@ -21,17 +22,11 @@ internal class DependencyImplementation : IDependency
         _deletionStrategy = new StrictDeletionStrategy<Dependency>(Read);
     }
 
-
-    public IEnumerable<Dependency> GetDataOf(Func<Dependency, bool>? filter = null)
-    {
-        XElement dependencyRoot = XMLTools.LoadListFromXMLElement(s_dependencies_file_name);
-        return from d in dependencyRoot.Elements()
-               let dependency = ParseDependency(d)
-               where filter?.Invoke(dependency) ?? true
-               select dependency;
-
-    }
-
+    /// <summary>
+    /// Helper method to parse the dependency form the XElement
+    /// </summary>
+    /// <param name="element">The XElement of the dependency</param>
+    /// <returns>Dependency</returns>
     private Dependency ParseDependency(XElement element)
     {
         return new Dependency()
@@ -42,38 +37,61 @@ internal class DependencyImplementation : IDependency
         };
     }
 
+    /// <inheritdoc />
     public int Create(Dependency item)
     {
-        return _creationStrategy.Create(item, XMLTools.LoadListFromXMLElement(s_dependencies_file_name), XMLTools.SaveListToXMLElement);
+        return _creationStrategy.Create(item, XMLTools.LoadListFromXMLElement(s_dependencies_xml), XMLTools.SaveListToXMLElement, s_dependencies_xml);
     }
 
+    /// <inheritdoc />
     public void Delete(int id)
     {
-        _deletionStrategy.Delete(id, XMLTools.LoadListFromXMLElement(s_dependencies_file_name), XMLTools.SaveListToXMLElement);
+        _deletionStrategy.Delete(id, XMLTools.LoadListFromXMLElement(s_dependencies_xml), XMLTools.SaveListToXMLElement, s_dependencies_xml);
     }
 
+    /// <inheritdoc />
     public Dependency? Read(int id)
     {
-        return GetDataOf().FirstOrDefault(d => d?.Id == id);
+        XElement? depenElem = XMLTools.LoadListFromXMLElement(s_dependencies_xml).Elements().FirstOrDefault(item => (int?)item.Element("Id") == id);
+        return depenElem is null ? null : ParseDependency(depenElem);
     }
 
+    /// <inheritdoc />
     public Dependency? Read(Func<Dependency, bool> filter)
     {
-        return GetDataOf().FirstOrDefault(filter);
+        return XMLTools.LoadListFromXMLElement(s_dependencies_xml).Elements().Select(item => ParseDependency(item)).FirstOrDefault(filter);
     }
 
+    /// <inheritdoc />
     public IEnumerable<Dependency?> ReadAll(Func<Dependency, bool>? filter = null)
     {
-        return GetDataOf(filter);
+        return XMLTools.LoadListFromXMLElement(s_dependencies_xml).Elements().Select(s => ParseDependency(s)).Where(item => filter?.Invoke(item) ?? true);
     }
 
+    /// <inheritdoc />
     public void Reset()
     {
-        throw new NotImplementedException();
+        XElement? rootElem = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
+        rootElem.RemoveAll();
+        XMLTools.SaveListToXMLElement(rootElem, s_dependencies_xml);
     }
 
-    public void Update(Dependency item)
+    /// <inheritdoc />
+    public void Update(Dependency dep)
     {
-        throw new NotImplementedException();
+        XElement? rootElem = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
+        XElement? depenElem = rootElem.Elements().FirstOrDefault(item => (int?)item.Element("Id") == dep.Id);
+        if (depenElem is null)
+        {
+            throw new DalDoesNotExistException($"Dependency with ID={dep.Id} does not exist");
+        }
+        else
+        {
+            depenElem.SetElementValue("DependentTask", dep.DependentTask);
+            depenElem.SetElementValue("PreviousTask", dep.PreviousTask);
+
+            XMLTools.SaveListToXMLElement(rootElem, s_dependencies_xml);
+        }
+
     }
 }

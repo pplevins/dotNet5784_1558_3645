@@ -19,7 +19,7 @@ public class ExternalIdCreationStrategy<T>(Func<int, T?> existsCheck) : ICreatio
     /// <typeparam name="T">The type of items in the list.</typeparam>
     /// <param name="item">The item to be added to the list.</param>
     /// <param name="source">The list to which the item should be added.</param>
-    public int Create(T item, List<T> source)
+    public int Create(T item, List<T> source, Action<List<T>, string>? saveFunction = null, string? fileName = null)
     {
         int itemId = StrategyHelper<T>.GetEntityId(item);
 
@@ -27,6 +27,7 @@ public class ExternalIdCreationStrategy<T>(Func<int, T?> existsCheck) : ICreatio
             throw new Exceptions.DalAlreadyExistsException($"{typeof(T).Name} with external ID={itemId} already exists");
 
         source.Add(item);
+        saveFunction?.Invoke(source, fileName);
         return itemId;
     }
     /// <summary>
@@ -39,7 +40,7 @@ public class ExternalIdCreationStrategy<T>(Func<int, T?> existsCheck) : ICreatio
     /// An optional function to save the modified XML element. If provided, it will be invoked
     /// with the modified XML element and a string identifier for the file location.
     /// </param>
-    public int Create(T item, XElement source, Action<XElement, string>? saveFunction = null)
+    public int Create(T item, XElement source, Action<XElement, string>? saveFunction = null, string? fileName = null)
     {
         int itemId = StrategyHelper<T>.GetEntityId(item);
 
@@ -49,7 +50,7 @@ public class ExternalIdCreationStrategy<T>(Func<int, T?> existsCheck) : ICreatio
 
         // Add the updated item directly source
         source.Add(dependency);
-        saveFunction?.Invoke(source, $"{typeof(T).Name}+s");
+        saveFunction?.Invoke(source, fileName);
         return itemId;
     }
 }

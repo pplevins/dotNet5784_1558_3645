@@ -12,7 +12,7 @@ internal class EngineerImplementation : IEngineer
     private readonly ICreationStrategy<Engineer> _creationStrategy;
     private readonly IDeletionStrategy<Engineer> _deletionStrategy;
 
-    private const string s_engineers_file_name = "engineers";
+    readonly string s_engineers_xml = "engineers";
 
     public EngineerImplementation()
     {
@@ -24,13 +24,13 @@ internal class EngineerImplementation : IEngineer
     /// <inheritdoc />
     public int Create(Engineer item)
     {
-        return _creationStrategy.Create(item, XMLTools.LoadListFromXMLElement(s_engineers_file_name));
+        return _creationStrategy.Create(item, XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml), XMLTools.SaveListToXMLSerializer, s_engineers_xml);
     }
 
     /// <inheritdoc />
     public void Delete(int id)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_file_name);
+        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
         _deletionStrategy.Delete(id, engineers, XMLTools.SaveListToXMLSerializer);
     }
 
@@ -38,28 +38,28 @@ internal class EngineerImplementation : IEngineer
     public Engineer? Read(int id)
     {
         // Find and return the Engineer with the specified ID or null if not found
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_file_name);
+        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
         return engineers.FirstOrDefault(d => d.Id == id);
     }
 
     /// <inheritdoc />
     public Engineer? Read(Func<Engineer, bool> filter)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_file_name);
+        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
         return engineers.FirstOrDefault(filter);
     }
 
     /// <inheritdoc />
     public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null) //stage 3
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_file_name);
+        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
         return engineers.Where(item => item.IsActive && (filter?.Invoke(item) ?? true));
     }
 
     /// <inheritdoc />
     public void Update(Engineer item)
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_file_name);
+        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
         // Find the existing Engineer in the list by ID
         var existingEngineerIndex = engineers.FindIndex(d => d.Id == item.Id);
 
@@ -67,7 +67,7 @@ internal class EngineerImplementation : IEngineer
         {
             // Replace the existing Engineer in the list
             engineers[existingEngineerIndex] = item;
-            XMLTools.SaveListToXMLSerializer<Engineer>(engineers, s_engineers_file_name);
+            XMLTools.SaveListToXMLSerializer<Engineer>(engineers, s_engineers_xml);
         }
         else
         {
@@ -78,9 +78,9 @@ internal class EngineerImplementation : IEngineer
     /// <inheritdoc />
     public void Reset()
     {
-        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_file_name);
+        List<Engineer> engineers = XMLTools.LoadListFromXMLSerializer<Engineer>(s_engineers_xml);
         // Clear the list of engineers
         engineers.Clear();
-        XMLTools.SaveListToXMLSerializer<Engineer>(engineers, s_engineers_file_name);
+        XMLTools.SaveListToXMLSerializer<Engineer>(engineers, s_engineers_xml);
     }
 }

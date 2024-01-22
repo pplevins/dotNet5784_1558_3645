@@ -9,6 +9,6 @@ namespace Dal.Strategies.Delete;
 /// </summary>
 public interface IDeletionStrategy<T>
 {
-    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null);
-    public void Delete(int id, XElement? source = null, Action<XElement, string>? saveFunction = null);
+    public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null, string? fileName = null);
+    public void Delete(int id, XElement? source = null, Action<XElement, string>? saveFunction = null, string? fileName = null);
 }
