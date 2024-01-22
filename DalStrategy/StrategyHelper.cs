@@ -68,7 +68,11 @@ public static class StrategyHelper<T>
 
     }
 
-
+    /// <summary>
+    /// An helper function to parse entity into XML element. 
+    /// </summary>
+    /// <param name="item">the entity item to be parse.</param>
+    /// <returns>the parsed XElement</returns>
     public static XElement ParseXElement(T item)
     {
         Type itemType = typeof(T);

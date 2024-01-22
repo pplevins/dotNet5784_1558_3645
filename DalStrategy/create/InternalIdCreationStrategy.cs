@@ -11,13 +11,17 @@ namespace Dal.Strategies.Create;
 public class InternalIdCreationStrategy<T>(Func<int> idGenerator)
     : ICreationStrategy<T>
 {
-
     /// <summary>
     /// Creates a new item, assigns a generated ID to it, and adds it to the specified list.
     /// </summary>
-    /// <typeparam name="T">The type of items in the list.</typeparam>
     /// <param name="item">The item to be added to the list.</param>
     /// <param name="source">The list to which the item should be added.</param>
+    /// <param name="saveFunction">
+    /// An optional function to save the modified XML element. If provided, it will be invoked
+    /// with the modified XML element list, and a string identifier for the location of the file.
+    /// </param>
+    /// <param name="fileName">An optional string of the file identifier</param>
+    /// <returns>the new entity's ID</returns>
     public int Create(T item, List<T> source, Action<List<T>, string>? saveFunction = null, string? fileName = null)
     {
         int id = idGenerator(); // Generate the ID using the provided function
@@ -33,13 +37,14 @@ public class InternalIdCreationStrategy<T>(Func<int> idGenerator)
     /// <summary>
     /// Creates a new item, assigns a generated ID to it, and adds it to the specified XML element.
     /// </summary>
-    /// <typeparam name="T">The type of items to be created and added to the XML element.</typeparam>
     /// <param name="item">The item to be added to the XML element.</param>
     /// <param name="source">The XML element to which the item should be added.</param>
     /// <param name="saveFunction">
     /// An optional function to save the modified XML element. If provided, it will be invoked
     /// with the modified XML element and a string identifier for the file location.
     /// </param>
+    /// <param name="fileName">An optional string of the file identifier</param>
+    /// <returns>the new entity's ID</returns>
     public int Create(T item, XElement source, Action<XElement, string>? saveFunction = null, string? fileName = null)
     {
         int id = idGenerator(); // Generate the ID using the provided function

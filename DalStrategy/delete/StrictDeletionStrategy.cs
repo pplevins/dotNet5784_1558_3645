@@ -13,13 +13,14 @@ public class StrictDeletionStrategy<T>(Func<int, T?> getEntity) : IDeletionStrat
     /// <summary>
     /// Deletes an element identified by the specified ID from the given list.
     /// </summary>
-    /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <param name="id">The ID of the element to be deleted.</param>
     /// <param name="source">The list from which the element should be deleted.</param>
     /// <param name="saveFunction">
     /// An optional function to save the modified list. If provided, it will be invoked
     /// with the modified list and a string identifier.
     /// </param>
+    /// <param name="fileName">An optional string of the file identifier</param>
+    /// <exception cref="DalDoesNotExistException">In case the entity with the given ID doesn't exist.</exception>
     public void Delete(int id, List<T>? source = null, Action<List<T>, string>? saveFunction = null, string? fileName = null)
     {
         _ = getEntity(id) ?? throw new DalDoesNotExistException($"{typeof(T).Name} with ID={id} does not exist");
@@ -30,15 +31,16 @@ public class StrictDeletionStrategy<T>(Func<int, T?> getEntity) : IDeletionStrat
     }
 
     /// <summary>
-    /// Deletes an element identified by the specified ID from XML
+    /// Deletes an element identified by the specified ID from XML.
     /// </summary>
-    /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <param name="id">The ID of the element to be deleted.</param>
     /// <param name="source">The XML element source from which the element should be deleted.</param>
     /// <param name="saveFunction">
     /// An optional function to save the modified XML element. If provided, it will be invoked
     /// with the modified XML element. and a string identifier for the location of the file.
     /// </param>
+    /// <param name="fileName">An optional string of the file identifier</param>
+    /// <exception cref="DalDoesNotExistException">In case the entity with the given ID doesn't exist.</exception>
     public void Delete(int id, XElement? source, Action<XElement, string>? saveFunction = null, string? fileName = null)
     {
         _ = getEntity(id) ?? throw new DalDoesNotExistException($"{typeof(T).Name} with ID={id} does not exist");
@@ -46,6 +48,7 @@ public class StrictDeletionStrategy<T>(Func<int, T?> getEntity) : IDeletionStrat
         dependencyElement?.Remove();
         saveFunction?.Invoke(source, fileName);
     }
+
     /// <summary>
     /// Retrieves the XML element with the specified ID from the given XML element.
     /// </summary>
