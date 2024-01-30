@@ -16,17 +16,22 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalList", "DalList\DalList.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalTest", "DalTest\DalTest.csproj", "{0382AC03-763F-4C66-B71C-7EDFA9597779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalXml", "DalXml\DalXml.csproj", "{66ED6FE6-AE12-4920-B7A3-F7AC1C39522B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalXml", "DalXml\DalXml.csproj", "{66ED6FE6-AE12-4920-B7A3-F7AC1C39522B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xml", "xml", "{2A8FA7F7-6859-40DA-B9F8-B964A8FA695B}"
 	ProjectSection(SolutionItems) = preProject
+		xml\dal-config.xml = xml\dal-config.xml
 		xml\data-config.xml = xml\data-config.xml
 		xml\dependencies.xml = xml\dependencies.xml
 		xml\engineers.xml = xml\engineers.xml
 		xml\tasks.xml = xml\tasks.xml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DalStrategy", "DalStrategy\DalStrategy.csproj", "{ADB0F107-E200-4D15-BD3E-ECDDFC74E9BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DalStrategy", "DalStrategy\DalStrategy.csproj", "{ADB0F107-E200-4D15-BD3E-ECDDFC74E9BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BL", "BL\BL.csproj", "{08F3C6CB-0CA6-42B4-B0EC-A6B98FD7ADA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlTest", "BlTest\BlTest.csproj", "{31AAFB3A-B0AB-480D-9338-13228E8E9B55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,6 +63,14 @@ Global
 		{ADB0F107-E200-4D15-BD3E-ECDDFC74E9BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADB0F107-E200-4D15-BD3E-ECDDFC74E9BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADB0F107-E200-4D15-BD3E-ECDDFC74E9BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08F3C6CB-0CA6-42B4-B0EC-A6B98FD7ADA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08F3C6CB-0CA6-42B4-B0EC-A6B98FD7ADA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08F3C6CB-0CA6-42B4-B0EC-A6B98FD7ADA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08F3C6CB-0CA6-42B4-B0EC-A6B98FD7ADA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31AAFB3A-B0AB-480D-9338-13228E8E9B55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31AAFB3A-B0AB-480D-9338-13228E8E9B55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31AAFB3A-B0AB-480D-9338-13228E8E9B55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31AAFB3A-B0AB-480D-9338-13228E8E9B55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

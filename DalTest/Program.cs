@@ -1,5 +1,4 @@
-﻿using Dal;
-using DalApi;
+﻿using DalApi;
 using DO;
 using static DO.Exceptions;
 
@@ -12,7 +11,8 @@ public class Program
 {
     //initializing the fields for the interfaces
     //static readonly IDal s_dal = new DalList(); //stage 2
-    static readonly IDal s_dal = new DalXml(); //stage 3
+    //static readonly IDal s_dal = new DalXml(); //stage 3
+    static readonly IDal s_dal = Factory.Get; //stage 4
 
     /// <summary>
     /// The main menu to choose an entity
@@ -133,7 +133,7 @@ public class Program
 
                                 else if (typeof(T) == typeof(ITask))
                                     ReadAllEntities(s_dal!.Task.ReadAll());
-                                
+
                                 else if (typeof(T) == typeof(IDependency))
                                     ReadAllEntities(s_dal!.Dependency.ReadAll());
                             }
@@ -150,7 +150,7 @@ public class Program
 
                                 else if (typeof(T) == typeof(ITask))
                                     UpdateTask();
-                                
+
                                 else if (typeof(T) == typeof(IDependency))
                                     UpdateDependency();
                             }
@@ -164,10 +164,10 @@ public class Program
                             {
                                 if (typeof(T) == typeof(IEngineer))
                                     DeleteEntity<IEngineer?>("Engineer", s_dal!.Engineer.Delete);
-                                
+
                                 else if (typeof(T) == typeof(ITask))
                                     DeleteEntity<ITask?>("Task", s_dal!.Task.Delete);
-                                
+
                                 else if (typeof(T) == typeof(IDependency))
                                     DeleteEntity<IDependency?>("Dependency", s_dal!.Dependency.Delete);
                             }
@@ -181,10 +181,10 @@ public class Program
                             {
                                 if (typeof(T) == typeof(IEngineer))
                                     s_dal!.Engineer.Reset();
-                                
+
                                 else if (typeof(T) == typeof(ITask))
                                     s_dal!.Task.Reset();
-                                
+
                                 else if (typeof(T) == typeof(IDependency))
                                     s_dal!.Dependency.Reset();
                             }
@@ -264,7 +264,7 @@ public class Program
         Console.WriteLine("Creating dependency");
 
         //getting the values from the user, throwing exception if the parse didn't succeed, or null if nullable
-        int dependent = GetValue("DependentTask", input =>  int.TryParse(input, out var parsedInt) ? parsedInt : throw new FormatException("invalid input for dependentTask ID"));
+        int dependent = GetValue("DependentTask", input => int.TryParse(input, out var parsedInt) ? parsedInt : throw new FormatException("invalid input for dependentTask ID"));
         int previous = GetValue("PreviousTask", input => int.TryParse(input, out var parsedInt) ? parsedInt : throw new FormatException("invalid input for previousTask ID"));
 
         Dependency dependency = new(0, dependent, previous);
@@ -291,7 +291,7 @@ public class Program
         // Check if the entity has an "isActive" property, and print note about it
         CheckActive(entity, ent);
 
-            if (ent is not null)
+        if (ent is not null)
             Console.WriteLine(ent);
         else
             throw new DalDoesNotExistException($"{entity} with ID={id} not found");
@@ -326,7 +326,7 @@ public class Program
     {
         entities.ToList().ForEach(item => Console.WriteLine(item));
     }
-                                  
+
     /// <summary>
     /// a generic deletion function to delete entity from the list
     /// </summary>
@@ -474,7 +474,7 @@ public class Program
     {
         Console.Write($"{propertyName}: ");
         string? input = Console.ReadLine();
-        
+
         if (string.IsNullOrWhiteSpace(input))
             throw new FormatException($"You must enter {propertyName}!");
 
@@ -506,7 +506,8 @@ public class Program
         Console.Write("Would you like to create Initial data? (Y/N)"); //stage 3
         string? ans = Console.ReadLine() ?? throw new FormatException("Wrong input"); //stage 3
         if (ans == "Y" || ans == "y") //stage 3
-            Initialization.Do(s_dal); //stage 2
+            //Initialization.Do(s_dal); //stage 2
+            Initialization.Do(); //stage 4
 
         Menu();
     }

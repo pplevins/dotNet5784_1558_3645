@@ -1,8 +1,13 @@
 ﻿using DalApi;
-
 namespace Dal;
-sealed public class DalList : IDal
+
+sealed internal class DalList : IDal
 {
+    private static readonly Lazy<IDal> lazyInstance = new Lazy<IDal>(() => new DalList(), LazyThreadSafetyMode.ExecutionAndPublication);
+
+    public static IDal Instance => lazyInstance.Value;
+    private DalList() { }
+
     public IDependency Dependency => new DependencyImplementation();
     public IEngineer Engineer => new EngineerImplementation();
     public ITask Task => new TaskImplementation();
