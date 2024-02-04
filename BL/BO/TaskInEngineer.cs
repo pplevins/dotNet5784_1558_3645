@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 /// <summary>
 /// TaskInEngineer Entity represents a Task with its core identifying properties
 /// <param name="Id">Unique identifier for the task</param>

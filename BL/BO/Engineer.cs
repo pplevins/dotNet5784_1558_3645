@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 
 /// <summary>
 /// Engineer Entity represents an engineer with all its properties

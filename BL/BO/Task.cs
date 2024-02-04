@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 /// <summary>
 /// Task Entity represents a task with all its properties
 /// </summary>

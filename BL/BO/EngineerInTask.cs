@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 /// <summary>
 /// EngineerInTask Entity represents an Engineer with its core identifying properties 
 /// </summary>

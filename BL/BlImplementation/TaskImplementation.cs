@@ -1,4 +1,5 @@
 ﻿using BlApi;
+using BO;
 
 namespace BlImplementation;
 
@@ -7,7 +8,7 @@ namespace BlImplementation;
 /// </summary>
 internal class TaskImplementation : ITask
 {
-    public int Create(DO.Task item)
+    public int Create(BO.Task item)
     {
         throw new NotImplementedException();
     }
@@ -17,17 +18,17 @@ internal class TaskImplementation : ITask
         throw new NotImplementedException();
     }
 
-    public DO.Task? Read(int id)
+    public BO.Task? Read(int id)
     {
         throw new NotImplementedException();
     }
 
-    public DO.Task? Read(Func<DO.Task, bool> filter)
+    public BO.Task? Read(Func<BO.Task, bool> filter)
     {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<DO.Task?> ReadAll(Func<DO.Task, bool>? filter = null)
+    public IEnumerable<BO.Task?> ReadAll(Func<BO.Task, bool>? filter = null)
     {
         throw new NotImplementedException();
     }
@@ -37,7 +38,7 @@ internal class TaskImplementation : ITask
         throw new NotImplementedException();
     }
 
-    public void Update(DO.Task item)
+    public void Update(BO.Task item)
     {
         throw new NotImplementedException();
     }

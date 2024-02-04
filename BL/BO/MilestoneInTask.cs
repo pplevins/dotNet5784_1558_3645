@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 
 /// <summary>
 /// MilestoneInTask Entity represents a Milestone with its core identifying properties

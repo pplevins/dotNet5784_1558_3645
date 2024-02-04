@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace DO;
+namespace BO;
 /// <summary>
 /// Provides tools for object manipulation and representation.
 /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 
 /// <summary>
 /// TaskInList Entity represents a task with its core identifying properties

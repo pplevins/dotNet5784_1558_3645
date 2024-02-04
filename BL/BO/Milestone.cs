@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 
 /// <summary>
 /// Milestone Entity represents a Milestone in a project.

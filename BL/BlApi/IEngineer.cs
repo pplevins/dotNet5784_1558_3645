@@ -1,6 +1,6 @@
 ﻿namespace BlApi;
 
-using DO;
+using BO;
 
 /// <summary>
 /// Interface for the CRUD operation on the Engineer entity.

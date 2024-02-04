@@ -1,4 +1,4 @@
-﻿namespace DO;
+﻿namespace BO;
 
 public class Exceptions
 {
