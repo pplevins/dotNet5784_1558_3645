@@ -16,7 +16,6 @@
 /// <param name="StartDate">Actual start date of the task</param>
 /// <param name="DeadlineDate">Planned deadline date of the task</param>
 /// <param name="CompleteDate">Actual Completion date of the task</param>
-/// <param name="IsActive">The field to check if the entity is removed or not</param>
 public class Task
 {
     public int Id { get; set; }
@@ -24,7 +23,7 @@ public class Task
     public string Description { get; set; }
     public string Deliverables { get; set; }
     public EngineerExperience DifficultyLevel { get; set; }
-    public MilestoneInTask Milestone { get; set; }
+    public MilestoneInTask? Milestone { get; set; }
     public TimeSpan? RequiredEffortTime { get; set; }
     public DateTime? CreatedAtDate { get; set; }
     public EngineerInTask? Engineer { get; set; }
@@ -33,7 +32,6 @@ public class Task
     public DateTime? StartDate { get; set; }
     public DateTime? DeadlineDate { get; set; }
     public DateTime? CompleteDate { get; set; }
-    public bool IsActive { get; set; }
 
     /// <summary>
     /// Initializes an empty instance of the Task class.
@@ -58,8 +56,7 @@ public class Task
         DateTime? scheduledDate = null,
         DateTime? startDate = null,
         DateTime? deadlineDate = null,
-        DateTime? completeDate = null,
-        bool isActive = true)
+        DateTime? completeDate = null)
     {
         Id = id;
         Alias = alias;
@@ -75,7 +72,6 @@ public class Task
         StartDate = startDate;
         DeadlineDate = deadlineDate;
         CompleteDate = completeDate;
-        IsActive = isActive;
     }
 
     /// <summary>
