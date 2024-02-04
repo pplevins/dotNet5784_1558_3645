@@ -24,11 +24,10 @@ public class Milestone
     public string Description { get; set; }
     public TaskStatus Status { get; set; }
     public DateTime? CreatedAtDate { get; set; }
-    public TimeSpan? ForecastDate { get; set; }
+    public DateTime? ForecastDate { get; set; }
     public DateTime? DeadlineDate { get; set; }
     public DateTime? CompleteDate { get; set; }
     public double? CompletionPercentage { get; set; }
-
     public string? Remarks { get; set; }
     public List<TaskInList> Dependencies { get; set; }
 
@@ -36,12 +35,12 @@ public class Milestone
     /// Initializes an empty instance of the Milestone class.
     /// </summary>
     public Milestone()
-        : this(0, "", "", TaskStatus.Unscheduled, null, null, null, null, 0, null, null) { }
+        : this(0, "", "", TaskStatus.Unscheduled, null, null, null, null, 0, null, Enumerable.Empty<BO.TaskInList>().ToList()) { }
 
     /// <summary>
     /// Initializes an instance of the Milestone class with specified values.
     /// </summary>
-    public Milestone(int id, string alias, string description, TaskStatus status, DateTime? createdAtDate, TimeSpan? forecastDate, DateTime? deadlineDate, DateTime? completeDate, double? completionPercentage, string? remarks, List<TaskInList> dependencies)
+    public Milestone(int id, string alias, string description, TaskStatus status, DateTime? createdAtDate, DateTime? forecastDate, DateTime? deadlineDate, DateTime? completeDate, double? completionPercentage, string? remarks, List<TaskInList> dependencies)
     {
         Id = id;
         Alias = alias;
@@ -50,7 +49,7 @@ public class Milestone
         CreatedAtDate = createdAtDate;
         ForecastDate = forecastDate;
         DeadlineDate = deadlineDate;
-        CompleteDate = createdAtDate;
+        CompleteDate = completeDate;
         CompletionPercentage = completionPercentage;
         Remarks = remarks;
         Dependencies = dependencies;

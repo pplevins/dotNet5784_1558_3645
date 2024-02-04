@@ -15,7 +15,6 @@ public enum TaskStatus
 {
     Unscheduled,
     Scheduled,
-    OnTrack,
     Started,
     InJeopardy,
     Done

@@ -7,6 +7,8 @@
 /// <param name="Description">Description of the task</param>
 /// <param name="Deliverables">Deliverables of the task</param>
 /// <param name="DifficultyLevel">Difficulty level of the task</param>
+/// <param name="Status">Status of the task</param>
+/// <param name="Dependencies">List of all Dependent tasks</param>
 /// <param name="Milestone">Milestone of the Task</param>
 /// <param name="RequiredEffortTime">Required numbers of days to complete the task</param>
 /// <param name="CreatedAtDate">The date the task created at</param>
@@ -16,6 +18,7 @@
 /// <param name="StartDate">Actual start date of the task</param>
 /// <param name="DeadlineDate">Planned deadline date of the task</param>
 /// <param name="CompleteDate">Actual Completion date of the task</param>
+/// <param name="EstimatedDate">Estimated date for the task completion.</param>
 public class Task
 {
     public int Id { get; set; }
@@ -23,6 +26,8 @@ public class Task
     public string Description { get; set; }
     public string Deliverables { get; set; }
     public EngineerExperience DifficultyLevel { get; set; }
+    public TaskStatus Status { get; set; }
+    public List<BO.TaskInList> Dependencies { get; set; }
     public MilestoneInTask? Milestone { get; set; }
     public TimeSpan? RequiredEffortTime { get; set; }
     public DateTime? CreatedAtDate { get; set; }
@@ -32,12 +37,13 @@ public class Task
     public DateTime? StartDate { get; set; }
     public DateTime? DeadlineDate { get; set; }
     public DateTime? CompleteDate { get; set; }
+    public DateTime? EstimatedDate { get; set; }
 
     /// <summary>
     /// Initializes an empty instance of the Task class.
     /// </summary>
     public Task()
-        : this(0, "", "", "", EngineerExperience.Beginner, null, TimeSpan.Zero, null, null, null, null) { }
+        : this(0, "", "", "", EngineerExperience.Beginner, TaskStatus.Unscheduled, Enumerable.Empty<BO.TaskInList>().ToList(), null, TimeSpan.Zero, null, null, null, null, null, null, null, null) { }
 
     /// <summary>
     /// Initializes an instance of the Task class with specified values.
@@ -48,6 +54,8 @@ public class Task
         string description,
         string deliverables,
         EngineerExperience difficultyLevel,
+        TaskStatus status,
+        List<BO.TaskInList> dependencies,
         MilestoneInTask milestone,
         TimeSpan? requiredEffortTime = null,
         DateTime? createdAtDate = null,
@@ -56,7 +64,8 @@ public class Task
         DateTime? scheduledDate = null,
         DateTime? startDate = null,
         DateTime? deadlineDate = null,
-        DateTime? completeDate = null)
+        DateTime? completeDate = null,
+        DateTime? estimatedDate = null)
     {
         Id = id;
         Alias = alias;
@@ -64,6 +73,8 @@ public class Task
         Milestone = milestone;
         Deliverables = deliverables;
         DifficultyLevel = difficultyLevel;
+        Status = status;
+        Dependencies = dependencies;
         RequiredEffortTime = requiredEffortTime;
         CreatedAtDate = createdAtDate;
         Engineer = engineer;
@@ -72,6 +83,7 @@ public class Task
         StartDate = startDate;
         DeadlineDate = deadlineDate;
         CompleteDate = completeDate;
+        EstimatedDate = estimatedDate;
     }
 
     /// <summary>
