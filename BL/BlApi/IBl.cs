@@ -1,8 +1,12 @@
-﻿namespace BlApi;
+﻿using DalApi;
+
+namespace BlApi;
 
 public interface IBl
 {
-    IDependency Dependency { get; }
+    IMilestone Milestone { get; }
     IEngineer Engineer { get; }
     ITask Task { get; }
+    public DateTime? ProjectStartDate { get; set; }
+    public BO.ProjectStatus CheckProjectStatus();
 }

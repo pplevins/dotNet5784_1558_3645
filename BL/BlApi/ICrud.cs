@@ -1,6 +1,6 @@
 ﻿namespace BlApi;
 
-public interface ICrud<T> where T : class
+public interface ICrud<T, U> where T : class where U : class
 {
     /// <summary>
     /// Creates a new entity object in DAL object in DAL
@@ -21,14 +21,14 @@ public interface ICrud<T> where T : class
     /// </summary>
     /// <param name="filter">The filter for the read</param>
     /// <returns>The entity</returns>
-    T? Read(Func<T, bool> filter); // stage 2
+    T? Read(Func<U, bool> filter); // stage 2
 
     /// <summary>
     /// Reads all the entities in DAL by filter
     /// </summary>
     /// <param name="filter">The filter for the read</param>
     /// <returns>Iterator to get all the entities</returns>
-    IEnumerable<T?> ReadAll(Func<T, bool>? filter = null); // stage 2
+    IEnumerable<T?> ReadAll(Func<U, bool>? filter = null); // stage 2
 
     /// <summary>
     /// Updates an entity object
@@ -41,9 +41,4 @@ public interface ICrud<T> where T : class
     /// </summary>
     /// <param name="id">The entity's ID</param>
     void Delete(int id);
-
-    /// <summary>
-    /// reset all the list/xml
-    /// </summary>
-    void Reset();
 }

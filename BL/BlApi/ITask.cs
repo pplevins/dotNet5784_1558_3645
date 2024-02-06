@@ -5,6 +5,7 @@ using BO;
 /// <summary>
 /// Interface for the CRUD operations on the Task entity in the Data Access Layer (DAL).
 /// </summary>
-public interface ITask : ICrud<BO.Task>
+public interface ITask : ICrud<BO.Task, DO.Task>
 {
+    public void UpdateScheduledDate(int id, DateTime date);
 }

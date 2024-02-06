@@ -19,3 +19,10 @@ public enum TaskStatus
     InJeopardy,
     Done
 }
+
+public enum ProjectStatus
+{
+    Planing,
+    MiddlePlaning,
+    InProgress
+}

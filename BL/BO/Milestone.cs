@@ -19,7 +19,7 @@
 /// <param name="Dependencies">The list of Task Dependencies the Milestone is dependent on</param>
 public class Milestone
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
     public string Alias { get; set; }
     public string Description { get; set; }
     public TaskStatus Status { get; set; }
@@ -31,29 +31,29 @@ public class Milestone
     public string? Remarks { get; set; }
     public List<TaskInList> Dependencies { get; set; }
 
-    /// <summary>
-    /// Initializes an empty instance of the Milestone class.
-    /// </summary>
-    public Milestone()
-        : this(0, "", "", TaskStatus.Unscheduled, null, null, null, null, 0, null, Enumerable.Empty<BO.TaskInList>().ToList()) { }
+    ///// <summary>
+    ///// Initializes an empty instance of the Milestone class.
+    ///// </summary>
+    //public Milestone()
+    //    : this(0, "", "", TaskStatus.Unscheduled, null, null, null, null, 0, null, Enumerable.Empty<BO.TaskInList>().ToList()) { }
 
-    /// <summary>
-    /// Initializes an instance of the Milestone class with specified values.
-    /// </summary>
-    public Milestone(int id, string alias, string description, TaskStatus status, DateTime? createdAtDate, DateTime? forecastDate, DateTime? deadlineDate, DateTime? completeDate, double? completionPercentage, string? remarks, List<TaskInList> dependencies)
-    {
-        Id = id;
-        Alias = alias;
-        Description = description;
-        Status = status;
-        CreatedAtDate = createdAtDate;
-        ForecastDate = forecastDate;
-        DeadlineDate = deadlineDate;
-        CompleteDate = completeDate;
-        CompletionPercentage = completionPercentage;
-        Remarks = remarks;
-        Dependencies = dependencies;
-    }
+    ///// <summary>
+    ///// Initializes an instance of the Milestone class with specified values.
+    ///// </summary>
+    //public Milestone(int id, string alias, string description, TaskStatus status, DateTime? createdAtDate, DateTime? forecastDate, DateTime? deadlineDate, DateTime? completeDate, double? completionPercentage, string? remarks, List<TaskInList> dependencies)
+    //{
+    //    Id = id;
+    //    Alias = alias;
+    //    Description = description;
+    //    Status = status;
+    //    CreatedAtDate = createdAtDate;
+    //    ForecastDate = forecastDate;
+    //    DeadlineDate = deadlineDate;
+    //    CompleteDate = completeDate;
+    //    CompletionPercentage = completionPercentage;
+    //    Remarks = remarks;
+    //    Dependencies = dependencies;
+    //}
 
     /// <summary>
     /// Overrides the ToString method to return the result of ToStringProperty.

@@ -67,28 +67,28 @@ public static class Tools
 
 
     // Validate positive number
-    private static bool ValidatePositiveNumber(object value)
+    public static bool ValidatePositiveNumber(object? value)
     {
         if (value is not null && value is IComparable comparable && comparable.CompareTo(0) <= 0)
         {
-            throw new ArgumentException("Invalid value. Must be a positive number.");
+            throw new ArgumentException($"Invalid {nameof(value)}. Must be a positive number.");
         }
 
         return true;
     }
 
     // Validate non-empty string
-    private static bool ValidateNonEmptyString(string value)
+    public static bool ValidateNonEmptyString(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException("Invalid value. Must be a non-empty string.");
+            throw new ArgumentException($"Invalid {nameof(value)}. Must be a non-empty string.");
         }
         return true;
     }
 
     // Validate email address
-    private static bool ValidateEmailAddress(string value)
+    public static bool ValidateEmailAddress(string value)
     {
         if (ValidateNonEmptyString(value) && !IsValidEmailAddress(value))
         {

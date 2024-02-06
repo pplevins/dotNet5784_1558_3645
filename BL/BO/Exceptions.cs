@@ -14,12 +14,25 @@ public class Exceptions
     public class BlNullPropertyException(string? message) : Exception(message);
 
     [Serializable]
-    public class BlAlreadyExistsException(string? message) : Exception(message);
+    public class BlAlreadyExistsException : Exception
+    {
+        public BlAlreadyExistsException(string? message) : base(message) { }
+        public BlAlreadyExistsException(string message, Exception innerException)
+            : base(message, innerException) { }
+    }
 
     [Serializable]
-    public class BlDeletionImpossibleException(string? message) : Exception(message);
+    public class BlDeletionImpossibleException : Exception
+    {
+        public BlDeletionImpossibleException(string? message) : base(message) { }
+        public BlDeletionImpossibleException(string message, Exception innerException)
+            : base(message, innerException) { }
+    }
 
     [Serializable]
     public class BlXMLFileLoadCreateException(string? message) : Exception(message);
+
+    [Serializable]
+    public class BlUpdateCreateImpossibleException(string? message) : Exception(message);
 
 }

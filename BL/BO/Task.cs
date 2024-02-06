@@ -21,7 +21,7 @@
 /// <param name="EstimatedDate">Estimated date for the task completion.</param>
 public class Task
 {
-    public int Id { get; set; }
+    public int Id { get; init; }
     public string Alias { get; set; }
     public string Description { get; set; }
     public string Deliverables { get; set; }
@@ -39,52 +39,52 @@ public class Task
     public DateTime? CompleteDate { get; set; }
     public DateTime? EstimatedDate { get; set; }
 
-    /// <summary>
-    /// Initializes an empty instance of the Task class.
-    /// </summary>
-    public Task()
-        : this(0, "", "", "", EngineerExperience.Beginner, TaskStatus.Unscheduled, Enumerable.Empty<BO.TaskInList>().ToList(), null, TimeSpan.Zero, null, null, null, null, null, null, null, null) { }
+    ///// <summary>
+    ///// Initializes an empty instance of the Task class.
+    ///// </summary>
+    //public Task()
+    //    : this(0, "", "", "", EngineerExperience.Beginner, TaskStatus.Unscheduled, Enumerable.Empty<BO.TaskInList>().ToList(), null, TimeSpan.Zero, null, null, null, null, null, null, null, null) { }
 
-    /// <summary>
-    /// Initializes an instance of the Task class with specified values.
-    /// </summary>
-    public Task(
-        int id,
-        string alias,
-        string description,
-        string deliverables,
-        EngineerExperience difficultyLevel,
-        TaskStatus status,
-        List<BO.TaskInList> dependencies,
-        MilestoneInTask milestone,
-        TimeSpan? requiredEffortTime = null,
-        DateTime? createdAtDate = null,
-        EngineerInTask? engineer = null,
-        string? remarks = null,
-        DateTime? scheduledDate = null,
-        DateTime? startDate = null,
-        DateTime? deadlineDate = null,
-        DateTime? completeDate = null,
-        DateTime? estimatedDate = null)
-    {
-        Id = id;
-        Alias = alias;
-        Description = description;
-        Milestone = milestone;
-        Deliverables = deliverables;
-        DifficultyLevel = difficultyLevel;
-        Status = status;
-        Dependencies = dependencies;
-        RequiredEffortTime = requiredEffortTime;
-        CreatedAtDate = createdAtDate;
-        Engineer = engineer;
-        Remarks = remarks;
-        ScheduledDate = scheduledDate;
-        StartDate = startDate;
-        DeadlineDate = deadlineDate;
-        CompleteDate = completeDate;
-        EstimatedDate = estimatedDate;
-    }
+    ///// <summary>
+    ///// Initializes an instance of the Task class with specified values.
+    ///// </summary>
+    //public Task(
+    //    int id,
+    //    string alias,
+    //    string description,
+    //    string deliverables,
+    //    EngineerExperience difficultyLevel,
+    //    TaskStatus status,
+    //    List<BO.TaskInList> dependencies,
+    //    MilestoneInTask milestone,
+    //    TimeSpan? requiredEffortTime = null,
+    //    DateTime? createdAtDate = null,
+    //    EngineerInTask? engineer = null,
+    //    string? remarks = null,
+    //    DateTime? scheduledDate = null,
+    //    DateTime? startDate = null,
+    //    DateTime? deadlineDate = null,
+    //    DateTime? completeDate = null,
+    //    DateTime? estimatedDate = null)
+    //{
+    //    Id = id;
+    //    Alias = alias;
+    //    Description = description;
+    //    Milestone = milestone;
+    //    Deliverables = deliverables;
+    //    DifficultyLevel = difficultyLevel;
+    //    Status = status;
+    //    Dependencies = dependencies;
+    //    RequiredEffortTime = requiredEffortTime;
+    //    CreatedAtDate = createdAtDate;
+    //    Engineer = engineer;
+    //    Remarks = remarks;
+    //    ScheduledDate = scheduledDate;
+    //    StartDate = startDate;
+    //    DeadlineDate = deadlineDate;
+    //    CompleteDate = completeDate;
+    //    EstimatedDate = estimatedDate;
+    //}
 
     /// <summary>
     /// Overrides the ToString method to return the result of ToStringProperty.

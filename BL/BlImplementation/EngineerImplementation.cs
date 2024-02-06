@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using BO;
+using System.Collections.Specialized;
 
 namespace BlImplementation;
 /// <summary>
@@ -7,38 +8,170 @@ namespace BlImplementation;
 /// </summary>
 internal class EngineerImplementation : IEngineer
 {
-    public int Create(Engineer item)
+    private DalApi.IDal _dal = DalApi.Factory.Get;
+    public int Create(Engineer boEngineer)
     {
-        throw new NotImplementedException();
+        DO.Engineer doEngineer = new DO.Engineer();
+        BO.Tools.CopySimilarFields(boEngineer, doEngineer);
+        //(boEngineer.Id, boEngineer.Name, boEngineer.Email, (DO.EngineerExperience)boEngineer.Level, true, boEngineer.Cost);
+        try
+        {
+            if (BO.Tools.ValidatePositiveNumber(boEngineer.Id) 
+                && BO.Tools.ValidateNonEmptyString(boEngineer.Name) 
+                && BO.Tools.ValidateEmailAddress(boEngineer.Email) 
+                && BO.Tools.ValidatePositiveNumber(boEngineer.Cost)
+                )
+            {
+                int idEng = _dal.Engineer.Create(doEngineer);
+                return idEng;
+            }
+            return 0;
+        }
+        catch (DO.Exceptions.DalAlreadyExistsException ex)
+        {
+            throw new BO.Exceptions.BlAlreadyExistsException($"Engineer with ID={boEngineer.Id} already exists", ex);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException(ex.Message);
+        }
     }
 
     public void Delete(int id)
     {
-        throw new NotImplementedException();
+        if(_dal.Task.ReadAll().Any<DO.Task?>(ed => ed?.EngineerId == id))
+            throw new BO.Exceptions.BlDeletionImpossibleException($"Engineer with id={id} is working on task and cannot be deleted!");
+        try
+        {
+            _dal.Engineer.Delete(id);
+        }
+        catch (DO.Exceptions.DalDeletionImpossibleException ex)
+        {
+            throw new BO.Exceptions.BlDeletionImpossibleException("Engineer not found", ex);
+        }
+        catch(DO.Exceptions.DalDoesNotExistException ex) 
+        {
+            throw new BO.Exceptions.BlDoesNotExistException($"Engineer with id={id} does not exist", ex);
+        }
     }
 
     public Engineer? Read(int id)
     {
-        throw new NotImplementedException();
+        DO.Engineer? doEngineer = _dal.Engineer.Read(id);
+        if (doEngineer == null)
+            throw new BO.Exceptions.BlDoesNotExistException($"Enginner with ID={id} does Not exist");
+
+        return new BO.Engineer()
+        {
+            Id = doEngineer.Id,
+            Name = doEngineer.Name,
+            Email = doEngineer.Email,
+            Level = (BO.EngineerExperience)doEngineer.Level,
+            Cost = doEngineer.Cost,
+            Task = (from DO.Task doTask in _dal.Task.ReadAll()
+                    where doTask.EngineerId == id
+                    select new BO.TaskInEngineer
+                    {
+                        Id = doTask.Id,
+                        Alias = doTask.Alias
+                    }).FirstOrDefault()
+        };
     }
 
-    public Engineer? Read(Func<Engineer, bool> filter)
+    public Engineer? Read(Func<DO.Engineer, bool> filter)
     {
-        throw new NotImplementedException();
+        DO.Engineer? doEngineer = _dal.Engineer.Read(filter);
+        if (doEngineer == null)
+            throw new BO.Exceptions.BlDoesNotExistException("Enginner does Not exist");
+
+        return new BO.Engineer()
+        {
+            Id = doEngineer.Id,
+            Name = doEngineer.Name,
+            Email = doEngineer.Email,
+            Level = (BO.EngineerExperience)doEngineer.Level,
+            Cost = doEngineer.Cost,
+            Task = (from DO.Task doTask in _dal.Task.ReadAll()
+                    where doTask.EngineerId == doEngineer.Id
+                    select new BO.TaskInEngineer
+                    {
+                        Id = doTask.Id,
+                        Alias = doTask.Alias
+                    }).FirstOrDefault()
+        };
     }
 
-    public IEnumerable<Engineer?> ReadAll(Func<Engineer, bool>? filter = null)
+    public IEnumerable<Engineer?> ReadAll(Func<DO.Engineer, bool>? filter = null)
     {
-        throw new NotImplementedException();
+        return (from DO.Engineer doEngineer in _dal.Engineer.ReadAll()
+                where filter?.Invoke(doEngineer) ?? true
+                orderby doEngineer.Id
+                select new BO.Engineer
+                {
+                    Id = doEngineer.Id,
+                    Name = doEngineer.Name,
+                    Email = doEngineer.Email,
+                    Level = (BO.EngineerExperience)doEngineer.Level,
+                    Cost = doEngineer.Cost,
+                    Task = (from DO.Task doTask in _dal.Task.ReadAll()
+                            where doTask.EngineerId == doEngineer.Id
+                            select new BO.TaskInEngineer
+                            {
+                                Id = doTask.Id,
+                                Alias = doTask.Alias
+                            }).FirstOrDefault()
+                });
     }
 
-    public void Reset()
+    public void Update(Engineer boEngineer)
     {
-        throw new NotImplementedException();
-    }
+        try
+        {
+            DO.Engineer doEngineer = new DO.Engineer();
+            BO.Tools.CopySimilarFields(boEngineer, doEngineer);
+            if (BO.Tools.ValidatePositiveNumber(boEngineer.Id)
+                    && BO.Tools.ValidateNonEmptyString(boEngineer.Name)
+                    && BO.Tools.ValidateEmailAddress(boEngineer.Email)
+                    && BO.Tools.ValidatePositiveNumber(boEngineer.Cost)
+                    && doEngineer.Level <= (DO.EngineerExperience)boEngineer.Level
+                    )
+            {
+                if (boEngineer.Task is not null)
+                {
+                    DO.Task? doTask = _dal.Task.Read(boEngineer.Task.Id);
+                    if (doTask is null)
+                        throw new DO.Exceptions.DalDoesNotExistException($"There's no task with id={boEngineer.Task.Id}");
+                    DO.Task newTask = new DO.Task()
+                    {
+                        Id = doTask.Id,
+                        Alias = doTask.Alias,
+                        Description = doTask.Description,
+                        IsMilestone = doTask.IsMilestone,
+                        Deliverables = doTask.Deliverables,
+                        DifficultyLevel = doTask.DifficultyLevel,
+                        RequiredEffortTime = doTask.RequiredEffortTime,
+                        CreatedAtDate = doTask.CreatedAtDate,
+                        EngineerId = boEngineer.Task.Id,
+                        Remarks = doTask.Remarks,
+                        ScheduledDate = doTask.ScheduledDate,
+                        StartDate = doTask.StartDate,
+                        DeadlineDate = doTask.DeadlineDate,
+                        CompleteDate = doTask.CompleteDate,
+                        IsActive = doTask.IsActive
+                    };
+                    _dal.Task.Update(newTask);
+                }
 
-    public void Update(Engineer item)
-    {
-        throw new NotImplementedException();
+                _dal.Engineer.Update(doEngineer);
+            }
+        }
+        catch (DO.Exceptions.DalDoesNotExistException ex)
+        {
+            throw new BO.Exceptions.BlDoesNotExistException($"Engineer with id={boEngineer.Id} does not exist", ex);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException(ex.Message);
+        }
     }
 }
