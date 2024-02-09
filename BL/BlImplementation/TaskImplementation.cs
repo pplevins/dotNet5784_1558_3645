@@ -1,5 +1,8 @@
 ﻿using BlApi;
 using BO;
+using DO;
+using System.Linq;
+using System.Linq.Expressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlImplementation;
@@ -32,7 +35,7 @@ internal class TaskImplementation : ITask
         }
         catch (DO.Exceptions.DalAlreadyExistsException ex)
         {
-            throw new BO.Exceptions.BlAlreadyExistsException($"Engineer with ID={boTask.Id} already exists", ex);
+            throw new BO.Exceptions.BlAlreadyExistsException($"Task with ID={boTask.Id} already exists", ex);
         }
         catch (ArgumentException ex)
         {
@@ -55,11 +58,15 @@ internal class TaskImplementation : ITask
 
     public void Delete(int id)
     {
+        Bl bl = new Bl();
         if (_dal.Dependency.ReadAll().Any<DO.Dependency?>(ed => ed?.PreviousTask == id))
             throw new BO.Exceptions.BlDeletionImpossibleException($"task with id={id} has dependent tasks and cannot be deleted!");
+        if (bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
+            throw new BO.Exceptions.BlDeletionImpossibleException("You can't delete task at this stage of the project");
         try
         {
-            _dal.Engineer.Delete(id);
+            _dal.Task.Delete(id);
+            DeleteDependencies(id);
         }
         catch (DO.Exceptions.DalDeletionImpossibleException ex)
         {
@@ -154,38 +161,78 @@ internal class TaskImplementation : ITask
 
     public void Update(BO.Task boTask)
     {
-        throw new NotImplementedException();
-        //Bl bl = new Bl();
-        //if (bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
-        //    throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot create task at this stage of the project.");
-        //DO.Task doTask = new DO.Task();
-        //BO.Tools.CopySimilarFields(boTask, doTask);
+        try
+        {
+            if (BO.Tools.ValidatePositiveNumber(boTask.Id)
+                && BO.Tools.ValidateNonEmptyString(boTask.Alias)
+                )
+            {
+                DO.Task doTask = new DO.Task();
+                Bl bl = new Bl();
+                Expression<Func<DO.Task, object>>[] excludedProperties;
+                switch (bl.CheckProjectStatus())
+                {
+                    case BO.ProjectStatus.Planing:
+                        excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.ScheduledDate, dc => dc.CreatedAtDate, dc => dc.StartDate, dc => dc.CompleteDate };
+                        BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+                        break;
+                    case BO.ProjectStatus.MiddlePlaning:
+                        excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.DifficultyLevel, dc => dc.CreatedAtDate, dc => dc.StartDate, dc => dc.CompleteDate, dc => dc.RequiredEffortTime };
+                        BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+                        doTask = UpdateScheduledDate(doTask, boTask.ScheduledDate);
+                        break;
+                    case BO.ProjectStatus.InProgress:
+                        excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.DifficultyLevel, dc => dc.ScheduledDate, dc => dc.CreatedAtDate, dc => dc.RequiredEffortTime };
+                        BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+                        break;
+                }
+                if (UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id)))
+                {
+                    DeleteDependencies(boTask.Id);
+                    CreateDependencies(boTask.Dependencies, boTask.Id);
+                }
+                if (boTask.Engineer is not null)
+                    doTask = BO.Tools.UpdateEntity(doTask, "EngineerId", boTask.Engineer.Id);
+                _dal.Task.Update(doTask);
 
-        //try
-        //{
-        //    if (BO.Tools.ValidatePositiveNumber(boTask.Id)
-        //        && BO.Tools.ValidateNonEmptyString(boTask.Alias)
-        //        )
-        //    {
-        //        int idTask = _dal.Task.Create(doTask);
-        //        CreateDependencies(boTask.Dependencies, idTask);
-        //        return idTask;
-        //    }
-        //    return 0;
-        //}
-        //catch (DO.Exceptions.DalAlreadyExistsException ex)
-        //{
-        //    throw new BO.Exceptions.BlAlreadyExistsException($"Engineer with ID={boTask.Id} already exists", ex);
-        //}
-        //catch (ArgumentException ex)
-        //{
-        //    throw new ArgumentException(ex.Message);
-        //}
+            }
+        }
+        catch (DO.Exceptions.DalDoesNotExistException ex)
+        {
+            throw new BO.Exceptions.BlDoesNotExistException($"Task with ID={boTask.Id} doesn't exists", ex);
+        }
+        catch (ArgumentNullException ex)
+        {
+            throw new ArgumentNullException(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new ArgumentException(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new InvalidOperationException(ex.Message);
+        }
     }
 
-    public void UpdateScheduledDate(int id, DateTime date)
+    public DO.Task UpdateScheduledDate(DO.Task doTask, DateTime? date)
     {
-        throw new NotImplementedException();
+        Bl bl = new Bl();
+        if (date == null)
+            return doTask;
+        _dal.Dependency.ReadAll()
+            .Where(ed => ed?.DependentTask == doTask.Id)
+            .Select(ed => ed?.PreviousTask).ToList()
+            .ForEach(taskId =>
+            {
+                if (bl.ProjectStartDate <= date
+                    && _dal.Task.ReadAll()
+                    .All(preTask => preTask is not null && preTask.ScheduledDate + preTask.RequiredEffortTime < date))
+                    doTask = BO.Tools.UpdateEntity(doTask, "ScheduledDate", date);
+                else
+                    throw new InvalidOperationException($"Failed to update the ScheduledDate property for task id={doTask.Id} because not all Previous Tasks has dates or the ScheduledDate is earlier.");
+            });
+        return doTask;
     }
 
     private BO.TaskStatus CalcStatus(DO.Task? task)
@@ -224,6 +271,27 @@ internal class TaskImplementation : ITask
                 Name = doEng.Name
             }).FirstOrDefault() ?? null;
 
+    }
+
+    private bool UpdateDependenciesCheck(List<BO.TaskInList> dependentTasks, IEnumerable<DO.Dependency> dependencies)
+    {
+        if (dependentTasks is null && dependencies is null)
+            return false;
+        var depToUpadte = dependentTasks?.Select(dep => dep.Id);
+        var depToCheck = dependencies.Select(dep => dep.DependentTask);
+
+        if (depToCheck.OrderBy(id => id).SequenceEqual(depToUpadte.OrderBy(id => id)))
+            return false;
+        else
+            return true;
+    }
+
+    private void DeleteDependencies(int id)
+    {
+        _dal.Dependency.ReadAll()
+                .Where(dep => dep?.DependentTask == id)
+                .ToList()
+                .ForEach(dep => _dal.Dependency.Delete(dep.Id));
     }
 }
 

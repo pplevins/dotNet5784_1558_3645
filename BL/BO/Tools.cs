@@ -113,7 +113,6 @@ public static class Tools
     /// <param name="propertyName">The name of the property to update.</param>
     /// <param name="valueToUpdate">The new value for the specified property.</param>
     /// <returns>The updated entity with the modified property.</returns>
-
     public static T UpdateEntity<T>(T existingEntity, string propertyName, object valueToUpdate)
     {
         var propertyInfo = GetProperty(existingEntity, propertyName);
@@ -130,19 +129,36 @@ public static class Tools
     /// <summary>
     /// Copies similar fields from the source object to the destination object, excluding specified properties.
     /// </summary>
-    public static void CopySimilarFields<TSource, TDestination>(TSource source, TDestination destination, params Expression<Func<TDestination, object>>[] excludedProperties)
+    public static void CopySimilarFields<TSource, TDestination>(TSource source, TDestination destination, Type[]? typesToCopy = null, params Expression<Func<TDestination, object>>[] excludedProperties)
     {
         ValidateArguments(source, destination);
 
         foreach (var sourceProperty in typeof(TSource).GetProperties())
         {
-            if (IsExcluded(sourceProperty.Name, excludedProperties)) continue;
 
             var matchingDestinationProperty = FindMatchingDestinationProperty(sourceProperty, typeof(TDestination));
-
-            CopyPropertyValue(sourceProperty, matchingDestinationProperty, source!, destination!);
+            if (IsExcluded(sourceProperty.Name, excludedProperties))
+            {
+                CheckPropertyValueMatch(sourceProperty, matchingDestinationProperty, source!, destination!);
+                continue;
+            }
+            if (matchingDestinationProperty != null && (typesToCopy == null || typesToCopy.Contains(sourceProperty.PropertyType)))
+            {
+                CopyPropertyValue(sourceProperty, matchingDestinationProperty, source!, destination!);
+            }
         }
     }
+
+    private static void CheckPropertyValueMatch(PropertyInfo sourceProperty, PropertyInfo? destinationProperty, object source, object destination)
+    {
+        if (destinationProperty != null)
+        {
+            var sourceValue = GetPropertyValue(source, sourceProperty);
+            var destinationValue = GetPropertyValue(destination, destinationProperty);
+            if (!sourceValue.Equals(destinationValue)) throw new InvalidOperationException($"You can't change the {sourceProperty.Name} property");
+        }
+    }
+
     /// <summary>
     /// Validates the arguments for null and throws an <see cref="ArgumentNullException"/> if either source or destination is null.
     /// </summary>

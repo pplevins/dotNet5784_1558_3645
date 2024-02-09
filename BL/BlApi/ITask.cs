@@ -7,5 +7,5 @@ using BO;
 /// </summary>
 public interface ITask : ICrud<BO.Task, DO.Task>
 {
-    public void UpdateScheduledDate(int id, DateTime date);
+    public DO.Task UpdateScheduledDate(DO.Task doTask, DateTime? date);
 }
