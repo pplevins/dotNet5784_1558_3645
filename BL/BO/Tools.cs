@@ -227,4 +227,24 @@ public static class Tools
         return propertyInfo.GetValue(entity, null);
 
     }
+
+    /// <summary>
+    /// Helper function to check if the read entity is inactive, and prints note to the user about it
+    /// </summary>
+    /// <typeparam name="T">generic</typeparam>
+    /// <param name="entity">engineer/task/dependency (not relevant)</param>
+    /// <param name="ent">the entity itself</param>
+    public static void CheckActive<T>(string entity, T? ent)
+    {
+        var isActiveProperty = typeof(T).GetProperty("IsActive");
+
+        if (isActiveProperty is not null && isActiveProperty.PropertyType == typeof(bool))
+        {
+            // If "isActive" property exists and is of type bool, check its value
+            bool isActive = (bool)isActiveProperty.GetValue(ent);
+
+            if (!isActive)
+                Console.WriteLine($"NOTE: This is an inactive {entity}!");
+        }
+    }
 }

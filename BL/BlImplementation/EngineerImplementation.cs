@@ -61,6 +61,8 @@ internal class EngineerImplementation : IEngineer
         if (doEngineer == null)
             throw new BO.Exceptions.BlDoesNotExistException($"Enginner with ID={id} does Not exist");
 
+        BO.Tools.CheckActive("Engineer", doEngineer);
+
         return new BO.Engineer()
         {
             Id = doEngineer.Id,
@@ -84,6 +86,7 @@ internal class EngineerImplementation : IEngineer
         if (doEngineer == null)
             throw new BO.Exceptions.BlDoesNotExistException("Enginner does Not exist");
 
+        BO.Tools.CheckActive("Engineer", doEngineer);
         return new BO.Engineer()
         {
             Id = doEngineer.Id,

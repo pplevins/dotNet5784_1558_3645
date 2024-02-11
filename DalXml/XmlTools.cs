@@ -33,6 +33,17 @@ static class XMLTools
         XMLTools.SaveListToXMLElement(root, data_config_xml);
         return nextId;
     }
+    public static DateTime GetProjectStartDate(string data_config_xml, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(data_config_xml);
+        return root.ToDateTimeNullable(elemName) ?? throw new FormatException($"can't convert id.  {data_config_xml}, {elemName}");
+    }
+    public static void SetProjectStartDate(string data_config_xml, string elemName, DateTime? elem)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(data_config_xml);
+        root.Element(elemName)?.SetValue((elem).ToString()!);
+        XMLTools.SaveListToXMLElement(root, data_config_xml);
+    }
     #endregion
 
     #region SaveLoadWithXElement

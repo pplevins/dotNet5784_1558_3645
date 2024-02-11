@@ -13,14 +13,15 @@ namespace BlImplementation;
 internal class TaskImplementation : ITask
 {
     private DalApi.IDal _dal = DalApi.Factory.Get;
+    private IBl bl = Factory.Get();
     public int Create(BO.Task boTask)
     {
-        Bl bl = new Bl();
         if (bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
             throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot create task at this stage of the project.");
         DO.Task doTask = new DO.Task();
         BO.Tools.CopySimilarFields(boTask, doTask);
-
+        if (boTask.Engineer is not null)
+            doTask = BO.Tools.UpdateEntity(doTask, "EngineerId", boTask.Engineer.Id);
         try
         {
             if (BO.Tools.ValidatePositiveNumber(boTask.Id)
@@ -29,6 +30,8 @@ internal class TaskImplementation : ITask
             {
                 int idTask = _dal.Task.Create(doTask);
                 CreateDependencies(boTask.Dependencies, idTask);
+                if (boTask.Engineer is not null)
+                    doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
                 return idTask;
             }
             return 0;
@@ -58,7 +61,6 @@ internal class TaskImplementation : ITask
 
     public void Delete(int id)
     {
-        Bl bl = new Bl();
         if (_dal.Dependency.ReadAll().Any<DO.Dependency?>(ed => ed?.PreviousTask == id))
             throw new BO.Exceptions.BlDeletionImpossibleException($"task with id={id} has dependent tasks and cannot be deleted!");
         if (bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
@@ -83,6 +85,7 @@ internal class TaskImplementation : ITask
         DO.Task? doTask = _dal.Task.Read(id);
         if (doTask == null)
             throw new BO.Exceptions.BlDoesNotExistException($"Task with ID={id} does Not exist");
+        BO.Tools.CheckActive("Task", doTask);
         return new BO.Task()
         {
             Id = id,
@@ -110,6 +113,7 @@ internal class TaskImplementation : ITask
         DO.Task? doTask = _dal.Task.Read(filter);
         if (doTask is null)
             throw new BO.Exceptions.BlDoesNotExistException($"Task does Not exist");
+        BO.Tools.CheckActive("Task", doTask);
         return new BO.Task()
         {
             Id = doTask.Id,
@@ -168,7 +172,6 @@ internal class TaskImplementation : ITask
                 )
             {
                 DO.Task doTask = new DO.Task();
-                Bl bl = new Bl();
                 Expression<Func<DO.Task, object>>[] excludedProperties;
                 switch (bl.CheckProjectStatus())
                 {
@@ -192,7 +195,7 @@ internal class TaskImplementation : ITask
                     CreateDependencies(boTask.Dependencies, boTask.Id);
                 }
                 if (boTask.Engineer is not null)
-                    doTask = BO.Tools.UpdateEntity(doTask, "EngineerId", boTask.Engineer.Id);
+                    doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
                 _dal.Task.Update(doTask);
 
             }
@@ -217,7 +220,6 @@ internal class TaskImplementation : ITask
 
     public DO.Task UpdateScheduledDate(DO.Task doTask, DateTime? date)
     {
-        Bl bl = new Bl();
         if (date == null)
             return doTask;
         _dal.Dependency.ReadAll()
@@ -261,7 +263,7 @@ internal class TaskImplementation : ITask
                 }).ToList();
     }
 
-    private BO.EngineerInTask? GetEngineer(int? id)
+    public BO.EngineerInTask? GetEngineer(int? id)
     {
         return _dal.Engineer.ReadAll()
             .Where(doEng => doEng?.Id == id)
@@ -271,6 +273,25 @@ internal class TaskImplementation : ITask
                 Name = doEng.Name
             }).FirstOrDefault() ?? null;
 
+    }
+
+    private DO.Task UpdateEngineerInTask(DO.Task doTask, int id)
+    {
+        DO.Engineer? eng = _dal.Engineer.Read(id);
+        if (eng == null) 
+            throw new BO.Exceptions.BlDoesNotExistException($"Engineer with id={id} does not exist and cannot be assigned to the task");
+        if (doTask.DifficultyLevel > eng.Level) 
+            throw new InvalidOperationException($"Engineer with level={eng.Level} cannot be assigned to task with level {doTask.DifficultyLevel}");
+        _dal.Dependency.ReadAll()
+            .Where(dep => dep.DependentTask == doTask.Id)
+            .Select(dep => dep.PreviousTask).ToList()
+            .ForEach(preId =>
+            {
+                DO.Task? task = _dal.Task.Read(preId);
+                if (CalcStatus(task) != BO.TaskStatus.Done)
+                    throw new InvalidOperationException("You can't assign engineer to task with undone previous tasks.");
+            });
+        return BO.Tools.UpdateEntity(doTask, "EngineerId", id);
     }
 
     private bool UpdateDependenciesCheck(List<BO.TaskInList> dependentTasks, IEnumerable<DO.Dependency> dependencies)
@@ -292,6 +313,19 @@ internal class TaskImplementation : ITask
                 .Where(dep => dep?.DependentTask == id)
                 .ToList()
                 .ForEach(dep => _dal.Dependency.Delete(dep.Id));
+    }
+
+    public DateTime SuggestScheduledDate(int id)
+    {
+        List<BO.TaskInList> depList = CalcDependencies(id);
+        if (depList.Count == 0)
+            return (DateTime)bl.ProjectStartDate!;
+        if (depList.Any(dep => dep.Status == BO.TaskStatus.Unscheduled))
+            throw new ArgumentException("There's at least one previous task without Schedule Date");
+        return (DateTime)_dal.Task.ReadAll()
+            .Where(task => depList.Any(dep => dep.Id == task!.Id))
+            .Select(task => task!.ScheduledDate + task.RequiredEffortTime)
+            .Max()!;
     }
 }
 

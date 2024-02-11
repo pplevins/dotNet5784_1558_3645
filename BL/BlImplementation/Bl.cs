@@ -1,16 +1,21 @@
 ﻿using BlApi;
 
 namespace BlImplementation;
-sealed public class Bl : IBl
+internal class Bl : IBl
 {
     private DalApi.IDal _dal = DalApi.Factory.Get;
     public IMilestone Milestone => new MilestoneImplementation();
     public IEngineer Engineer => new EngineerImplementation();
     public ITask Task => new TaskImplementation();
-    public DateTime? ProjectStartDate { get; set; } = null;
+    public DateTime? ProjectStartDate 
+    {
+        get {  return _dal.ProjectStartDate; } 
+        set { if (value is not null && ProjectStartDate is null)
+                _dal.ProjectStartDate = value; }
+    }
     public BO.ProjectStatus CheckProjectStatus()
     {
-        if (ProjectStartDate == null)
+        if (ProjectStartDate is null)
             return BO.ProjectStatus.Planing;
         else
         {
