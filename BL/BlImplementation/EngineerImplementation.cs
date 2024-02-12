@@ -9,11 +9,19 @@ namespace BlImplementation;
 internal class EngineerImplementation : IEngineer
 {
     private DalApi.IDal _dal = DalApi.Factory.Get;
+    
+    /// <summary>
+    /// Creates new engineer in BL
+    /// </summary>
+    /// <param name="boEngineer">Bl engineer entity</param>
+    /// <returns></returns>
+    /// <exception cref="BO.Exceptions.BlAlreadyExistsException">In case the engineer already exists</exception>
+    /// <exception cref="ArgumentException">in case the input is not valid</exception>
     public int Create(Engineer boEngineer)
     {
         DO.Engineer doEngineer = new DO.Engineer();
         BO.Tools.CopySimilarFields(boEngineer, doEngineer);
-        //(boEngineer.Id, boEngineer.Name, boEngineer.Email, (DO.EngineerExperience)boEngineer.Level, true, boEngineer.Cost);
+        doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
         try
         {
             if (BO.Tools.ValidatePositiveNumber(boEngineer.Id) 
@@ -132,6 +140,7 @@ internal class EngineerImplementation : IEngineer
         {
             DO.Engineer doEngineer = new DO.Engineer();
             BO.Tools.CopySimilarFields(boEngineer, doEngineer);
+            doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
             if (BO.Tools.ValidatePositiveNumber(boEngineer.Id)
                     && BO.Tools.ValidateNonEmptyString(boEngineer.Name)
                     && BO.Tools.ValidateEmailAddress(boEngineer.Email)
@@ -144,6 +153,18 @@ internal class EngineerImplementation : IEngineer
                     DO.Task? doTask = _dal.Task.Read(boEngineer.Task.Id);
                     if (doTask is null)
                         throw new DO.Exceptions.DalDoesNotExistException($"There's no task with id={boEngineer.Task.Id}");
+                    if (doTask.DifficultyLevel > doEngineer.Level)
+                        throw new InvalidOperationException($"Can't assign task with level={doTask.DifficultyLevel} to engineer with level={doEngineer.Level}");
+                    _dal.Dependency.ReadAll()
+                        .Where(dep => dep.DependentTask == doTask.Id)
+                        .Select(dep => dep.PreviousTask)
+                        .ToList()
+                        .ForEach(dep =>
+                        {
+                            DO.Task? dt = _dal.Task.Read(dep);
+                            if (!dt.CompleteDate.HasValue)
+                                throw new InvalidOperationException($"Failed to assign engineer to task id={doTask.Id}. Not all previous tast has done yet.");
+                        });
                     DO.Task newTask = new DO.Task()
                     {
                         Id = doTask.Id,

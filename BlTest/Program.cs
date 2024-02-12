@@ -262,6 +262,17 @@ Select which entity you want to test:
         string email = GetUpdatedValue("Email", existingEngineer.Email);
         BO.EngineerExperience level = GetUpdatedValue("Level", existingEngineer.Level, input => Enum.TryParse(input, out BO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("invalid input for level"));
         double? cost = GetUpdatedValue("Cost", existingEngineer.Cost, input => double.TryParse(input, out var parsedDouble) ? parsedDouble : (double?)null);
+        int? taskId = GetUpdatedValue("Task ID", existingEngineer.Task?.Id, input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
+        BO.TaskInEngineer? taskIn;
+        if (taskId != null)
+        {
+            taskIn = new BO.TaskInEngineer()
+            {
+                Id = (int)taskId
+            };
+        }
+        else
+            taskIn = null;
 
         //setting the updated engineer
         BO.Engineer engineer = new()
@@ -271,7 +282,7 @@ Select which entity you want to test:
             Email = email,
             Level = level,
             Cost = cost,
-            Task = null
+            Task = taskIn
         };
         s_bl!.Engineer.Update(engineer);
     }
@@ -313,7 +324,7 @@ Select which entity you want to test:
         BO.EngineerInTask? engineer = GetEngineerInTask(engineerId);
         BO.Task task = new BO.Task
         {
-            Id = 0,
+            Id = taskId,
             Alias = alias,
             Description = description,
             Deliverables = deliverables,

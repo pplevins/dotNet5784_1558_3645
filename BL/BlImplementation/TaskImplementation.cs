@@ -48,6 +48,8 @@ internal class TaskImplementation : ITask
 
     private void CreateDependencies(List<BO.TaskInList> dependencies, int idTask)
     {
+        if (dependencies is null)
+            return;
         foreach (var depTask in dependencies)
         {
             DO.Dependency dependency = new()
@@ -189,7 +191,8 @@ internal class TaskImplementation : ITask
                         BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
                         break;
                 }
-                if (UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id)))
+                bool needChange = UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id));
+                if (needChange)
                 {
                     DeleteDependencies(boTask.Id);
                     CreateDependencies(boTask.Dependencies, boTask.Id);
@@ -298,10 +301,12 @@ internal class TaskImplementation : ITask
     {
         if (dependentTasks is null && dependencies is null)
             return false;
+        if (dependentTasks is null || dependencies is null)
+            return true;
         var depToUpadte = dependentTasks?.Select(dep => dep.Id);
         var depToCheck = dependencies.Select(dep => dep.DependentTask);
 
-        if (depToCheck.OrderBy(id => id).SequenceEqual(depToUpadte.OrderBy(id => id)))
+        if (depToCheck.OrderBy(id => id).SequenceEqual(depToUpadte?.OrderBy(id => id)))
             return false;
         else
             return true;
