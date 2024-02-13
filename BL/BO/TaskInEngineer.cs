@@ -9,22 +9,6 @@ public class TaskInEngineer
     public int Id { get; init; }
     public string? Alias { get; set; }
 
-
-    ///// <summary>
-    ///// Initializes an empty instance of the TaskInEngineer class.
-    ///// </summary>
-    //public TaskInEngineer()
-    //    : this(0, "") { }
-
-    ///// <summary>
-    ///// Initializes an instance of the TaskInEngineer class with specified values.
-    ///// </summary>
-    //public TaskInEngineer(int id, string alias)
-    //{
-    //    Id = id;
-    //    Alias = alias;
-    //}
-
     /// <summary>
     /// Overrides the ToString method to return the result of ToStringProperty.
     /// </summary>

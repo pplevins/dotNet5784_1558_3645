@@ -7,12 +7,21 @@ internal class Bl : IBl
     public IMilestone Milestone => new MilestoneImplementation();
     public IEngineer Engineer => new EngineerImplementation();
     public ITask Task => new TaskImplementation();
+
+    /// <summary>
+    /// The set/get property of the project start date
+    /// </summary>
     public DateTime? ProjectStartDate 
     {
         get {  return _dal.ProjectStartDate; } 
-        set { if (value is not null && ProjectStartDate is null)
+        set { if (value is not null && ProjectStartDate is null && value >= DateTime.Now)
                 _dal.ProjectStartDate = value; }
     }
+
+    /// <summary>
+    /// Checking the project status according to the stages
+    /// </summary>
+    /// <returns>Enum of the project status</returns>
     public BO.ProjectStatus CheckProjectStatus()
     {
         if (ProjectStartDate is null)

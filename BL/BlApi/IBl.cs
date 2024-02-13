@@ -2,6 +2,9 @@
 
 namespace BlApi;
 
+/// <summary>
+/// Interface for the Bl
+/// </summary>
 public interface IBl
 {
     IMilestone Milestone { get; }

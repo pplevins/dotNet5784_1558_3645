@@ -11,6 +11,10 @@ public enum EngineerExperience
     Advanced,
     Expert
 }
+
+/// <summary>
+/// Enum representing status of single task
+/// </summary>
 public enum TaskStatus
 {
     Unscheduled,
@@ -20,6 +24,9 @@ public enum TaskStatus
     Done
 }
 
+/// <summary>
+/// Enum representing the status of the project
+/// </summary>
 public enum ProjectStatus
 {
     Planing,

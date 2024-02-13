@@ -18,25 +18,6 @@ public class Engineer
     public double? Cost { get; set; }
     public TaskInEngineer? Task { get; set; }
 
-    ///// <summary>
-    ///// Initializes an empty instance of the Engineer class.
-    ///// </summary>
-    //public Engineer()
-    //    : this(0, "", "", EngineerExperience.Beginner, null, null) { }
-
-    ///// <summary>
-    ///// Initializes an instance of the Engineer class with specified values.
-    ///// </summary>
-    //public Engineer(int id, string name, string email, EngineerExperience level, double? cost = null, TaskInEngineer? task = null)
-    //{
-    //    Id = id;
-    //    Name = name;
-    //    Email = email;
-    //    Level = level;
-    //    Cost = cost;
-    //    Task = task;
-    //}
-
     /// <summary>
     /// Overrides the ToString method to return the result of ToStringProperty.
     /// </summary>

@@ -23,6 +23,9 @@ Select which entity you want to test:
     0: Exit
     1: Engineer
     2: Task
+
+to set the project start date, press 3
+to set the schedule date of all the tasks in the middle planing of the project, press 4
         ");
                 if (int.TryParse(Console.ReadLine(), out choice))
                 {
@@ -36,6 +39,26 @@ Select which entity you want to test:
                             break;
                         case 2:
                             SubMenu("Task", s_bl.Task);
+                            break;
+                        case 3:
+                            try
+                            {
+                                SetProjectStartDate();
+                            }
+                            catch (Exception Ex)
+                            {
+                                Console.WriteLine(Ex.Message);
+                            }
+                            break;
+                        case 4:
+                            try
+                            {
+                                SetScheduleDates();
+                            }
+                            catch (Exception Ex)
+                            {
+                                Console.WriteLine(Ex.Message);
+                            }
                             break;
                         default:
                             Console.WriteLine("it must be a number between 0-2!");
@@ -165,6 +188,64 @@ Select which entity you want to test:
     }
 
     /// <summary>
+    /// set the date from the user to the project start date
+    /// </summary>
+    /// <exception cref="ArgumentException">in case the input is not a date</exception>
+    static void SetProjectStartDate()
+    {
+        Console.WriteLine("What date would you like to start working on the project?");
+        if (!DateTime.TryParse(Console.ReadLine(), out var startDate))
+            throw new ArgumentException("it must be a value of date!");
+        s_bl!.ProjectStartDate = startDate;
+        Console.WriteLine(@$"Now your'e in the {s_bl.CheckProjectStatus()} stage of the project. it's advisable to set the schedule date of all the tasks.
+Do you want to do it now(Y/N)? (You can always get to it again in the menu)");
+        string? input = Console.ReadLine();
+        if (input == "Y" || input == "y")
+            SetScheduleDates();
+        return;
+    }
+
+    /// <summary>
+    /// set Schedule Dates for all the tasks in the middle stage of the project
+    /// </summary>
+    /// <exception cref="ArgumentException">in case the input is not a date</exception>
+    static void SetScheduleDates()
+    {
+        int id = 1;
+        string? input;
+        while (id >= 0)
+        {
+            Console.WriteLine("Enter task ID. Enter 0 to quit");
+            if (int.TryParse(Console.ReadLine(), out id))
+            {
+                if (id >= 0)
+                {
+                    BO.Task? task = s_bl.Task.Read(id);
+                    if (task != null)
+                    {
+                        DateTime suggestDate = s_bl.Task.SuggestScheduledDate(id);
+                        Console.WriteLine($"Optional Schedule Date is {suggestDate}. do you want do set this date(Y/N)?");
+                        input = Console.ReadLine();
+                        if (input == "Y" || input == "y")
+                            task.ScheduledDate = suggestDate;
+                        else
+                        { 
+                            Console.WriteLine("Enter date");
+                            DateTime date;
+                            if (DateTime.TryParse(Console.ReadLine(), out date))
+                                task.ScheduledDate = date;
+                            else
+                                throw new ArgumentException("You must enter date");
+                        }
+                        s_bl.Task.Update(task);
+                    }   
+                }
+            }
+            else { Console.WriteLine("The input must be a number!"); }
+        }
+    }
+
+    /// <summary>
     /// create function for engineer entity
     /// </summary>
     /// <exception cref="FormatException">in case the parse didn't succeed</exception>
@@ -177,7 +258,7 @@ Select which entity you want to test:
         string name = GetValue<string>("Name");
         string email = GetValue<string>("Email");
         BO.EngineerExperience level = GetValue<BO.EngineerExperience>("Level", input => Enum.TryParse(input, out BO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
-        double? cost = GetUpdatedValue("Cost", null, input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
+        double? cost = GetUpdatedValue("Cost", null, input => double.TryParse(input, out var parsedInt) ? parsedInt : (double?)null);
 
         BO.Engineer engineer = new()
         {
@@ -186,7 +267,6 @@ Select which entity you want to test:
             Email = email, 
             Level = level, 
             Cost = cost,
-            Task = null 
         };
         int newId = s_bl!.Engineer.Create(engineer);
         Console.WriteLine($"engineer created ID {newId}\n");
@@ -207,16 +287,9 @@ Select which entity you want to test:
         BO.EngineerExperience level = GetValue<BO.EngineerExperience>("DifficultyLevel", input => Enum.TryParse(input, out BO.EngineerExperience parsedLevel) ? parsedLevel : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
         TimeSpan? effortTime = GetUpdatedValue("RequiredEffortTime", null, input => TimeSpan.TryParse(input, out var parsedTimeSpan) ? parsedTimeSpan : (TimeSpan?)null);
         DateTime? creation = GetUpdatedValue("CreatedAtDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        int? engineerId = GetUpdatedValue("EngineerId", null, input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
         string? remarks = GetUpdatedValue<string?>("Remarks", null); //for nullable string
-        DateTime? scheduledDate = GetUpdatedValue("ScheduledDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        DateTime? startDate = GetUpdatedValue("StartDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        DateTime? deadlineDate = GetUpdatedValue("DeadlineDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        DateTime? completeDate = GetUpdatedValue("CompleteDate", null, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-        
-        BO.EngineerInTask? engineer = GetEngineerInTask(engineerId);
-        ////need to add calc dependencies
 
+        List<BO.TaskInList> list = GetDependenciesList();
         BO.Task task = new BO.Task
         {
             Id = 0,
@@ -225,13 +298,9 @@ Select which entity you want to test:
             Deliverables = deliverables,
             DifficultyLevel = level,
             RequiredEffortTime = effortTime,
-            CreatedAtDate = creation,
+            CreatedAtDate = DateTime.Now,
             Remarks = remarks,
-            ScheduledDate = scheduledDate,
-            StartDate = startDate,
-            DeadlineDate = deadlineDate,
-            CompleteDate = completeDate,
-            Engineer = engineer
+            Dependencies = list
         };
         int newId = s_bl!.Task.Create(task);
         Console.WriteLine($"task created ID {newId}\n");
@@ -320,7 +389,7 @@ Select which entity you want to test:
         DateTime? startDate = GetUpdatedValue("StartDate", existingTask.StartDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
         DateTime? deadlineDate = GetUpdatedValue("DeadlineDate", existingTask.DeadlineDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
         DateTime? completeDate = GetUpdatedValue("CompleteDate", existingTask.CompleteDate, input => DateTime.TryParse(input, out var parsedDateTime) ? parsedDateTime : (DateTime?)null);
-
+        List<BO.TaskInList> list = GetUpdatedDependencies(existingTask.Dependencies);
         BO.EngineerInTask? engineer = GetEngineerInTask(engineerId);
         BO.Task task = new BO.Task
         {
@@ -336,11 +405,17 @@ Select which entity you want to test:
             StartDate = startDate,
             DeadlineDate = deadlineDate,
             CompleteDate = completeDate,
-            Engineer = engineer
+            Engineer = engineer,
+            Dependencies = list
         };
         s_bl!.Task.Update(task);
     }
 
+    /// <summary>
+    /// getting the detailed EngineerInTask according to its id
+    /// </summary>
+    /// <param name="engineerId">the engineer id</param>
+    /// <returns>EngineerInTask entity</returns>
     static BO.EngineerInTask? GetEngineerInTask(int? engineerId)
     {
         if (engineerId is not null)
@@ -353,6 +428,46 @@ Select which entity you want to test:
             return engineer;
         }
         return null;
+    }
+
+    /// <summary>
+    /// Get the previous tasks list from the user
+    /// </summary>
+    /// <returns>list of the previous tasks</returns>
+    static List<BO.TaskInList> GetDependenciesList()
+    {
+        List<BO.TaskInList> list = new();
+        Console.WriteLine("enter dependency ID's one by one. Enter 0 to quit");
+        int depId = 1;
+        while (depId >= 0)
+        {
+            if (int.TryParse(Console.ReadLine(), out depId))
+            {
+                if (depId >= 0) { 
+                    BO.TaskInList dep = new() { Id = depId };
+                    list.Add(dep);
+                }
+            }
+            else { Console.WriteLine("The input must be a number!"); }
+        }
+        return list;
+    }
+
+    /// <summary>
+    /// asks the user if he want to update the previous tasks
+    /// </summary>
+    /// <param name="deps">the existing list of previous tasks</param>
+    /// <returns>the updated list of previous tasks</returns>
+    static List<BO.TaskInList> GetUpdatedDependencies(List<BO.TaskInList> deps)
+    {
+        Console.WriteLine("Do you want to update dependencies(Y/N)?");
+        string? input = Console.ReadLine();
+        if (input != "Y" && input != "y")
+        {
+            Console.WriteLine("No change is made in the dependencies.");
+            return deps;
+        }
+        return GetDependenciesList();
     }
 
     /// <summary>

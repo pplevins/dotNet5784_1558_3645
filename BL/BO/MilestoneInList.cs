@@ -18,25 +18,6 @@ public class MilestoneInList
     public DateTime? CreatedAtDate { get; set; }
     public double? CompletionPercentage { get; set; }
 
-    ///// <summary>
-    ///// Initializes an empty instance of the MilestoneInList class.
-    ///// </summary>
-    //public MilestoneInList() 
-    //    : this(0, "", "", TaskStatus.Unscheduled, null, null) { }
-
-    ///// <summary>
-    ///// Initializes an instance of the MilestoneInList class with specified values.
-    ///// </summary>
-    //public MilestoneInList(int id, string alias, string description, TaskStatus status, DateTime? createdAtDate, double? completionPercentage)
-    //{
-    //    Id = id;
-    //    Alias = alias;
-    //    Description = description;
-    //    Status = status;
-    //    CreatedAtDate = createdAtDate;
-    //    CompletionPercentage = completionPercentage;
-    //}
-
     /// <summary>
     /// Overrides the ToString method to return the result of ToStringProperty.
     /// </summary>

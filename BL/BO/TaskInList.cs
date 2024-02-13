@@ -14,24 +14,6 @@ public class TaskInList
     public string? Description { get; set; }
     public TaskStatus Status { get; set; }
 
-
-    ///// <summary>
-    ///// Initializes an empty instance of the TaskInList class.
-    ///// </summary>
-    //public TaskInList()
-    //    : this(0, "", "", TaskStatus.Unscheduled) { }
-
-    ///// <summary>
-    ///// Initializes an instance of the TaskInList class with specified values.
-    ///// </summary>
-    //public TaskInList(int id, string alias, string description, TaskStatus status)
-    //{
-    //    Id = id;
-    //    Alias = alias;
-    //    Description = description;
-    //    Status = status;
-    //}
-
     /// <summary>
     /// Overrides the ToString method to return the result of ToStringProperty.
     /// </summary>

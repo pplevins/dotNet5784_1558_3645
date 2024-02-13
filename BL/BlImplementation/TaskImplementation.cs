@@ -14,14 +14,21 @@ internal class TaskImplementation : ITask
 {
     private DalApi.IDal _dal = DalApi.Factory.Get;
     private IBl bl = Factory.Get();
+
+    /// <summary>
+    /// Creates new task in BL
+    /// </summary>
+    /// <param name="boTask">Bl task entity</param>
+    /// <returns>id of the task</returns>
+    /// <exception cref="BO.Exceptions.BlUpdateCreateImpossibleException">if the project is not in the suitable stage to create new task</exception>
+    /// <exception cref="BO.Exceptions.BlAlreadyExistsException">In case the task already exists</exception>
+    /// <exception cref="ArgumentException">in case the input is not valid</exception>
     public int Create(BO.Task boTask)
     {
         if (bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
             throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot create task at this stage of the project.");
         DO.Task doTask = new DO.Task();
         BO.Tools.CopySimilarFields(boTask, doTask);
-        if (boTask.Engineer is not null)
-            doTask = BO.Tools.UpdateEntity(doTask, "EngineerId", boTask.Engineer.Id);
         try
         {
             if (BO.Tools.ValidatePositiveNumber(boTask.Id)
@@ -46,6 +53,11 @@ internal class TaskImplementation : ITask
         }
     }
 
+    /// <summary>
+    /// Create new dependencies in DAL according to the list in task entity
+    /// </summary>
+    /// <param name="dependencies">the list of previous tasks</param>
+    /// <param name="idTask">id of the dependent task</param>
     private void CreateDependencies(List<BO.TaskInList> dependencies, int idTask)
     {
         if (dependencies is null)
@@ -61,6 +73,12 @@ internal class TaskImplementation : ITask
         }
     }
 
+    /// <summary>
+    /// Deletes task in BL
+    /// </summary>
+    /// <param name="id">id of the task to delete</param>
+    /// <exception cref="BO.Exceptions.BlDeletionImpossibleException">in case there's a previous tasks or can't delete in this project stage</exception>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the task does not exist</exception>
     public void Delete(int id)
     {
         if (_dal.Dependency.ReadAll().Any<DO.Dependency?>(ed => ed?.PreviousTask == id))
@@ -82,6 +100,12 @@ internal class TaskImplementation : ITask
         }
     }
 
+    /// <summary>
+    /// Reads a task
+    /// </summary>
+    /// <param name="id">id of the task to read</param>
+    /// <returns>BO.task entity</returns>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the task does not exist</exception>
     public BO.Task? Read(int id)
     {
         DO.Task? doTask = _dal.Task.Read(id);
@@ -110,6 +134,12 @@ internal class TaskImplementation : ITask
         };
     }
 
+    /// <summary>
+    /// Reads an task according to filter
+    /// </summary>
+    /// <param name="filter">filter to the read function</param>
+    /// <returns>BO.task entity</returns>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the task does not exist</exception>
     public BO.Task? Read(Func<DO.Task, bool> filter)
     {
         DO.Task? doTask = _dal.Task.Read(filter);
@@ -138,6 +168,11 @@ internal class TaskImplementation : ITask
         };
     }
 
+    /// <summary>
+    /// Reads all tasks
+    /// </summary>
+    /// <param name="filter">filter function</param>
+    /// <returns>IEnumerable of all tasks</returns>
     public IEnumerable<BO.Task?> ReadAll(Func<DO.Task, bool>? filter = null)
     {
         return (from DO.Task doTask in _dal.Task.ReadAll(filter)
@@ -165,6 +200,15 @@ internal class TaskImplementation : ITask
                 });
     }
 
+    /// <summary>
+    /// Updates task in Bl
+    /// </summary>
+    /// <param name="boTask">BO.task entity to update</param>
+    /// <exception cref="BO.Exceptions.BlUpdateCreateImpossibleException"></exception>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the task does not exist</exception>
+    /// <exception cref="ArgumentNullException">in case some argument is null</exception>
+    /// <exception cref="ArgumentException">in case some argument is not valid</exception>
+    /// <exception cref="InvalidOperationException">in case some operation is invalid</exception>
     public void Update(BO.Task boTask)
     {
         try
@@ -180,6 +224,7 @@ internal class TaskImplementation : ITask
                     case BO.ProjectStatus.Planing:
                         excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.ScheduledDate, dc => dc.CreatedAtDate, dc => dc.StartDate, dc => dc.CompleteDate };
                         BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+                        doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
                         break;
                     case BO.ProjectStatus.MiddlePlaning:
                         excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.DifficultyLevel, dc => dc.CreatedAtDate, dc => dc.StartDate, dc => dc.CompleteDate, dc => dc.RequiredEffortTime };
@@ -191,14 +236,22 @@ internal class TaskImplementation : ITask
                         BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
                         break;
                 }
+
+                //updates the dependencies
                 bool needChange = UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id));
                 if (needChange)
                 {
                     DeleteDependencies(boTask.Id);
                     CreateDependencies(boTask.Dependencies, boTask.Id);
                 }
+
+                //updates the engieer assign to the task
                 if (boTask.Engineer is not null)
+                {
+                    if (bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
+                        throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot assign engineer to task at this stage of the project.");
                     doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
+                }
                 _dal.Task.Update(doTask);
 
             }
@@ -221,6 +274,13 @@ internal class TaskImplementation : ITask
         }
     }
 
+    /// <summary>
+    /// Update the ScheduledDate property in task
+    /// </summary>
+    /// <param name="doTask">DO.Task to update</param>
+    /// <param name="date">the ScheduledDate value to update</param>
+    /// <returns>the updated DO.Task</returns>
+    /// <exception cref="InvalidOperationException">in case previous tasks doesn't have a date</exception>
     public DO.Task UpdateScheduledDate(DO.Task doTask, DateTime? date)
     {
         if (date == null)
@@ -230,9 +290,9 @@ internal class TaskImplementation : ITask
             .Select(ed => ed?.PreviousTask).ToList()
             .ForEach(taskId =>
             {
-                if (bl.ProjectStartDate <= date
-                    && _dal.Task.ReadAll()
-                    .All(preTask => preTask is not null && preTask.ScheduledDate + preTask.RequiredEffortTime < date))
+                DO.Task? task;
+                task = _dal.Task.Read((int)taskId!);
+                if (bl.ProjectStartDate <= date && task.ScheduledDate + task.RequiredEffortTime <= date)
                     doTask = BO.Tools.UpdateEntity(doTask, "ScheduledDate", date);
                 else
                     throw new InvalidOperationException($"Failed to update the ScheduledDate property for task id={doTask.Id} because not all Previous Tasks has dates or the ScheduledDate is earlier.");
@@ -240,32 +300,48 @@ internal class TaskImplementation : ITask
         return doTask;
     }
 
+    /// <summary>
+    /// Calculing the status of a task
+    /// </summary>
+    /// <param name="task">the DO.Task to calc</param>
+    /// <returns>the status enum</returns>
     private BO.TaskStatus CalcStatus(DO.Task? task)
     {
         if (task.CompleteDate.HasValue)
             return BO.TaskStatus.Done;
-        if (task.EngineerId.HasValue)
+        if (task.EngineerId.HasValue && task.StartDate.HasValue)
             return BO.TaskStatus.Started;
         if (task.ScheduledDate.HasValue)
             return BO.TaskStatus.Scheduled;
         return BO.TaskStatus.Unscheduled;
     }
 
+    /// <summary>
+    /// Calculing the dependencies of each task
+    /// </summary>
+    /// <param name="id">id of the task to calc</param>
+    /// <returns>the list of previous tasks</returns>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the task doesn't exist</exception>
     private List<BO.TaskInList> CalcDependencies(int id)
     {
-        return (from DO.Dependency doDep in _dal.Dependency.ReadAll()
-                where doDep.DependentTask == id
-                from DO.Task doTask in _dal.Task.ReadAll()
-                where doTask.Id == doDep.PreviousTask
+        return (from dep in _dal.Dependency.ReadAll()
+                where dep?.DependentTask == id
+                let preId = dep.PreviousTask
+                let doTask = _dal.Task.Read(preId) ?? throw new BO.Exceptions.BlDoesNotExistException($"Task with id={preId} doesn't exist, and can't be the previous task")
                 select new BO.TaskInList
                 {
-                    Id = doDep.PreviousTask,
+                    Id = doTask.Id,
                     Alias = doTask.Alias,
                     Description = doTask.Description,
                     Status = CalcStatus(doTask)
                 }).ToList();
     }
 
+    /// <summary>
+    /// Gets the engineer details for engineerInTask
+    /// </summary>
+    /// <param name="id">id of the engineer</param>
+    /// <returns>EngineerInTask entity</returns>
     public BO.EngineerInTask? GetEngineer(int? id)
     {
         return _dal.Engineer.ReadAll()
@@ -278,6 +354,14 @@ internal class TaskImplementation : ITask
 
     }
 
+    /// <summary>
+    /// Updates EngineerInTask in task
+    /// </summary>
+    /// <param name="doTask">DO.Task to update</param>
+    /// <param name="id">engineer id</param>
+    /// <returns>the updated DO.Task</returns>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the engineer does not exist</exception>
+    /// <exception cref="InvalidOperationException">in case there's logical problem to assign engineer to the task</exception>
     private DO.Task UpdateEngineerInTask(DO.Task doTask, int id)
     {
         DO.Engineer? eng = _dal.Engineer.Read(id);
@@ -297,6 +381,12 @@ internal class TaskImplementation : ITask
         return BO.Tools.UpdateEntity(doTask, "EngineerId", id);
     }
 
+    /// <summary>
+    /// Check if the TaskInList list from the user is need to update
+    /// </summary>
+    /// <param name="dependentTasks">the TaskInList list</param>
+    /// <param name="dependencies">the IEnumerable of the previous tasks</param>
+    /// <returns>true if there's difference between the previous tasks</returns>
     private bool UpdateDependenciesCheck(List<BO.TaskInList> dependentTasks, IEnumerable<DO.Dependency> dependencies)
     {
         if (dependentTasks is null && dependencies is null)
@@ -312,6 +402,10 @@ internal class TaskImplementation : ITask
             return true;
     }
 
+    /// <summary>
+    /// deletes dpendencies of task
+    /// </summary>
+    /// <param name="id">id  of the dependent task</param>
     private void DeleteDependencies(int id)
     {
         _dal.Dependency.ReadAll()
@@ -320,6 +414,12 @@ internal class TaskImplementation : ITask
                 .ForEach(dep => _dal.Dependency.Delete(dep.Id));
     }
 
+    /// <summary>
+    /// Suggest ScheduledDate for task
+    /// </summary>
+    /// <param name="id">task is</param>
+    /// <returns>the date Suggested</returns>
+    /// <exception cref="ArgumentException">in case there's previous tasks without ScheduledDate</exception>
     public DateTime SuggestScheduledDate(int id)
     {
         List<BO.TaskInList> depList = CalcDependencies(id);
