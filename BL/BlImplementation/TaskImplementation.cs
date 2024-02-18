@@ -1,9 +1,5 @@
 ﻿using BlApi;
-using BO;
-using DO;
-using System.Linq;
 using System.Linq.Expressions;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BlImplementation;
 
@@ -365,9 +361,9 @@ internal class TaskImplementation : ITask
     private DO.Task UpdateEngineerInTask(DO.Task doTask, int id)
     {
         DO.Engineer? eng = _dal.Engineer.Read(id);
-        if (eng == null) 
+        if (eng == null)
             throw new BO.Exceptions.BlDoesNotExistException($"Engineer with id={id} does not exist and cannot be assigned to the task");
-        if (doTask.DifficultyLevel > eng.Level) 
+        if (doTask.DifficultyLevel > eng.Level)
             throw new InvalidOperationException($"Engineer with level={eng.Level} cannot be assigned to task with level {doTask.DifficultyLevel}");
         _dal.Dependency.ReadAll()
             .Where(dep => dep.DependentTask == doTask.Id)
@@ -434,6 +430,12 @@ internal class TaskImplementation : ITask
             .Where(task => depList.Any(dep => dep.Id == task!.Id))
             .Select(task => task!.ScheduledDate + task.RequiredEffortTime)
             .Max()!;
+    }
+
+    public void Reset()
+    {
+        _dal.Task.Reset();
+        _dal.Dependency.Reset();
     }
 }
 

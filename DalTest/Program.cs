@@ -220,7 +220,7 @@ public class Program
         string name = GetValue<string>("Name");
         string email = GetValue<string>("Email");
         EngineerExperience level = GetValue<EngineerExperience>("Level", input => Enum.TryParse(input, out DO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
-        double? cost = GetUpdatedValue("Cost", null, input => int.TryParse(input, out var parsedInt) ? parsedInt : (int?)null);
+        double? cost = GetUpdatedValue("Cost", null, input => double.TryParse(input, out var parsedInt) ? parsedInt : (double?)null);
 
         Engineer engineer = new(id, name, email, level, true, cost);
         int newId = s_dal!.Engineer.Create(engineer);

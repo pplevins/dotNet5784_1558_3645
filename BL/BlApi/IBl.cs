@@ -1,12 +1,12 @@
-﻿using DalApi;
-
-namespace BlApi;
+﻿namespace BlApi;
 
 /// <summary>
 /// Interface for the Bl
 /// </summary>
 public interface IBl
 {
+    public void InitializeDB();
+    public void ResetDB();
     IMilestone Milestone { get; }
     IEngineer Engineer { get; }
     ITask Task { get; }
