@@ -1,6 +1,5 @@
 ﻿using BlApi;
 using BO;
-using System.Collections.Specialized;
 
 namespace BlImplementation;
 /// <summary>
@@ -25,10 +24,10 @@ internal class EngineerImplementation : IEngineer
         doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
         try
         {
-            if (BO.Tools.ValidatePositiveNumber(boEngineer.Id) 
-                && BO.Tools.ValidateNonEmptyString(boEngineer.Name) 
-                && BO.Tools.ValidateEmailAddress(boEngineer.Email) 
-                && BO.Tools.ValidatePositiveNumber(boEngineer.Cost)
+            if (BO.Tools.ValidatePositiveNumber<int>(boEngineer.Id)
+                && BO.Tools.ValidateNonEmptyString(boEngineer.Name)
+                && BO.Tools.ValidateEmailAddress(boEngineer.Email)
+                && BO.Tools.ValidatePositiveNumber<double>(boEngineer.Cost)
                 )
             {
                 int idEng = _dal.Engineer.Create(doEngineer);
@@ -54,7 +53,7 @@ internal class EngineerImplementation : IEngineer
     /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the engineer does not exist</exception>
     public void Delete(int id)
     {
-        if(_dal.Task.ReadAll().Any<DO.Task?>(ed => ed?.EngineerId == id && ed.CompleteDate == null))
+        if (_dal.Task.ReadAll().Any<DO.Task?>(ed => ed?.EngineerId == id && ed.CompleteDate == null))
             throw new BO.Exceptions.BlDeletionImpossibleException($"Engineer with id={id} is working on task and cannot be deleted!");
         try
         {
@@ -64,7 +63,7 @@ internal class EngineerImplementation : IEngineer
         {
             throw new BO.Exceptions.BlDeletionImpossibleException("Engineer not found", ex);
         }
-        catch(DO.Exceptions.DalDoesNotExistException ex) 
+        catch (DO.Exceptions.DalDoesNotExistException ex)
         {
             throw new BO.Exceptions.BlDoesNotExistException($"Engineer with id={id} does not exist", ex);
         }
@@ -80,7 +79,7 @@ internal class EngineerImplementation : IEngineer
     {
         DO.Engineer? doEngineer = _dal.Engineer.Read(id);
         if (doEngineer == null)
-            throw new BO.Exceptions.BlDoesNotExistException($"Enginner with ID={id} does Not exist");
+            throw new BO.Exceptions.BlDoesNotExistException($"Engineer with ID={id} does Not exist");
 
         BO.Tools.CheckActive("Engineer", doEngineer);
 
@@ -158,6 +157,11 @@ internal class EngineerImplementation : IEngineer
                 });
     }
 
+    public void Reset()
+    {
+        _dal.Engineer.Reset();
+    }
+
     /// <summary>
     /// Updates engineer in Bl
     /// </summary>
@@ -174,10 +178,10 @@ internal class EngineerImplementation : IEngineer
             doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
 
             //integrity check
-            if (BO.Tools.ValidatePositiveNumber(boEngineer.Id)
+            if (BO.Tools.ValidatePositiveNumber<int>(boEngineer.Id)
                     && BO.Tools.ValidateNonEmptyString(boEngineer.Name)
                     && BO.Tools.ValidateEmailAddress(boEngineer.Email)
-                    && BO.Tools.ValidatePositiveNumber(boEngineer.Cost)
+                    && BO.Tools.ValidatePositiveNumber<double>(boEngineer.Cost)
                     && doEngineer.Level <= (DO.EngineerExperience)boEngineer.Level
                     )
             {
@@ -201,7 +205,7 @@ internal class EngineerImplementation : IEngineer
                             if (dt is not null && !dt.CompleteDate.HasValue)
                                 throw new InvalidOperationException($"Failed to assign engineer to task id={doTask.Id}. Not all previous tast has done yet.");
                         });
-                    
+
                     //setting the DO engineer
                     DO.Task newTask = new DO.Task()
                     {

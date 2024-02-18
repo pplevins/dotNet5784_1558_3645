@@ -136,4 +136,18 @@ public static class Initialization
         createEngineers();
         createDependencies();
     }
+    /// <summary>
+    /// Performs the reset operation.
+    /// </summary>
+    /// <param name="dal">The dal interface</param>
+    /// <exception cref="NullReferenceException">in case the dal argument is null</exception>
+    //public static void Do(IDal dal) //stage 2
+    public static void Reset() //stage 4
+    {
+        s_dal = DalApi.Factory.Get; //stage 4
+
+        s_dal.Engineer.Reset();
+        s_dal.Task.Reset();
+        s_dal.Dependency.Reset();
+    }
 }

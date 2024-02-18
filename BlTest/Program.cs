@@ -229,7 +229,7 @@ Do you want to do it now(Y/N)? (You can always get to it again in the menu)");
                         if (input == "Y" || input == "y")
                             task.ScheduledDate = suggestDate;
                         else
-                        { 
+                        {
                             Console.WriteLine("Enter date");
                             DateTime date;
                             if (DateTime.TryParse(Console.ReadLine(), out date))
@@ -238,7 +238,7 @@ Do you want to do it now(Y/N)? (You can always get to it again in the menu)");
                                 throw new ArgumentException("You must enter date");
                         }
                         s_bl.Task.Update(task);
-                    }   
+                    }
                 }
             }
             else { Console.WriteLine("The input must be a number!"); }
@@ -258,14 +258,14 @@ Do you want to do it now(Y/N)? (You can always get to it again in the menu)");
         string name = GetValue<string>("Name");
         string email = GetValue<string>("Email");
         BO.EngineerExperience level = GetValue<BO.EngineerExperience>("Level", input => Enum.TryParse(input, out BO.EngineerExperience parsedEnum) ? parsedEnum : throw new FormatException("input for level must be title (e.g. Beginner) or number between 0-4!"));
-        double? cost = GetUpdatedValue("Cost", null, input => double.TryParse(input, out var parsedInt) ? parsedInt : (double?)null);
+        double? cost = GetUpdatedValue("Cost", null, input => double.TryParse(input, out double parsedInt) ? parsedInt : (double?)null);
 
         BO.Engineer engineer = new()
         {
-            Id = id, 
-            Name = name, 
-            Email = email, 
-            Level = level, 
+            Id = id,
+            Name = name,
+            Email = email,
+            Level = level,
             Cost = cost,
         };
         int newId = s_bl!.Engineer.Create(engineer);
@@ -443,7 +443,8 @@ Do you want to do it now(Y/N)? (You can always get to it again in the menu)");
         {
             if (int.TryParse(Console.ReadLine(), out depId))
             {
-                if (depId >= 0) { 
+                if (depId >= 0)
+                {
                     BO.TaskInList dep = new() { Id = depId };
                     list.Add(dep);
                 }

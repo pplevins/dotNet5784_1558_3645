@@ -41,4 +41,9 @@ public interface ICrud<T, U> where T : class where U : class
     /// </summary>
     /// <param name="id">The entity's ID</param>
     void Delete(int id);
+    /// <summary>
+    /// Reset the entire DB
+    /// </summary>
+    /// <param name="id">The entity's ID</param>
+    void Reset();
 }

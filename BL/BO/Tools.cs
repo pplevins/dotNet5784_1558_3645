@@ -11,13 +11,12 @@ public static class Tools
 {
 
     // Validate positive number
-    public static bool ValidatePositiveNumber(object? value)
+    public static bool ValidatePositiveNumber<T>(T? value) where T : struct, IComparable<T>
     {
-        if (value is not null && value is IComparable comparable && comparable.CompareTo(0) <= 0)
+        if (value is not null && value?.CompareTo(default(T)) <= 0)
         {
             throw new ArgumentException($"Invalid {nameof(value)}. Must be a positive number.");
         }
-
         return true;
     }
 
