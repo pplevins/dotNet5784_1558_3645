@@ -10,18 +10,28 @@ namespace BO;
 public static class Tools
 {
 
-    // Validate positive number
-    public static bool ValidatePositiveNumber(object? value)
+    /// <summary>
+    /// Validate positive number
+    /// </summary>
+    /// <typeparam name="T">int/double</typeparam>
+    /// <param name="value">the value to validate</param>
+    /// <returns>true/false</returns>
+    /// <exception cref="ArgumentException">in case the value is not valid</exception>
+    public static bool ValidatePositiveNumber<T>(T? value) where T : struct, IComparable<T>
     {
-        if (value is not null && value is IComparable comparable && comparable.CompareTo(0) <= 0)
+        if (value is not null && value?.CompareTo(default(T)) <= 0)
         {
             throw new ArgumentException($"Invalid {nameof(value)}. Must be a positive number.");
         }
-
         return true;
     }
 
-    // Validate non-empty string
+    /// <summary>
+    /// Validate non-empty string
+    /// </summary>
+    /// <param name="value">string to validate</param>
+    /// <returns>true/false</returns>
+    /// <exception cref="ArgumentException">in case the value is not valid</exception>
     public static bool ValidateNonEmptyString(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -31,7 +41,12 @@ public static class Tools
         return true;
     }
 
-    // Validate email address
+    /// <summary>
+    /// Validate email address
+    /// </summary>
+    /// <param name="value">the email to validate</param>
+    /// <returns>true/false</returns>
+    /// <exception cref="ArgumentException">in case the value is not valid</exception>
     public static bool ValidateEmailAddress(string value)
     {
         if (ValidateNonEmptyString(value) && !IsValidEmailAddress(value))
@@ -137,7 +152,7 @@ public static class Tools
         {
 
             var matchingDestinationProperty = FindMatchingDestinationProperty(sourceProperty, typeof(TDestination));
-            if (IsExcluded(sourceProperty.Name, excludedProperties))
+            if (matchingDestinationProperty != null && IsExcluded(sourceProperty.Name, excludedProperties))
             {
                 CheckPropertyValueMatch(sourceProperty, matchingDestinationProperty, source!, destination!);
                 continue;
@@ -174,7 +189,8 @@ public static class Tools
     /// </summary>
     private static bool IsExcluded<TSource>(string propertyName, Expression<Func<TSource, object>>[] excludedProperties)
     {
-        return excludedProperties.Any(excludedProperty => GetPropertyName(excludedProperty) == propertyName);
+        var e = excludedProperties.Any(excludedProperty => GetPropertyName(excludedProperty) == propertyName);
+        return e;
     }
     /// <summary>
     /// Finds a matching destination property for a given source property and destination type.

@@ -14,8 +14,15 @@ internal class Bl : IBl
     public DateTime? ProjectStartDate 
     {
         get {  return _dal.ProjectStartDate; } 
-        set { if (value is not null && ProjectStartDate is null && value >= DateTime.Now)
-                _dal.ProjectStartDate = value; }
+        set 
+        {
+            if (ProjectStartDate is not null)
+                throw new InvalidOperationException("There's already date for the project. You can't reset.");
+            if (value < DateTime.Now)
+                throw new InvalidOperationException("You can't set a past date.");
+            if (value is not null)
+                _dal.ProjectStartDate = value;
+        }
     }
 
     /// <summary>

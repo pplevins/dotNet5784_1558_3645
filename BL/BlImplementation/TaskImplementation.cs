@@ -31,7 +31,7 @@ internal class TaskImplementation : ITask
         BO.Tools.CopySimilarFields(boTask, doTask);
         try
         {
-            if (BO.Tools.ValidatePositiveNumber(boTask.Id)
+            if (BO.Tools.ValidatePositiveNumber<int>(boTask.Id)
                 && BO.Tools.ValidateNonEmptyString(boTask.Alias)
                 )
             {
@@ -213,7 +213,7 @@ internal class TaskImplementation : ITask
     {
         try
         {
-            if (BO.Tools.ValidatePositiveNumber(boTask.Id)
+            if (BO.Tools.ValidatePositiveNumber<int>(boTask.Id)
                 && BO.Tools.ValidateNonEmptyString(boTask.Alias)
                 )
             {
@@ -420,8 +420,11 @@ internal class TaskImplementation : ITask
     /// <param name="id">task is</param>
     /// <returns>the date Suggested</returns>
     /// <exception cref="ArgumentException">in case there's previous tasks without ScheduledDate</exception>
+    /// <exception cref="InvalidOperationException">in case trying to enter dates to tasks in planing project stage</exception>
     public DateTime SuggestScheduledDate(int id)
     {
+        if (bl.CheckProjectStatus() == ProjectStatus.Planing)
+            throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
         List<BO.TaskInList> depList = CalcDependencies(id);
         if (depList.Count == 0)
             return (DateTime)bl.ProjectStartDate!;

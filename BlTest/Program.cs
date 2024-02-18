@@ -213,12 +213,12 @@ Do you want to do it now(Y/N)? (You can always get to it again in the menu)");
     {
         int id = 1;
         string? input;
-        while (id >= 0)
+        while (id > 0)
         {
             Console.WriteLine("Enter task ID. Enter 0 to quit");
             if (int.TryParse(Console.ReadLine(), out id))
             {
-                if (id >= 0)
+                if (id > 0)
                 {
                     BO.Task? task = s_bl.Task.Read(id);
                     if (task != null)
@@ -439,11 +439,11 @@ Do you want to do it now(Y/N)? (You can always get to it again in the menu)");
         List<BO.TaskInList> list = new();
         Console.WriteLine("enter dependency ID's one by one. Enter 0 to quit");
         int depId = 1;
-        while (depId >= 0)
+        while (depId > 0)
         {
             if (int.TryParse(Console.ReadLine(), out depId))
             {
-                if (depId >= 0) { 
+                if (depId > 0) { 
                     BO.TaskInList dep = new() { Id = depId };
                     list.Add(dep);
                 }

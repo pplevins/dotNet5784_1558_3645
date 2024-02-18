@@ -25,10 +25,10 @@ internal class EngineerImplementation : IEngineer
         doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
         try
         {
-            if (BO.Tools.ValidatePositiveNumber(boEngineer.Id) 
+            if (BO.Tools.ValidatePositiveNumber<int>(boEngineer.Id) 
                 && BO.Tools.ValidateNonEmptyString(boEngineer.Name) 
                 && BO.Tools.ValidateEmailAddress(boEngineer.Email) 
-                && BO.Tools.ValidatePositiveNumber(boEngineer.Cost)
+                && BO.Tools.ValidatePositiveNumber<double>(boEngineer.Cost)
                 )
             {
                 int idEng = _dal.Engineer.Create(doEngineer);
@@ -174,10 +174,10 @@ internal class EngineerImplementation : IEngineer
             doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
 
             //integrity check
-            if (BO.Tools.ValidatePositiveNumber(boEngineer.Id)
+            if (BO.Tools.ValidatePositiveNumber<int>(boEngineer.Id)
                     && BO.Tools.ValidateNonEmptyString(boEngineer.Name)
                     && BO.Tools.ValidateEmailAddress(boEngineer.Email)
-                    && BO.Tools.ValidatePositiveNumber(boEngineer.Cost)
+                    && BO.Tools.ValidatePositiveNumber<double>(boEngineer.Cost)
                     && doEngineer.Level <= (DO.EngineerExperience)boEngineer.Level
                     )
             {
