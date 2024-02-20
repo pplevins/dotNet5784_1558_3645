@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.admin_window"
         mc:Ignorable="d"
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        DataContext="{Binding Data,RelativeSource={RelativeSource Self}}"
         Icon="\images\engineer2.jpg"
         WindowStartupLocation="CenterScreen"
         Title="EngineerAndTaskList" Height="640" Width="800">
@@ -76,13 +76,13 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions >
-                    <ComboBox x:Name="EngineerLevelSelector" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"  Width="200" Height="30" SelectionChanged="EngineerLevelSelector_SelectionChanged"/>
+                    <ComboBox ItemsSource="{Binding EngineerLevelSelector}" x:Name="EngineerLevelSelector" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center"  Width="200" Height="30" SelectionChanged="EngineerLevelSelector_SelectionChanged"/>
                     <Label x:Name="label" Content="LEVEL :" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="120" Background="{x:Null}" FontSize="20" FontFamily="Aharoni" FontWeight="Bold" Foreground="#FFD9D9D9"/>
                     <Label x:Name="label3" Content="ENGINEER LIST" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Width="178" Background="{x:Null}" FontSize="20" FontFamily="Aharoni" FontWeight="Bold" Foreground="#FFD9D9D9"/>
 
 
                 </Grid>
-                <ListView x:Name="EngineerListView" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding engineerList}" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseDoubleClick="EngineerListView_MouseDoubleClick"  Foreground="#FF34470C" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="3" BorderBrush="#FF214B09" FontFamily="Bookman Old Style"  AutomationProperties.IsColumnHeader="True">
+                <ListView ItemsSource="{Binding EngineerList, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Hidden" MouseDoubleClick="EngineerListView_MouseDoubleClick"  Foreground="#FF34470C" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="3" BorderBrush="#FF214B09" FontFamily="Bookman Old Style"  AutomationProperties.IsColumnHeader="True">
                     <ListView.Resources>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Style.Triggers>
@@ -168,7 +168,7 @@
 
 
                 </Grid>
-                <ListView x:Name="TaskListView" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding taskList}" Foreground="#FF34470C" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="4" BorderBrush="#FF214B09" FontFamily="Bookman Old Style" AutomationProperties.IsColumnHeader="True" MouseDoubleClick="TaskListView_MouseDoubleClick">
+                <ListView ItemsSource="{Binding TaskList, Mode=TwoWay}" Foreground="#FF34470C" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="4" BorderBrush="#FF214B09" FontFamily="Bookman Old Style" AutomationProperties.IsColumnHeader="True" MouseDoubleClick="TaskListView_MouseDoubleClick">
                     <ListView.Resources>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Style.Triggers>

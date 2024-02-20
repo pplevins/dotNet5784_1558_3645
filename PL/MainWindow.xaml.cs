@@ -26,7 +26,7 @@ namespace PL
         }
 
         /// <summary>
-        /// event to double click to go update the product.
+        /// event to double click to go admin window.
         /// </summary>
         /// <param name="sender">The object that raised the event.</param>
         /// <param name="e">Event arguments.</param>
@@ -44,6 +44,12 @@ namespace PL
                 new EngineerAndTaskList(_bl).Show();
             }
         }
+
+        /// <summary>
+        /// event to double click to go engineer window.
+        /// </summary>
+        /// <param name="sender">The object that raised the event.</param>
+        /// <param name="e">Event arguments.</param>
         private void ShowEngineerButton_Click(object sender, RoutedEventArgs e)
         {
             var window = Application.Current.Windows.OfType<clientwindow>().FirstOrDefault();
@@ -55,6 +61,29 @@ namespace PL
             else
             {
                 new clientwindow(_bl).Show();
+            }
+        }
+
+        /// <summary>
+        /// event to double click to go initialize the database.
+        /// </summary>
+        /// <param name="sender">The object that raised the event.</param>
+        /// <param name="e">Event arguments.</param>
+        private void InitializeDB_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult mbResult = MessageBox.Show("Are you sure you want to initialize the DB?", "Initialize",
+                MessageBoxButton.YesNoCancel, MessageBoxImage.Question,
+                MessageBoxResult.Cancel);
+
+            switch (mbResult)
+            {
+                case MessageBoxResult.Yes:
+                    _bl.InitializeDB();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+                case MessageBoxResult.Cancel:
+                    break;
             }
         }
 

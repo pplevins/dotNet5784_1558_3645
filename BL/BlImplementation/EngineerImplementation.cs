@@ -175,16 +175,17 @@ internal class EngineerImplementation : IEngineer
         {
             DO.Engineer doEngineer = new DO.Engineer();
             BO.Tools.CopySimilarFields(boEngineer, doEngineer);
-            doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
-
+            DO.EngineerExperience? doLevel = _dal.Engineer.Read(boEngineer.Id)?.Level;
+            if (doLevel is not null && doLevel > (DO.EngineerExperience)boEngineer.Level)
+                throw new InvalidOperationException($"Can't demote an engineer. The engineer level can only be updated from {doLevel} and above");
             //integrity check
             if (BO.Tools.ValidatePositiveNumber<int>(boEngineer.Id)
                     && BO.Tools.ValidateNonEmptyString(boEngineer.Name)
                     && BO.Tools.ValidateEmailAddress(boEngineer.Email)
                     && BO.Tools.ValidatePositiveNumber<double>(boEngineer.Cost)
-                    && doEngineer.Level <= (DO.EngineerExperience)boEngineer.Level
                     )
             {
+                doEngineer = BO.Tools.UpdateEntity(doEngineer, "Level", (DO.EngineerExperience)boEngineer.Level);
                 if (boEngineer.Task is not null)
                 {
                     if (bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
@@ -238,6 +239,10 @@ internal class EngineerImplementation : IEngineer
         catch (ArgumentException ex)
         {
             throw new ArgumentException(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new InvalidOperationException(ex.Message);
         }
     }
 }

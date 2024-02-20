@@ -46,7 +46,13 @@
                 <DropShadowEffect/>
             </Button.Effect>
         </Button>
-
+        <Button x:Name="Button3" Grid.Row="2" Grid.Column="1" Click="InitializeDB_Click" Cursor="Hand" Content="InitDB" HorizontalAlignment="Center"
+        VerticalAlignment="Center"  Height="90" Foreground="#FF41710E" 
+        FontSize="30" FontWeight="Bold" Width="200" RenderTransformOrigin="0.517,0.874" Background="#7FE1E1E1" >
+            <Button.Effect>
+                <DropShadowEffect/>
+            </Button.Effect>
+        </Button>
 
 
     </Grid>
