@@ -38,6 +38,10 @@ internal static class DataSource
         internal static DateTime? ProjectScheduledEndDate = null;
     }
     /// <summary>
+    /// List of Users in the data source.
+    /// </summary>
+    internal static List<DO.User> Users { get; } = new();
+    /// <summary>
     /// List of engineers in the data source.
     /// </summary>
     internal static List<DO.Engineer> Engineers { get; } = new();

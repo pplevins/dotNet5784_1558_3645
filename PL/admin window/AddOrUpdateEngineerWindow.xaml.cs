@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -90,8 +89,9 @@ public partial class AddOrUpdateEngineerWindow : Window
     /// <param name="e"></param>
     private void name_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
-        e.Handled = Regex.IsMatch(e.Text, "/^[a - z,.'-]+$/i");
+        //e.Handled = !Regex.IsMatch(e.Text, @"^(?=.*[a-zA-Z].{2})[a-zA-Z ,.'-]+$");
     }
+
 
     /// <summary>
     /// dont put latters in the text box
@@ -100,7 +100,7 @@ public partial class AddOrUpdateEngineerWindow : Window
     /// <param name="e"></param>
     private void email_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
-        //e.Handled = Regex.IsMatch(e.Text, "^[^0-9]+$");
+        //e.Handled = !Regex.IsMatch(e.Text, @"^(?=.*[a-zA-Z].{2})[^\s@]+@[^\s@]+\.[^\s@]+$");
     }
 
 
@@ -111,7 +111,7 @@ public partial class AddOrUpdateEngineerWindow : Window
     /// <param name="e"></param>
     private void id_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
-        e.Handled = Regex.IsMatch(e.Text, "^[^0-9]+$");
+        //e.Handled = !Regex.IsMatch(e.Text, "^[^0-9]+$");
     }
 
 
@@ -122,7 +122,7 @@ public partial class AddOrUpdateEngineerWindow : Window
     /// <param name="e"></param>
     private void cost_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
-        e.Handled = !Regex.IsMatch(e.Text, @"^[0-9](?:\.[0-9])?$");
+        //e.Handled = !Regex.IsMatch(e.Text, @"^[0-9](?:\.[0-9])?$");
     }
 
     /// <summary>

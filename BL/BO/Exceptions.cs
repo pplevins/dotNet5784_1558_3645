@@ -34,5 +34,7 @@ public class Exceptions
 
     [Serializable]
     public class BlUpdateCreateImpossibleException(string? message) : Exception(message);
+    [Serializable]
+    public class BlInvalidCredentialsException(string? message) : Exception(message);
 
 }

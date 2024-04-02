@@ -10,10 +10,11 @@ sealed internal class DalList : IDal
 
     public IDependency Dependency => new DependencyImplementation();
     public IEngineer Engineer => new EngineerImplementation();
+    public IUser User => new UserImplementation();
     public ITask Task => new TaskImplementation();
-    public DateTime? ProjectStartDate 
-    { 
+    public DateTime? ProjectStartDate
+    {
         get { return Dal.DataSource.Config.ProjectStartDate; }
-        set { Dal.DataSource.Config.ProjectStartDate = value; } 
+        set { Dal.DataSource.Config.ProjectStartDate = value; }
     }
 }

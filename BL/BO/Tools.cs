@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -144,7 +143,7 @@ public static class Tools
     /// <summary>
     /// Copies similar fields from the source object to the destination object, excluding specified properties.
     /// </summary>
-    public static void CopySimilarFields<TSource, TDestination>(TSource source, TDestination destination, Type[]? typesToCopy = null, params Expression<Func<TDestination, object>>[] excludedProperties)
+    public static void CopySimilarFields<TSource, TDestination>(TSource source, TDestination destination, Type[]? typesToCopy = null, params string[] excludedProperties)
     {
         ValidateArguments(source, destination);
 
@@ -170,9 +169,10 @@ public static class Tools
         {
             var sourceValue = GetPropertyValue(source, sourceProperty);
             var destinationValue = GetPropertyValue(destination, destinationProperty);
-            if (!sourceValue.Equals(destinationValue)) throw new InvalidOperationException($"You can't change the {sourceProperty.Name} property");
+            if (!Equals(sourceValue, destinationValue)) throw new InvalidOperationException($"You can't change the {sourceProperty.Name} property");
         }
     }
+
 
     /// <summary>
     /// Validates the arguments for null and throws an <see cref="ArgumentNullException"/> if either source or destination is null.
@@ -187,9 +187,9 @@ public static class Tools
     /// <summary>
     /// Checks if a property is excluded based on the specified property name and excluded properties.
     /// </summary>
-    private static bool IsExcluded<TSource>(string propertyName, Expression<Func<TSource, object>>[] excludedProperties)
+    private static bool IsExcluded(string propertyName, string[] excludedProperties)
     {
-        var e = excludedProperties.Any(excludedProperty => GetPropertyName(excludedProperty) == propertyName);
+        var e = excludedProperties.Any(excludedProperty => excludedProperty == propertyName);
         return e;
     }
     /// <summary>
@@ -211,14 +211,6 @@ public static class Tools
             destinationProperty.SetValue(destination, valueToCopy);
         }
     }
-    /// <summary>
-    /// Gets the name of the property from the specified expression.
-    /// </summary>
-    private static string? GetPropertyName<TSource>(Expression<Func<TSource, object>> expression)
-    {
-        return (expression.Body as MemberExpression)?.Member.Name ?? (expression.Body as UnaryExpression)?.Operand.ToString();
-    }
-
     /// <summary>
     /// Retrieves a PropertyInfo object for a specified property of an entity.
     /// </summary>

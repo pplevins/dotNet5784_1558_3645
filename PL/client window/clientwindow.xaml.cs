@@ -40,5 +40,5 @@ public partial class clientwindow : Window
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">Event arguments.</param>
-    private void ShowTaskButton1_Click(object sender, RoutedEventArgs e) => new EngineerTrackingWindow().ShowDialog();
+    private void ShowTaskButton1_Click(object sender, RoutedEventArgs e) => new EngineerTrackingWindow(100).ShowDialog();
 }

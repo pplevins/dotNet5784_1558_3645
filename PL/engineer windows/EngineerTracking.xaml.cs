@@ -1,7 +1,10 @@
-﻿using System.ComponentModel;
+﻿using BO;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using Task = BO.Task;
 
 namespace PL.engineer_main_windows;
 
@@ -11,9 +14,50 @@ namespace PL.engineer_main_windows;
 public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
 {
     private BlApi.IBl? _bl = BlApi.Factory.Get();
+    private int _engineerId;
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private BO.TaskInEngineer task;
+    public BO.TaskInEngineer? Task
+    {
+        get { return (BO.TaskInEngineer?)GetValue(taskProperty); }
+        set { SetValue(taskProperty, value); }
+    }
+
+
+    public static readonly DependencyProperty taskProperty =
+        DependencyProperty.Register("Task", typeof(BO.TaskInEngineer), typeof(EngineerTrackingWindow));
+
+
+    /// <summary>
+    /// Gets or sets the list of tasks.
+    /// </summary>
+    public ObservableCollection<BO.Task?>? TaskList
+    {
+        get { return (ObservableCollection<BO.Task>?)GetValue(tasksListProperty); }
+        set { SetValue(tasksListProperty, value); }
+    }
+
+    // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty tasksListProperty =
+        DependencyProperty.Register("TaskList", typeof(ObservableCollection<BO.Task?>), typeof(EngineerTrackingWindow));
+
+
+    public static readonly DependencyProperty CurrentTaskVisibilityProperty =
+        DependencyProperty.Register(nameof(CurrentTaskVisibility), typeof(Visibility), typeof(EngineerTrackingWindow), new PropertyMetadata(default(Visibility)));
+
+    public Visibility CurrentTaskVisibility
+    {
+        get { return (Visibility)GetValue(CurrentTaskVisibilityProperty); }
+        set { SetValue(CurrentTaskVisibilityProperty, value); }
+    }
+    public static readonly DependencyProperty TasksVisibilityProperty =
+        DependencyProperty.Register(nameof(TasksVisibility), typeof(Visibility), typeof(EngineerTrackingWindow), new PropertyMetadata(default(Visibility)));
+
+    public Visibility TasksVisibility
+    {
+        get { return (Visibility)GetValue(TasksVisibilityProperty); }
+        set { SetValue(TasksVisibilityProperty, value); }
+    }
     /// <summary>
     /// we creat a new property change name.
     /// </summary>
@@ -27,8 +71,12 @@ public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
     /// <summary>
     /// constractor
     /// </summary>
-    public EngineerTrackingWindow()
+    public EngineerTrackingWindow(int engineerId)
     {
+        _engineerId = engineerId;
+        TasksVisibility = Visibility.Collapsed;
+        CurrentTaskVisibility = Visibility.Collapsed;
+        TaskList = new ObservableCollection<Task>(_bl?.Task?.ReadAll());
         InitializeComponent();
     }
     /// <summary>
@@ -41,8 +89,15 @@ public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
     {
         try
         {
-            task = _bl?.Engineer.Read(engineerId)?.Task;
-            taskTrackingString = task?.ToString()!;
+            TasksVisibility = Visibility.Collapsed;
+            CurrentTaskVisibility = Visibility.Visible;
+            //task = _bl?.Engineer.Read(_engineerId)?.Task;
+            //taskTrackingString = task?.ToString()!;
+            Task = new TaskInEngineer()
+            {
+                Alias = "dshsdh",
+                Id = 42
+            };
         }
         catch (BO.Exceptions.BlDoesNotExistException ex) when (ex.InnerException is not null)
         {
@@ -65,6 +120,8 @@ public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
     /// <param name="e">Event arguments.</param>
     private void GetItems_Click(object sender, RoutedEventArgs e)
     {
+        TasksVisibility = Visibility.Visible;
+        CurrentTaskVisibility = Visibility.Collapsed;
         //try
         //{
         //    new TaskDatails(_bl, engineerId).Show();

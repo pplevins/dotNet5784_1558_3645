@@ -67,7 +67,17 @@ public static class Initialization
             Engineer newEng = new(id, name, email, level);
 
             s_dal!.Engineer.Create(newEng);
+            createUser(newEng);
         }
+    }
+    /// <summary>
+    /// Creates sample user and adds them to the data source.
+    /// </summary>
+    private static void createUser(Engineer newEng)
+    {
+        UserPermission userPermission = (newEng.Id % 2 == 0) ? UserPermission.Manager : UserPermission.Engineer;
+        var new_User = new User(newEng.Id, newEng.Email, UserPermission.Engineer, newEng.Email);
+        s_dal!.User.Create(new_User);
     }
     /// <summary>
     /// Creates sample tasks and adds them to the data source.
@@ -147,6 +157,7 @@ public static class Initialization
         s_dal = DalApi.Factory.Get; //stage 4
 
         s_dal.Engineer.Reset();
+        s_dal.User.Reset();
         s_dal.Task.Reset();
         s_dal.Dependency.Reset();
     }
