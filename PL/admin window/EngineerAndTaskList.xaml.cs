@@ -26,15 +26,15 @@ public class EngineerAndTaskListData : DependencyObject
     /// <summary>
     /// Gets or sets the list of tasks.
     /// </summary>
-    public IEnumerable<BO.Task?>? TaskList
+    public IEnumerable<BO.TaskInList?>? TaskList
     {
-        get { return (List<BO.Task>?)GetValue(tasksListProperty); }
+        get { return (List<BO.TaskInList>?)GetValue(tasksListProperty); }
         set { SetValue(tasksListProperty, value); }
     }
 
     // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty tasksListProperty =
-        DependencyProperty.Register("TaskList", typeof(IEnumerable<BO.Task?>), typeof(EngineerAndTaskListData));
+        DependencyProperty.Register("TaskList", typeof(IEnumerable<BO.TaskInList?>), typeof(EngineerAndTaskListData));
 
 
     /// <summary>
@@ -66,7 +66,7 @@ public partial class EngineerAndTaskList : Window
         Data = new()
         {
             EngineerList = _bl?.Engineer.ReadAll()!,
-            TaskList = _bl?.Task.ReadAll()!,
+            TaskList = _bl?.Task.ReadAllTaskInList(),
             EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience))
         };
     }
@@ -102,7 +102,20 @@ public partial class EngineerAndTaskList : Window
     private void Add_Engineer_Button_Click(object sender, RoutedEventArgs e)
     {
         new AddOrUpdateEngineerWindow(_bl).ShowDialog();
-        this.Close();
+        OnChangeEngineer();
+        //this.Close();
+    }
+
+    /// <summary>
+    /// button to add task
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Add_Task_Button_Click(object sender, RoutedEventArgs e)
+    {
+        new AddOrUpdateTaskWindow(_bl).ShowDialog();
+        OnChangeTask();
+        //this.Close();
     }
 
     /// <summary>
@@ -123,7 +136,8 @@ public partial class EngineerAndTaskList : Window
                 if (IsMouseCaptureWithin)
                 {
                     new AddOrUpdateEngineerWindow(_bl, engineer.Id).ShowDialog();
-                    this.Close();
+                    OnChangeEngineer();
+                    //this.Close();
                 }
             }
         }
@@ -137,6 +151,23 @@ public partial class EngineerAndTaskList : Window
     {
         //if (IsMouseCaptureWithin)
         //    new TaskDatails(_bl, ((BO.Task)TaskListView.SelectedItem).Id, OnChangeTask).ShowDialog();
+        var selected = ((ListView)sender).SelectedItem;
+
+        BO.TaskInList item = (((FrameworkElement)e.OriginalSource).DataContext as BO.TaskInList)!;
+
+        if (item != null)
+        {
+            if (selected is BO.TaskInList task)
+            {
+                if (IsMouseCaptureWithin)
+                {
+                    BO.Task taskk = _bl.Task.Read(task.Id);
+                    new AddOrUpdateTaskWindow(_bl, taskk.Id).ShowDialog();
+                    OnChangeTask();
+                    //this.Close();
+                }
+            }
+        }
     }
     /// <summary>
     /// deleget for the engineer list that we want to update him aoutomaticly.
@@ -150,6 +181,6 @@ public partial class EngineerAndTaskList : Window
     /// </summary>
     private void OnChangeTask()
     {
-        Data.TaskList = _bl?.Task.ReadAll();
+        Data.TaskList = _bl?.Task.ReadAllTaskInList();
     }
 }

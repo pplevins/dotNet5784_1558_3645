@@ -9,4 +9,5 @@ public interface ITask : ICrud<BO.Task, DO.Task>
 {
     public DO.Task UpdateScheduledDate(DO.Task doTask, DateTime? date);
     public DateTime SuggestScheduledDate(int id);
+    public IEnumerable<BO.TaskInList?> ReadAllTaskInList(Func<DO.Task, bool>? filter = null);
 }

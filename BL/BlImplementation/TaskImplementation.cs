@@ -214,22 +214,22 @@ internal class TaskImplementation : ITask
                 && BO.Tools.ValidateNonEmptyString(boTask.Alias)
                 )
             {
-                DO.Task doTask = new DO.Task();
-                Expression<Func<DO.Task, object>>[] excludedProperties;
+                DO.Task doTask = _dal.Task.Read(boTask.Id);
+                string[] excludedProperties;
                 switch (bl.CheckProjectStatus())
                 {
                     case BO.ProjectStatus.Planing:
-                        excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.ScheduledDate, dc => dc.CreatedAtDate, dc => dc.StartDate, dc => dc.CompleteDate };
+                        excludedProperties = new string[] { "ScheduledDate", "CreatedAtDate", "StartDate", "CompleteDate" };
                         BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
                         doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
                         break;
                     case BO.ProjectStatus.MiddlePlaning:
-                        excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.DifficultyLevel, dc => dc.CreatedAtDate, dc => dc.StartDate, dc => dc.CompleteDate, dc => dc.RequiredEffortTime };
+                        excludedProperties = new string[] { "DifficultyLevel", "CreatedAtDate", "StartDate", "CompleteDate", "RequiredEffortTime" };
                         BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
                         doTask = UpdateScheduledDate(doTask, boTask.ScheduledDate);
                         break;
                     case BO.ProjectStatus.InProgress:
-                        excludedProperties = new Expression<Func<DO.Task, object>>[] { dc => dc.DifficultyLevel, dc => dc.ScheduledDate, dc => dc.CreatedAtDate, dc => dc.RequiredEffortTime };
+                        excludedProperties = new string[] { "DifficultyLevel", "ScheduledDate", "CreatedAtDate", "RequiredEffortTime" };
                         BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
                         break;
                 }
@@ -437,6 +437,20 @@ internal class TaskImplementation : ITask
     {
         _dal.Task.Reset();
         _dal.Dependency.Reset();
+    }
+
+    public IEnumerable<BO.TaskInList?> ReadAllTaskInList(Func<DO.Task, bool>? filter = null)
+    {
+        return (from DO.Task doTask in _dal.Task.ReadAll(filter)
+                where filter?.Invoke(doTask) ?? true
+                orderby doTask.Id
+                select new BO.TaskInList
+                {
+                    Id = doTask.Id,
+                    Alias = doTask.Alias,
+                    Description = doTask.Description,
+                    Status = CalcStatus(doTask)
+                });
     }
 }
 
