@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using BO;
+using Task = BO.Task;
 
 namespace BlImplementation;
 
@@ -25,7 +26,7 @@ internal class TaskImplementation : ITask
     {
         if (_bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
             throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot create task at this stage of the project.");
-        DO.Task doTask = new DO.Task();
+        DO.Task doTask = new DO.Task() { CreatedAtDate = _bl.Clock };
         BO.Tools.CopySimilarFields(boTask, doTask);
         try
         {
@@ -433,6 +434,41 @@ internal class TaskImplementation : ITask
             .Where(task => depList.Any(dep => dep.Id == task!.Id))
             .Select(task => task!.ScheduledDate + task.RequiredEffortTime)
             .Max()!;
+    }
+
+    /// <summary>
+    /// StartDateCreation for task
+    /// </summary>
+    /// <returns>the date Suggested</returns>
+    public DateTime? StartDateCreation(Task task)
+    {
+        if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
+            throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
+        task.StartDate = _bl.Clock;
+        task.EstimatedDate = CalculateEstimatedDate(task);
+        Update(task);
+        return task.StartDate;
+    }
+
+    /// <summary>
+    /// CompleteDateCreation for task
+    /// </summary>
+    /// <returns>the complete date</returns>
+    public DateTime? CompleteDateCreation(Task task)
+    {
+        if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
+            throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
+        task.CompleteDate = _bl.Clock;
+        Update(task);
+        return task.CompleteDate;
+    }
+    /// <summary>
+    /// Calculate estimated date for task
+    /// </summary>
+    /// <returns>the estimated date</returns>
+    public DateTime? CalculateEstimatedDate(Task task)
+    {
+        return task!.StartDate + task.RequiredEffortTime;
     }
 
     public void Reset()
