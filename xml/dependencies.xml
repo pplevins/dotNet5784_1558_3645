@@ -1,11 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfDependecy>
   <Dependency>
-    <Id>2</Id>
-    <DependentTask>3</DependentTask>
-    <PreviousTask>1</PreviousTask>
-  </Dependency>
-  <Dependency>
     <Id>3</Id>
     <DependentTask>4</DependentTask>
     <PreviousTask>1</PreviousTask>
@@ -218,6 +213,11 @@
   <Dependency>
     <Id>45</Id>
     <DependentTask>2</DependentTask>
+    <PreviousTask>1</PreviousTask>
+  </Dependency>
+  <Dependency>
+    <Id>46</Id>
+    <DependentTask>3</DependentTask>
     <PreviousTask>1</PreviousTask>
   </Dependency>
 </ArrayOfDependecy>

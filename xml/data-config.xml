@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <NextTaskId>21</NextTaskId>
-  <NextDependencyId>46</NextDependencyId>
+  <NextDependencyId>47</NextDependencyId>
   <ProjectStartDate>20/04/2024 00:00:00</ProjectStartDate>
   <ProjectScheduledEndDate></ProjectScheduledEndDate>
 </config>

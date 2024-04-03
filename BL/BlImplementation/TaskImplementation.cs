@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using BO;
+using Task = BO.Task;
 
 namespace BlImplementation;
 
@@ -9,7 +10,9 @@ namespace BlImplementation;
 internal class TaskImplementation : ITask
 {
     private DalApi.IDal _dal = DalApi.Factory.Get;
-    private IBl bl = Factory.Get();
+
+    private readonly IBl _bl;
+    internal TaskImplementation(IBl bl) => _bl = bl;
 
     /// <summary>
     /// Creates new task in BL
@@ -21,9 +24,9 @@ internal class TaskImplementation : ITask
     /// <exception cref="ArgumentException">in case the input is not valid</exception>
     public int Create(BO.Task boTask)
     {
-        if (bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
+        if (_bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
             throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot create task at this stage of the project.");
-        DO.Task doTask = new DO.Task();
+        DO.Task doTask = new DO.Task() { CreatedAtDate = _bl.Clock };
         BO.Tools.CopySimilarFields(boTask, doTask);
         try
         {
@@ -79,7 +82,7 @@ internal class TaskImplementation : ITask
     {
         if (_dal.Dependency.ReadAll().Any<DO.Dependency?>(ed => ed?.PreviousTask == id))
             throw new BO.Exceptions.BlDeletionImpossibleException($"task with id={id} has dependent tasks and cannot be deleted!");
-        if (bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
+        if (_bl.CheckProjectStatus() > BO.ProjectStatus.Planing)
             throw new BO.Exceptions.BlDeletionImpossibleException("You can't delete task at this stage of the project");
         try
         {
@@ -216,7 +219,7 @@ internal class TaskImplementation : ITask
                 //DO.Task doTask = new DO.Task();
                 DO.Task? doTask = _dal.Task.Read(boTask.Id);
                 string[] excludedProperties;
-                switch (bl.CheckProjectStatus())
+                switch (_bl.CheckProjectStatus())
                 {
                     case BO.ProjectStatus.Planing:
                         excludedProperties = new string[] { "ScheduledDate", "CreatedAtDate", "StartDate", "CompleteDate" };
@@ -245,7 +248,7 @@ internal class TaskImplementation : ITask
                 //updates the engieer assign to the task
                 if (boTask.Engineer is not null)
                 {
-                    if (bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
+                    if (_bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
                         throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot assign engineer to task at this stage of the project.");
                     doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
                 }
@@ -289,7 +292,7 @@ internal class TaskImplementation : ITask
             {
                 DO.Task? task;
                 task = _dal.Task.Read((int)taskId!);
-                if (bl.ProjectStartDate <= date && task.ScheduledDate + task.RequiredEffortTime <= date)
+                if (_bl.ProjectStartDate <= date && task.ScheduledDate + task.RequiredEffortTime <= date)
                     doTask = BO.Tools.UpdateEntity(doTask, "ScheduledDate", date);
                 else
                     throw new InvalidOperationException($"Failed to update the ScheduledDate property for task id={doTask.Id} because not all Previous Tasks has dates or the ScheduledDate is earlier.");
@@ -420,17 +423,52 @@ internal class TaskImplementation : ITask
     /// <exception cref="InvalidOperationException">in case trying to enter dates to tasks in planing project stage</exception>
     public DateTime SuggestScheduledDate(int id)
     {
-        if (bl.CheckProjectStatus() == ProjectStatus.Planing)
+        if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
             throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
         List<BO.TaskInList> depList = CalcDependencies(id);
         if (depList.Count == 0)
-            return (DateTime)bl.ProjectStartDate!;
+            return (DateTime)_bl.ProjectStartDate!;
         if (depList.Any(dep => dep.Status == BO.TaskStatus.Unscheduled))
             throw new ArgumentException("There's at least one previous task without Schedule Date");
         return (DateTime)_dal.Task.ReadAll()
             .Where(task => depList.Any(dep => dep.Id == task!.Id))
             .Select(task => task!.ScheduledDate + task.RequiredEffortTime)
             .Max()!;
+    }
+
+    /// <summary>
+    /// StartDateCreation for task
+    /// </summary>
+    /// <returns>the date Suggested</returns>
+    public DateTime? StartDateCreation(Task task)
+    {
+        if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
+            throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
+        task.StartDate = _bl.Clock;
+        task.EstimatedDate = CalculateEstimatedDate(task);
+        Update(task);
+        return task.StartDate;
+    }
+
+    /// <summary>
+    /// CompleteDateCreation for task
+    /// </summary>
+    /// <returns>the complete date</returns>
+    public DateTime? CompleteDateCreation(Task task)
+    {
+        if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
+            throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
+        task.CompleteDate = _bl.Clock;
+        Update(task);
+        return task.CompleteDate;
+    }
+    /// <summary>
+    /// Calculate estimated date for task
+    /// </summary>
+    /// <returns>the estimated date</returns>
+    public DateTime? CalculateEstimatedDate(Task task)
+    {
+        return task!.StartDate + task.RequiredEffortTime;
     }
 
     public void Reset()

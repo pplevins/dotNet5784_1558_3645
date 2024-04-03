@@ -1,5 +1,6 @@
 ﻿using PL.admin_window;
 using PL.login_window;
+using System.ComponentModel;
 using System.Windows;
 
 namespace PL
@@ -9,12 +10,22 @@ namespace PL
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        /// <summary>
-        /// accses for the logical layyer.
-        /// </summary>
         private BlApi.IBl? _bl = BlApi.Factory.Get();
+        public DateTime? CurrentTime
+        {
+            get => (DateTime?)GetValue(currentTimeProperty);
+            set => SetValue(currentTimeProperty, value);
+        }
 
+        public static readonly DependencyProperty currentTimeProperty =
+            DependencyProperty.Register(nameof(CurrentTime), typeof(DateTime?), typeof(MainWindow), new PropertyMetadata(null, (d, e) => ((MainWindow)d).OnPropertyChanged(nameof(CurrentTime))));
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         /// <summary>
         /// constructor
         /// </summary>
@@ -23,6 +34,37 @@ namespace PL
             //_bl.InitializeDB();
             InitializeComponent();
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+            UpdateCurrentTime(); // Update CurrentTime property initially
+        }
+
+
+        private void UpdateCurrentTime()
+        {
+            CurrentTime = _bl.Clock;
+        }
+
+        private void AdvanceYear_Click(object sender, RoutedEventArgs e)
+        {
+            _bl.AdvanceYear(1);
+            UpdateCurrentTime();
+        }
+
+        private void AdvanceMonth_Click(object sender, RoutedEventArgs e)
+        {
+            _bl.AdvanceMonth(1);
+            UpdateCurrentTime();
+        }
+
+        private void AdvanceDay_Click(object sender, RoutedEventArgs e)
+        {
+            _bl.AdvanceDay(1);
+            UpdateCurrentTime();
+        }
+
+        private void ResetTime_Click(object sender, RoutedEventArgs e)
+        {
+            _bl.ResetTime();
+            UpdateCurrentTime();
         }
 
         /// <summary>

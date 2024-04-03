@@ -3,6 +3,8 @@
 namespace BlImplementation;
 internal class Bl : IBl
 {
+    private static DateTime s_Clock = DateTime.Now.Date;
+    public DateTime Clock { get { return s_Clock; } private set { s_Clock = value; } }
     public void InitializeDB() => DalTest.Initialization.Do();
     public void ResetDB()
     {
@@ -16,7 +18,7 @@ internal class Bl : IBl
     public IMilestone Milestone => new MilestoneImplementation();
     public IEngineer Engineer => new EngineerImplementation();
     public IUser User => new UserImplementation();
-    public ITask Task => new TaskImplementation();
+    public ITask Task => new TaskImplementation(this);
 
     /// <summary>
     /// The set/get property of the project start date
@@ -50,5 +52,30 @@ internal class Bl : IBl
             else
                 return BO.ProjectStatus.MiddlePlaning;
         }
+    }
+
+    public void AdvanceYear(int years)
+    {
+        Clock = Clock.AddYears(years);
+    }
+
+    public void AdvanceMonth(int months)
+    {
+        Clock = Clock.AddMonths(months);
+    }
+
+    public void AdvanceDay(int days)
+    {
+        Clock = Clock.AddDays(days);
+    }
+
+    public void AdvanceHour(int hours)
+    {
+        Clock = Clock.AddHours(hours);
+    }
+
+    public void ResetTime()
+    {
+        Clock = DateTime.Now;
     }
 }

@@ -13,4 +13,16 @@ public interface IBl
     ITask Task { get; }
     public DateTime? ProjectStartDate { get; set; }
     public BO.ProjectStatus CheckProjectStatus();
+
+    #region Clock
+
+    DateTime Clock { get; }
+    void AdvanceYear(int years);
+    void AdvanceMonth(int months);
+    void AdvanceDay(int days);
+    void AdvanceHour(int hours);
+    void ResetTime();
+
+    #endregion
+
 }
