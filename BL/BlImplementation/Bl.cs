@@ -7,6 +7,7 @@ internal class Bl : IBl
     public void ResetDB()
     {
         Engineer.Reset();
+        User.Reset();
         Task.Reset();
         ProjectStartDate = null;
     }
@@ -14,6 +15,7 @@ internal class Bl : IBl
     private DalApi.IDal _dal = DalApi.Factory.Get;
     public IMilestone Milestone => new MilestoneImplementation();
     public IEngineer Engineer => new EngineerImplementation();
+    public IUser User => new UserImplementation();
     public ITask Task => new TaskImplementation();
 
     /// <summary>
@@ -21,8 +23,8 @@ internal class Bl : IBl
     /// </summary>
     public DateTime? ProjectStartDate
     {
-        get {  return _dal.ProjectStartDate; } 
-        set 
+        get { return _dal.ProjectStartDate; }
+        set
         {
             if (ProjectStartDate is not null)
                 throw new InvalidOperationException("There's already date for the project. You can't reset.");

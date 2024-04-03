@@ -1,7 +1,9 @@
 ﻿using BO;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Task = BO.Task;
 
 namespace PL.admin_window;
 /// <summary>
@@ -9,41 +11,51 @@ namespace PL.admin_window;
 /// </summary>
 public class EngineerAndTaskListData : DependencyObject
 {
-
     /// <summary>
     /// Gets or sets the engineers.
     /// </summary>
-    public IEnumerable<Engineer>? EngineerList
+    public ObservableCollection<Engineer>? EngineerList
     {
-        get { return (IEnumerable<Engineer>?)GetValue(engineerProperty); }
+        get { return (ObservableCollection<Engineer>?)GetValue(engineerProperty); }
         set { SetValue(engineerProperty, value); }
     }
 
     // Using a DependencyProperty as the backing store for Engineers.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty engineerProperty =
-        DependencyProperty.Register("EngineerList", typeof(IEnumerable<Engineer>), typeof(EngineerAndTaskListData));
+        DependencyProperty.Register("EngineerList", typeof(ObservableCollection<Engineer>), typeof(EngineerAndTaskListData));
 
     /// <summary>
     /// Gets or sets the list of tasks.
     /// </summary>
-    public IEnumerable<BO.TaskInList?>? TaskList
+    public ObservableCollection<BO.Task?>? TaskList
     {
-        get { return (List<BO.TaskInList>?)GetValue(tasksListProperty); }
+        get { return (ObservableCollection<BO.Task>?)GetValue(tasksListProperty); }
         set { SetValue(tasksListProperty, value); }
     }
 
     // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty tasksListProperty =
-        DependencyProperty.Register("TaskList", typeof(IEnumerable<BO.TaskInList?>), typeof(EngineerAndTaskListData));
+        DependencyProperty.Register("TaskList", typeof(ObservableCollection<BO.Task?>), typeof(EngineerAndTaskListData));
 
+    public static readonly DependencyProperty BLProperty =
+        DependencyProperty.Register("Bl", typeof(BlApi.IBl), typeof(EngineerAndTaskListData), new PropertyMetadata(null));
+
+    public BlApi.IBl Bl
+    {
+        get { return (BlApi.IBl)GetValue(BLProperty); }
+        set { SetValue(BLProperty, value); }
+    }
 
     /// <summary>
     /// Gets or sets the EngineerLevelSelector.
     /// </summary>
     public Array? EngineerLevelSelector { get; set; }
+
+
 }
 public partial class EngineerAndTaskList : Window
 {
+    private IEnumerable<Engineer>? originalList;
     /// <summary>
     /// access to the logical layer.
     /// </summary>
@@ -62,13 +74,16 @@ public partial class EngineerAndTaskList : Window
     public EngineerAndTaskList(BlApi.IBl? _bl)
     {
         this._bl = _bl;
-        InitializeComponent();
+
+        originalList = _bl?.Engineer.ReadAll();
         Data = new()
         {
-            EngineerList = _bl?.Engineer.ReadAll()!,
-            TaskList = _bl?.Task.ReadAllTaskInList(),
-            EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience))
+            EngineerList = new ObservableCollection<Engineer>(originalList)!,
+            TaskList = new ObservableCollection<Task>(_bl?.Task.ReadAll())!,
+            EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience)),
+            Bl = _bl
         };
+        InitializeComponent();
     }
 
     /// <summary>
@@ -79,8 +94,9 @@ public partial class EngineerAndTaskList : Window
     private void EngineerLevelSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var selected = ((ComboBox)sender).SelectedItem;
-        if (selected != null) Data.EngineerList = Data.EngineerList!.Where(item => (BO.EngineerExperience)EngineerLevelSelector.SelectedItem == item?.Level); ;
+        if (selected != null) Data.EngineerList = new ObservableCollection<Engineer>(originalList?.Where(item => (BO.EngineerExperience)EngineerLevelSelector.SelectedItem == item?.Level)); ;
     }
+
     /// <summary>
     /// button to reset the list
     /// </summary>
@@ -174,13 +190,14 @@ public partial class EngineerAndTaskList : Window
     /// </summary>
     private void OnChangeEngineer()
     {
-        Data.EngineerList = _bl?.Engineer.ReadAll();
+        Data.EngineerList.Clear();
+        Data.EngineerList = new ObservableCollection<Engineer>(_bl?.Engineer.ReadAll());
     }
     /// <summary>
     /// deleget for the order list that we want to update him aoutomaticly.
     /// </summary>
     private void OnChangeTask()
     {
-        Data.TaskList = _bl?.Task.ReadAllTaskInList();
+        Data.TaskList = new ObservableCollection<Task>(_bl?.Task.ReadAll());
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BlApi;
-using BO;   
-using System.Linq.Expressions;
+using BO;
 
 namespace BlImplementation;
 
@@ -214,7 +213,8 @@ internal class TaskImplementation : ITask
                 && BO.Tools.ValidateNonEmptyString(boTask.Alias)
                 )
             {
-                DO.Task doTask = _dal.Task.Read(boTask.Id);
+                //DO.Task doTask = new DO.Task();
+                DO.Task? doTask = _dal.Task.Read(boTask.Id);
                 string[] excludedProperties;
                 switch (bl.CheckProjectStatus())
                 {

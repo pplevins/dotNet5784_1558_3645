@@ -11,3 +11,11 @@ public enum EngineerExperience
     Advanced,
     Expert
 }
+/// <summary>
+/// Enum representing different levels of user permission.
+/// </summary>
+public enum UserPermission
+{
+    Engineer,
+    Manager
+}

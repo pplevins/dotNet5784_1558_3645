@@ -1,5 +1,5 @@
 ﻿using PL.admin_window;
-using PL.client_window;
+using PL.login_window;
 using System.Windows;
 
 namespace PL
@@ -43,6 +43,18 @@ namespace PL
             {
                 new EngineerAndTaskList(_bl).Show();
             }
+
+            //var window = Application.Current.Windows.OfType<UserLoginWindow>().FirstOrDefault();
+            ////var window = Application.Current.Windows.OfType<login_window>().FirstOrDefault();
+            //if (window != null)
+            //{
+            //    window.Activate();
+            //    window.Focus();
+            //}
+            //else
+            //{
+            //    new UserLoginWindow(_bl, "EngineerAndTaskList").ShowDialog();
+            //}
         }
 
         /// <summary>
@@ -52,16 +64,20 @@ namespace PL
         /// <param name="e">Event arguments.</param>
         private void ShowEngineerButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = Application.Current.Windows.OfType<clientwindow>().FirstOrDefault();
-            if (window != null)
-            {
-                window.Activate();
-                window.Focus();
-            }
-            else
-            {
-                new clientwindow(_bl).Show();
-            }
+            //var window = Application.Current.Windows.OfType<EngineerTrackingWindow>().FirstOrDefault();
+            ////var window = Application.Current.Windows.OfType<login_window>().FirstOrDefault();
+            //if (window != null)
+            //{
+            //    window.Activate();
+            //    window.Focus();
+            //}
+            //else
+            //{
+            //    new EngineerTrackingWindow(100).Show();
+            //}
+
+
+            new UserLoginWindow(_bl, "engineer").Show();
         }
 
         /// <summary>
