@@ -27,15 +27,15 @@ public class EngineerAndTaskListData : DependencyObject
     /// <summary>
     /// Gets or sets the list of tasks.
     /// </summary>
-    public ObservableCollection<BO.Task?>? TaskList
+    public ObservableCollection<TaskInList>? TaskList
     {
-        get { return (ObservableCollection<BO.Task>?)GetValue(tasksListProperty); }
+        get { return (ObservableCollection<TaskInList>?)GetValue(tasksListProperty); }
         set { SetValue(tasksListProperty, value); }
     }
 
     // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty tasksListProperty =
-        DependencyProperty.Register("TaskList", typeof(ObservableCollection<BO.Task?>), typeof(EngineerAndTaskListData));
+        DependencyProperty.Register("TaskList", typeof(ObservableCollection<TaskInList>), typeof(EngineerAndTaskListData));
 
     public static readonly DependencyProperty BLProperty =
         DependencyProperty.Register("Bl", typeof(BlApi.IBl), typeof(EngineerAndTaskListData), new PropertyMetadata(null));
@@ -79,7 +79,7 @@ public partial class EngineerAndTaskList : Window
         Data = new()
         {
             EngineerList = new ObservableCollection<Engineer>(originalList)!,
-            TaskList = new ObservableCollection<Task>(_bl?.Task.ReadAll())!,
+            TaskList = new ObservableCollection<TaskInList>(_bl?.Task.ReadAllTaskInList())!,
             EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience)),
             Bl = _bl
         };
@@ -198,6 +198,6 @@ public partial class EngineerAndTaskList : Window
     /// </summary>
     private void OnChangeTask()
     {
-        Data.TaskList = new ObservableCollection<Task>(_bl?.Task.ReadAll());
+        Data.TaskList = new ObservableCollection<TaskInList>(_bl?.Task.ReadAllTaskInList());
     }
 }

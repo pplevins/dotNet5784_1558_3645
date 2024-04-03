@@ -136,7 +136,7 @@
                 <TextBlock  Text="Task CATALOG" FontFamily="Georgia" FontWeight="Bold"/>
             </TabItem.Header>
 
-            <shared:TaskList BlInstance="{Binding Bl, Mode=TwoWay}" TaskItemsSource="{Binding TaskList, Mode=TwoWay}"/>
+            <shared:TaskList TaskItemsSource="{Binding TaskList, Mode=TwoWay}"/>
 
 
             <!--<Grid Name="taskGrid">
@@ -178,8 +178,8 @@
                     <Label x:Name="label1" Content="Task LIST" HorizontalAlignment="Center" VerticalAlignment="Center" Width="178" Background="{x:Null}" FontSize="20" FontFamily="Aharoni" FontWeight="Bold" Foreground="#FFD9D9D9" Grid.ColumnSpan="3"/>
 
 
-                </Grid>-->
-                <!--<ListView ItemsSource="{Binding TaskList, Mode=TwoWay}" Foreground="#FF34470C" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="4" BorderBrush="#FF214B09" FontFamily="Bookman Old Style" AutomationProperties.IsColumnHeader="True" MouseDoubleClick="TaskListView_MouseDoubleClick">
+                </Grid>
+                <ListView ItemsSource="{Binding TaskList, Mode=TwoWay}" Foreground="#FF34470C" Margin="0,2,0,0" Grid.Row="1" Grid.ColumnSpan="4" BorderBrush="#FF214B09" FontFamily="Bookman Old Style" AutomationProperties.IsColumnHeader="True" MouseDoubleClick="TaskListView_MouseDoubleClick">
                     <ListView.Resources>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Style.Triggers>
@@ -221,7 +221,8 @@
                     </ListView.View>
                 </ListView>
                 <Button Content="Add new Task" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,7,0,7" Padding="5" Cursor="Hand" Click="Add_Task_Button_Click" FontWeight="ExtraBold"/>
-                <Button x:Name="button1" Content="Reset List" HorizontalAlignment="Center" Height="27" Grid.Row="2" VerticalAlignment="Center" Width="70" Click="Reset_button_Click" FontWeight="Bold" Foreground="Black"/>            </Grid>
+                <Button x:Name="button1" Content="Reset List" HorizontalAlignment="Center" Height="27" Grid.Row="2" VerticalAlignment="Center" Width="70" Click="Reset_button_Click" FontWeight="Bold" Foreground="Black"/>            
+            </Grid>-->
         </TabItem>
     </TabControl>
 </Window>

@@ -55,7 +55,7 @@
            
             <!--<shared:TaskList Grid.Row="1" Grid.RowSpan="6" Grid.ColumnSpan="4"  TaskItemsSource="{Binding TaskList, Mode=TwoWay}" Visibility="{Binding MyVisibility}"/>-->
             <Grid Grid.Row="1" Grid.RowSpan="8" Grid.ColumnSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <shared:TaskList BlInstance="{Binding Bl, Mode=TwoWay}" TaskItemsSource="{Binding TaskList, Mode=TwoWay}" Visibility="{Binding TasksVisibility}"/>
+                <shared:TaskList TaskItemsSource="{Binding TaskList, Mode=TwoWay}" Visibility="{Binding TasksVisibility}"/>
             </Grid>
             <!--<xmlns:shared=:EngineerTrackingWindow:admin_window.TaskList TaskList="{Binding SomeTaskListProperty}"/>-->
         </Grid>
