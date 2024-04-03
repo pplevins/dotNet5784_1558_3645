@@ -123,6 +123,18 @@ public partial class EngineerAndTaskList : Window
     }
 
     /// <summary>
+    /// button to add task
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Add_Task_Button_Click(object sender, RoutedEventArgs e)
+    {
+        new AddOrUpdateTaskWindow(_bl).ShowDialog();
+        OnChangeTask();
+        //this.Close();
+    }
+
+    /// <summary>
     /// event double click to open the new window of update engineer with the id that chooce.
     /// </summary>
     /// <param name="sender"></param>
@@ -155,6 +167,23 @@ public partial class EngineerAndTaskList : Window
     {
         //if (IsMouseCaptureWithin)
         //    new TaskDatails(_bl, ((BO.Task)TaskListView.SelectedItem).Id, OnChangeTask).ShowDialog();
+        var selected = ((ListView)sender).SelectedItem;
+
+        BO.TaskInList item = (((FrameworkElement)e.OriginalSource).DataContext as BO.TaskInList)!;
+
+        if (item != null)
+        {
+            if (selected is BO.TaskInList task)
+            {
+                if (IsMouseCaptureWithin)
+                {
+                    BO.Task taskk = _bl.Task.Read(task.Id);
+                    new AddOrUpdateTaskWindow(_bl, taskk.Id).ShowDialog();
+                    OnChangeTask();
+                    //this.Close();
+                }
+            }
+        }
     }
     /// <summary>
     /// deleget for the engineer list that we want to update him aoutomaticly.

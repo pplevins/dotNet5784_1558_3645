@@ -213,17 +213,15 @@
                     </ListView.Background>
                     <ListView.View>
                         <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
-                            <GridViewColumn Header="id" DisplayMemberBinding="{Binding Id}" Width="150"/>
-                            <GridViewColumn Header="Alias" DisplayMemberBinding="{Binding Alias}" Width="150"/>
-                            <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}" Width="150"/>
-                            <GridViewColumn Header="Deliverables" DisplayMemberBinding="{Binding Deliverables}" Width="150"/>
-                            <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="150"/>
-                            <GridViewColumn Header="DifficultyLevel" DisplayMemberBinding="{Binding DifficultyLevel}" Width="150"/>
-                            <GridViewColumn Header="Remarks" DisplayMemberBinding="{Binding Remarks}" Width="150"/>
+                            <GridViewColumn Header="id" DisplayMemberBinding="{Binding Id}" Width="50"/>
+                            <GridViewColumn Header="Alias" DisplayMemberBinding="{Binding Alias}" Width="200"/>
+                            <GridViewColumn Header="Description" DisplayMemberBinding="{Binding Description}" Width="400"/>
+                            <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="100"/>
                         </GridView>
                     </ListView.View>
-                </ListView>-->
-            <!--</Grid>-->
+                </ListView>
+                <Button Content="Add new Task" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,7,0,7" Padding="5" Cursor="Hand" Click="Add_Task_Button_Click" FontWeight="ExtraBold"/>
+                <Button x:Name="button1" Content="Reset List" HorizontalAlignment="Center" Height="27" Grid.Row="2" VerticalAlignment="Center" Width="70" Click="Reset_button_Click" FontWeight="Bold" Foreground="Black"/>            </Grid>
         </TabItem>
     </TabControl>
 </Window>

@@ -1,0 +1,49 @@
+﻿<Window x:Class="PL.admin_window.AddOrUpdateTaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PL.admin_window"
+        DataContext="{Binding Data,RelativeSource={RelativeSource Self }}"
+        mc:Ignorable="d"
+        Title="AddTaskWindow" Height="460" Width="600">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush TileMode="None" Stretch="UniformToFill" ImageSource="\images\engineer2.jpg"/>
+        </Grid.Background>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBox   Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" PreviewTextInput="name_PreviewTextInput"  TextWrapping="Wrap"  Text="{Binding Engineer.Name, Mode=TwoWay}" VerticalAlignment="Center" Width="120" Height="20" BorderBrush="Black"/>
+            <TextBox   IsReadOnly= "{Binding isReadOnlyID}"     MaxLength="9"  Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" PreviewTextInput="id_PreviewTextInput" TextWrapping="Wrap" Text="{Binding Engineer.Id, Mode=TwoWay}" VerticalAlignment="Center" Width="120" Height="20" BorderBrush="Black" />
+            <ComboBox  Grid.Column="2" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120"  ItemsSource="{Binding EngineerLevel, Mode=TwoWay}" SelectedItem="{Binding Engineer.Level, Mode=TwoWay}"  SelectedIndex="0"  BorderBrush="Black"/>
+
+            <TextBox   Grid.Column="2" Grid.Row="4" HorizontalAlignment="Left" PreviewTextInput="cost_PreviewTextInput" TextWrapping="Wrap" VerticalAlignment="Center" Width="120" Height="20" Text="{Binding Engineer.Cost , Mode=TwoWay}" BorderBrush="Black"/>
+            <TextBox   Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" PreviewTextInput="email_PreviewTextInput" TextWrapping="Wrap"  VerticalAlignment="Center" Width="120"  Text="{Binding Engineer.Email, Mode=TwoWay}" Height="20" BorderBrush="Black"/>
+            <Button    Content="{Binding buttonName}" Grid.Column="3" Grid.Row="6" HorizontalAlignment="Center" VerticalAlignment="Top" Cursor="Hand" Click="addOrUpdateTaskButton" Height="33" Width="90" BorderBrush="Black"/>
+
+            <Label  Content="ID"      Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="14" FontFamily="Elephant" Height="28" Foreground="Black"  OpacityMask="Black"/>
+            <Label  Content="COST"   Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="14" FontFamily="Elephant" Foreground="Black"/>
+            <Label  Content="NAME"     Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="14" FontFamily="Elephant" Foreground="Black"/>
+            <Label  Content="LEVEL" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="14" FontFamily="Elephant" Foreground="Black"/>
+            <Label  Content="EMAIL" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" FontSize="14" Width="110" FontFamily="Elephant" Foreground="Black"/>
+
+
+            <Slider x:Name="slider" Grid.Column="3" Grid.Row="3" Grid.RowSpan="2" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding Engineer.Level, Mode=TwoWay}"  Maximum="5000" Orientation="Vertical" HorizontalAlignment="Center"  VerticalAlignment="Top" Width="22" Height="100"/>
+        </Grid>
+    </Grid>
+</Window>

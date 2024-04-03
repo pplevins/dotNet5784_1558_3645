@@ -31,7 +31,7 @@ namespace PL
         /// </summary>
         public MainWindow()
         {
-            _bl.InitializeDB();
+            //_bl.InitializeDB();
             InitializeComponent();
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             UpdateCurrentTime(); // Update CurrentTime property initially

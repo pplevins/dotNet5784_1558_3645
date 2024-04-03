@@ -476,5 +476,19 @@ internal class TaskImplementation : ITask
         _dal.Task.Reset();
         _dal.Dependency.Reset();
     }
+
+    public IEnumerable<BO.TaskInList?> ReadAllTaskInList(Func<DO.Task, bool>? filter = null)
+    {
+        return (from DO.Task doTask in _dal.Task.ReadAll(filter)
+                where filter?.Invoke(doTask) ?? true
+                orderby doTask.Id
+                select new BO.TaskInList
+                {
+                    Id = doTask.Id,
+                    Alias = doTask.Alias,
+                    Description = doTask.Description,
+                    Status = CalcStatus(doTask)
+                });
+    }
 }
 

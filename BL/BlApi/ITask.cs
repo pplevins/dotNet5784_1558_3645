@@ -11,4 +11,5 @@ public interface ITask : ICrud<BO.Task, DO.Task>
     public DateTime SuggestScheduledDate(int id);
     DateTime? StartDateCreation(Task task);
     DateTime? CompleteDateCreation(Task task);
+    public IEnumerable<BO.TaskInList?> ReadAllTaskInList(Func<DO.Task, bool>? filter = null);
 }
