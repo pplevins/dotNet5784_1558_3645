@@ -139,5 +139,12 @@
             <shared:TaskList TaskItemsSource="{Binding TaskList, Mode=TwoWay}"/>
 
         </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock  Text="Gantt Chart" FontFamily="Georgia" FontWeight="Bold"/>
+            </TabItem.Header>
+
+            <local:GanttChartView/>
+        </TabItem>
     </TabControl>
 </Window>

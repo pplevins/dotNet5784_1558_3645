@@ -1,5 +1,7 @@
 ﻿using BO;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,6 +12,13 @@ namespace PL.admin_window;
 /// </summary>
 public class EngineerAndTaskListData : DependencyObject
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     /// <summary>
     /// Gets or sets the engineers.
     /// </summary>
@@ -40,8 +49,6 @@ public class EngineerAndTaskListData : DependencyObject
     /// Gets or sets the EngineerLevelSelector.
     /// </summary>
     public Array? EngineerLevelSelector { get; set; }
-
-
 }
 public partial class EngineerAndTaskList : Window
 {
@@ -56,7 +63,10 @@ public partial class EngineerAndTaskList : Window
     /// <summary>
     /// Gets or sets the data for the AdminWindow.
     /// </summary>
-    public EngineerAndTaskListData Data { get => (EngineerAndTaskListData)GetValue(DataDep); set => SetValue(DataDep, value); }
+    public EngineerAndTaskListData Data { get => (EngineerAndTaskListData)GetValue(DataDep); 
+        set { SetValue(DataDep, value);
+            ((EngineerAndTaskListData)value).OnPropertyChanged();
+        } }
 
     /// <summary>
     /// constructor

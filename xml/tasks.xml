@@ -6,10 +6,10 @@
     <Description>Finish the coding task for the project</Description>
     <IsMilestone>false</IsMilestone>
     <Deliverables>finished code</Deliverables>
-    <DifficultyLevel>Intermediate</DifficultyLevel>
-    <RequiredEffortTime>P4D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-06T20:12:01.8641688+02:00</CreatedAtDate>
-	 <EngineerId>300816617</EngineerId>
+    <DifficultyLevel>Beginner</DifficultyLevel>
+    <RequiredEffortTime>P3D</RequiredEffortTime>
+    <CreatedAtDate>2024-02-13T00:00:00</CreatedAtDate>
+    <EngineerId xsi:nil="true" />
     <ScheduledDate>2024-04-20T00:00:00</ScheduledDate>
     <StartDate xsi:nil="true" />
     <DeadlineDate xsi:nil="true" />

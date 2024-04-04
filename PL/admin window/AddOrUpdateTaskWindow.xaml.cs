@@ -1,12 +1,24 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace PL.admin_window;
 
-public class AddOrUpdateTaskWindowData : DependencyObject
+public class AddOrUpdateTaskWindowData : DependencyObject, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     // Using a DependencyProperty as the backing store for Engineers.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty taskProperty =
         DependencyProperty.Register("Task", typeof(BO.Task), typeof(AddOrUpdateTaskWindowData));
@@ -17,6 +29,8 @@ public class AddOrUpdateTaskWindowData : DependencyObject
     }
 
     public Array? EngineerLevel { get; set; }
+
+    public Array? EngineerInTaskList { get; set; }
     public Visibility updateMode { get; set; }
     public Visibility addMode { get; set; }
 
@@ -31,7 +45,13 @@ public partial class AddOrUpdateTaskWindow : Window
 {
     BlApi.IBl? _bl;
     public static readonly DependencyProperty DataDep = DependencyProperty.Register(nameof(Data), typeof(AddOrUpdateTaskWindowData), typeof(AddOrUpdateTaskWindow));
-    public AddOrUpdateTaskWindowData Data { get => (AddOrUpdateTaskWindowData)GetValue(DataDep); set => SetValue(DataDep, value); }
+    public AddOrUpdateTaskWindowData Data { get => (AddOrUpdateTaskWindowData)GetValue(DataDep);
+        set
+        {
+            SetValue(DataDep, value);
+            ((AddOrUpdateTaskWindowData)value).OnPropertyChanged();
+        }
+    }
 
     /// <summary>
     /// constructor for update window
@@ -47,12 +67,41 @@ public partial class AddOrUpdateTaskWindow : Window
             isReadOnlyID = id == 0 ? false : true,
             Task = id == 0 ? new() : _bl?.Task.Read(id),
             EngineerLevel = Enum.GetValues(typeof(BO.EngineerExperience)),
+            EngineerInTaskList = _bl.Engineer.ReadAll().Select(item => item.Id).ToArray(),
             addMode = id == 0 ? Visibility.Visible : Visibility.Hidden,
             updateMode = id != 0 ? Visibility.Visible : Visibility.Hidden,
             buttonName = id == 0 ? "CREATE" : "UPDATE",
         };
 
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// category selector in the combo box
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void EngineerInTaskList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var selected = ((ComboBox)sender).SelectedItem;
+        if (selected != null)
+        {
+            BO.Engineer engineer = _bl.Engineer.Read((int)EngineerInTaskList.SelectedItem);
+            Data.Task.Engineer = new BO.EngineerInTask
+            {
+                Id = engineer.Id,
+                Name = engineer.Name
+            };
+        }
+    }
+
+    private void DependenciesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        BO.TaskInList selected = (BO.TaskInList)DependenciesList.SelectedItem;
+        if (selected != null)
+        {
+            new AddOrUpdateTaskWindow(_bl, selected.Id);
+        }
     }
 
     /// <summary>
@@ -82,6 +131,16 @@ public partial class AddOrUpdateTaskWindow : Window
         {
             MessageBox.Show(ex.Message);
         }
+    }
+
+    /// <summary>
+    /// button to add task
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ViewDependentTaskButton(object sender, RoutedEventArgs e)
+    {
+        new AddOrUpdateTaskWindow(_bl).ShowDialog();
     }
 
     /// <summary>
@@ -141,4 +200,34 @@ public partial class AddOrUpdateTaskWindow : Window
     }
 }
 
+public class TimeSpanToStringConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is TimeSpan timeSpan)
+        {
+            return $"{timeSpan.Days}.{timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds}";
+        }
+        return value?.ToString();
+    }
 
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is string timeString)
+        {
+            string[] parts = timeString.Split('.');
+            if (parts.Length == 2 && int.TryParse(parts[0], out int days))
+            {
+                string[] timeParts = parts[1].Split(':');
+                if (timeParts.Length == 3 &&
+                    int.TryParse(timeParts[0], out int hours) &&
+                    int.TryParse(timeParts[1], out int minutes) &&
+                    int.TryParse(timeParts[2], out int seconds))
+                {
+                    return new TimeSpan(days, hours, minutes, seconds);
+                }
+            }
+        }
+        return DependencyProperty.UnsetValue; // Return DependencyProperty.UnsetValue if conversion fails
+    }
+}
