@@ -1,11 +1,10 @@
-﻿using BlApi;
-using BO;
+﻿using BO;
 using PL.admin_window;
+using PL.engineer_windows;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Task = BO.Task;
 
 namespace PL.Shared;
 
@@ -15,21 +14,14 @@ namespace PL.Shared;
 /// </summary>
 public class TaskListData : DependencyObject
 {
-    //public static readonly DependencyProperty TaskItemsSourceProperty =
-    //    DependencyProperty.Register("TaskItemsSource", typeof(ObservableCollection<TaskInList>), typeof(TaskListData), new PropertyMetadata(null));
-
-    //public ObservableCollection<TaskInList> TaskItemsSource
-    //{
-    //    get { return (ObservableCollection<TaskInList>)GetValue(TaskItemsSourceProperty); }
-    //    set { SetValue(TaskItemsSourceProperty, value); }
-    //}
-
 
     /// <summary>
     /// Gets or sets the DifficultyLevelSelector.
     /// </summary>
     public Array? DifficultyLevelSelector { get; set; }
+
 }
+
 
 /// <summary>
 /// Interaction logic for TaskList.xaml
@@ -45,12 +37,57 @@ public partial class TaskList : UserControl
         get { return (ObservableCollection<TaskInList>)GetValue(TaskItemsSourceProperty); }
         set { SetValue(TaskItemsSourceProperty, value); }
     }
+    public static readonly DependencyProperty SearchTextBoxSourceProperty =
+        DependencyProperty.Register("SearchTextBoxSource", typeof(string), typeof(TaskList), new PropertyMetadata(null));
 
+
+    public string SearchTextBoxSource
+    {
+        get { return (string)GetValue(SearchTextBoxSourceProperty); }
+        set { SetValue(SearchTextBoxSourceProperty, value); }
+    }
+
+    public static readonly DependencyProperty isRelatedToEngineerSourceProperty =
+        DependencyProperty.Register("isRelatedToEngineerSource", typeof(bool), typeof(TaskList), new PropertyMetadata(false));
+
+
+    public bool isRelatedToEngineerSource
+    {
+        get { return (bool)GetValue(isRelatedToEngineerSourceProperty); }
+        set { SetValue(isRelatedToEngineerSourceProperty, value); }
+    }
+
+    public static readonly DependencyProperty EngineerIdSourceProperty =
+        DependencyProperty.Register("EngineerIdSource", typeof(int), typeof(TaskList), new PropertyMetadata(0));
+
+
+    public int EngineerIdSource
+    {
+        get { return (int)GetValue(EngineerIdSourceProperty); }
+        set { SetValue(EngineerIdSourceProperty, value); }
+    }
+
+
+    public static readonly DependencyProperty CurrentTaskVisibilitySourceProperty =
+        DependencyProperty.Register(nameof(CurrentTaskVisibilitySource), typeof(Visibility), typeof(TaskList), new PropertyMetadata(default(Visibility)));
+
+    public Visibility CurrentTaskVisibilitySource
+    {
+        get { return (Visibility)GetValue(CurrentTaskVisibilitySourceProperty); }
+        set { SetValue(CurrentTaskVisibilitySourceProperty, value); }
+    }
+    public static readonly DependencyProperty TasksVisibilitySourceProperty =
+        DependencyProperty.Register(nameof(TasksVisibilitySource), typeof(Visibility), typeof(TaskList), new PropertyMetadata(default(Visibility)));
+
+    public Visibility TasksVisibilitySource
+    {
+        get { return (Visibility)GetValue(TasksVisibilitySourceProperty); }
+        set { SetValue(TasksVisibilitySourceProperty, value); }
+    }
 
     ///// <summary>
     ///// Gets or sets the DifficultyLevelSelector.
     ///// </summary>
-    //public Array? DifficultyLevelSelector { get; set; }
 
     private IEnumerable<TaskInList>? originalList;
     /// <summary>
@@ -70,19 +107,37 @@ public partial class TaskList : UserControl
     /// </summary>
     public TaskList()
     {
-    //    originalList = _bl?.Task.ReadAllTaskInList();
-    //    TaskItemsSource = new ObservableCollection<TaskInList>(originalList)!;
-    //    DifficultyLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience));
-    //    InitializeComponent();
-
         originalList = _bl?.Task.ReadAllTaskInList();
         Data = new TaskListData
         {
             DifficultyLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience))
         };
-        //TaskItemsSource = new ObservableCollection<TaskInList>(originalList)!;
         InitializeComponent();
     }
+
+
+    private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (originalList == null)
+            return;
+
+        //string searchText = Data?.SearchTextBox?.Text?.ToLower();
+        string searchText = SearchTextBoxSource?.ToLower();
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            TaskItemsSource = new ObservableCollection<TaskInList>(originalList);
+        }
+        else
+        {
+            TaskItemsSource = new ObservableCollection<TaskInList>(originalList.Where(task => task.Alias.ToLower().StartsWith(searchText) || task.Description.ToLower().StartsWith(searchText)));
+        }
+    }
+
+    private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
+    {
+        SearchTextBoxSource = string.Empty;
+    }
+
 
     /// <summary>
     /// category selector in the combo box
@@ -104,9 +159,6 @@ public partial class TaskList : UserControl
     ///// <param name="e"></param>
     private void TaskListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        //var test = BlInstance?.Engineer?.ReadAll();
-        //if (IsMouseCaptureWithin)
-        //    new TaskDatails(_bl, ((BO.Task)TaskListView.SelectedItem).Id, OnChangeTask).ShowDialog();
         var selected = ((ListView)sender).SelectedItem;
 
         BO.TaskInList item = (((FrameworkElement)e.OriginalSource).DataContext as BO.TaskInList)!;
@@ -117,9 +169,20 @@ public partial class TaskList : UserControl
             {
                 if (IsMouseCaptureWithin)
                 {
-                    new AddOrUpdateTaskWindow(_bl, task.Id).ShowDialog();
-                    OnChangeTask();
-                    //this.Close();
+                    if (isRelatedToEngineerSource)
+                    {
+                        TaskInEngineer taskInEngineer = new TaskInEngineer() { Alias = task.Alias, Id = task.Id };
+                        new EndOrStartEngineerTask(true, EngineerIdSource, taskInEngineer).ShowDialog();
+                        OnChangeTask();
+                    }
+                    else
+                    {
+                        new AddOrUpdateTaskWindow(_bl, task.Id).ShowDialog();
+                        OnChangeTask();
+                    }
+                    // Close the parent window
+                    Window parentWindow = Window.GetWindow(this);
+                    parentWindow?.Close();
                 }
             }
         }

@@ -1,10 +1,8 @@
 ﻿using BO;
+using PL.engineer_windows;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Input;
-using Task = BO.Task;
 
 namespace PL.engineer_main_windows;
 
@@ -14,7 +12,7 @@ namespace PL.engineer_main_windows;
 public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
 {
     private BlApi.IBl? _bl = BlApi.Factory.Get();
-    private int _engineerId;
+    private TaskInEngineer? _taskInEngineer;
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public BO.TaskInEngineer? Task
@@ -31,25 +29,17 @@ public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
     /// <summary>
     /// Gets or sets the list of tasks.
     /// </summary>
-    public ObservableCollection<BO.Task?>? TaskList
+    public ObservableCollection<BO.TaskInList?>? TaskList
     {
-        get { return (ObservableCollection<BO.Task>?)GetValue(tasksListProperty); }
+        get { return (ObservableCollection<BO.TaskInList>?)GetValue(tasksListProperty); }
         set { SetValue(tasksListProperty, value); }
     }
 
     // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty tasksListProperty =
-        DependencyProperty.Register("TaskList", typeof(ObservableCollection<BO.Task?>), typeof(EngineerTrackingWindow));
+        DependencyProperty.Register("TaskList", typeof(ObservableCollection<BO.TaskInList?>), typeof(EngineerTrackingWindow));
 
 
-    public static readonly DependencyProperty CurrentTaskVisibilityProperty =
-        DependencyProperty.Register(nameof(CurrentTaskVisibility), typeof(Visibility), typeof(EngineerTrackingWindow), new PropertyMetadata(default(Visibility)));
-
-    public Visibility CurrentTaskVisibility
-    {
-        get { return (Visibility)GetValue(CurrentTaskVisibilityProperty); }
-        set { SetValue(CurrentTaskVisibilityProperty, value); }
-    }
     public static readonly DependencyProperty TasksVisibilityProperty =
         DependencyProperty.Register(nameof(TasksVisibility), typeof(Visibility), typeof(EngineerTrackingWindow), new PropertyMetadata(default(Visibility)));
 
@@ -58,26 +48,47 @@ public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
         get { return (Visibility)GetValue(TasksVisibilityProperty); }
         set { SetValue(TasksVisibilityProperty, value); }
     }
-    /// <summary>
-    /// we creat a new property change name.
-    /// </summary>
-    private string taskTrackingString_e;
-    public string taskTrackingString { get { return taskTrackingString_e; } set { taskTrackingString_e = value; if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("taskTrackingString")); } } }
-    /// <summary>
-    ///  we creat a new property change name.
-    /// </summary>
-    private int engineerId_e;
-    public int engineerId { get { return engineerId_e; } set { engineerId_e = value; if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("engineerId")); } } }
-    /// <summary>
-    /// constractor
-    /// </summary>
+
+    public static readonly DependencyProperty SearchTextBoxProperty =
+        DependencyProperty.Register("SearchTextBox", typeof(string), typeof(EngineerTrackingWindow), new PropertyMetadata(null));
+
+
+    public string SearchTextBox
+    {
+        get { return (string)GetValue(SearchTextBoxProperty); }
+        set { SetValue(SearchTextBoxProperty, value); }
+    }
+    public static readonly DependencyProperty EngineerIdProperty =
+        DependencyProperty.Register("EngineerId", typeof(int), typeof(EngineerTrackingWindow), new PropertyMetadata(default(int)));
+
+
+    public int EngineerId
+    {
+        get { return (int)GetValue(EngineerIdProperty); }
+        set { SetValue(EngineerIdProperty, value); }
+    }
+
     public EngineerTrackingWindow(int engineerId)
     {
-        _engineerId = engineerId;
-        TasksVisibility = Visibility.Collapsed;
-        CurrentTaskVisibility = Visibility.Collapsed;
-        TaskList = new ObservableCollection<Task>(_bl?.Task?.ReadAll());
+        EngineerId = engineerId;
+        var engineer = _bl.Engineer.Read(engineerId);
+        _taskInEngineer = engineer.Task;
+        checkTaskExistence();
+        TaskList = new ObservableCollection<TaskInList>(_bl?.Task?.GetSuitableTasks(EngineerId));
         InitializeComponent();
+    }
+
+    private void checkTaskExistence()
+    {
+        var engineer = _bl.Engineer.Read(EngineerId);
+        if (engineer?.Task != null)
+        {
+            TasksVisibility = Visibility.Collapsed;
+        }
+        else
+        {
+            TasksVisibility = Visibility.Visible;
+        }
     }
     /// <summary>
     /// function that if we put id of order in the text box we got the status on him.
@@ -85,19 +96,16 @@ public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">Event arguments.</param>
-    private void GetDetails_Click(object sender, RoutedEventArgs e)
+    private void GetTasks_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            TasksVisibility = Visibility.Collapsed;
-            CurrentTaskVisibility = Visibility.Visible;
-            //task = _bl?.Engineer.Read(_engineerId)?.Task;
-            //taskTrackingString = task?.ToString()!;
-            Task = new TaskInEngineer()
+            checkTaskExistence();
+            if (TasksVisibility.Equals(Visibility.Collapsed))
             {
-                Alias = "dshsdh",
-                Id = 42
-            };
+                MessageBox.Show("You already have an associated task for you so you cant pick another one from the list");
+            }
+
         }
         catch (BO.Exceptions.BlDoesNotExistException ex) when (ex.InnerException is not null)
         {
@@ -105,35 +113,31 @@ public partial class EngineerTrackingWindow : Window, INotifyPropertyChanged
         }
     }
     /// <summary>
-    /// function to remove the option to input latters in the text box of id.
-    /// </summary>
-    /// <param name="sender">The object that raised the event.</param>
-    /// <param name="e">Event arguments.</param>
-    private void ID_PreviewTextInput(object sender, TextCompositionEventArgs e)
-    {
-        e.Handled = Regex.IsMatch(e.Text, "^[^0-9]+$");
-    }
-    /// <summary>
     /// function to get the order details .
     /// </summary>
     /// <param name="sender">The object that raised the event.</param>
     /// <param name="e">Event arguments.</param>
-    private void GetItems_Click(object sender, RoutedEventArgs e)
+    private void GetCurrentTask_Click(object sender, RoutedEventArgs e)
     {
-        TasksVisibility = Visibility.Visible;
-        CurrentTaskVisibility = Visibility.Collapsed;
-        //try
-        //{
-        //    new TaskDatails(_bl, engineerId).Show();
+        checkTaskExistence();
+        if (TasksVisibility.Equals(Visibility.Visible))
+        {
+            MessageBox.Show("There is no associated task for you, please pick one from the list");
+        }
+        else OpenEndOrStartEngineerTaskWindow();
+    }
 
-        //}
-        //catch (BO.IdNotExsitException ex)
-        //{
-        //    MessageBox.Show(ex.Message);
-        //}
-        //catch (BO.NullExeptionForDO ex) when (ex.InnerException is not null)
-        //{
-        //    MessageBox.Show(ex.Message + ex.InnerException!.Message);
-        //}
+    private void OpenEndOrStartEngineerTaskWindow()
+    {
+        var window = Application.Current.Windows.OfType<EndOrStartEngineerTask>().FirstOrDefault();
+        if (window != null)
+        {
+            window.Activate();
+            window.Focus();
+        }
+        else
+        {
+            new EndOrStartEngineerTask(false, EngineerId, _taskInEngineer).ShowDialog();
+        }
     }
 }

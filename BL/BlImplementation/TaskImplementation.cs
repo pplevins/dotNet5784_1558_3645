@@ -381,6 +381,81 @@ internal class TaskImplementation : ITask
         return BO.Tools.UpdateEntity(doTask, "EngineerId", id);
     }
 
+
+
+    public List<BO.Task> GetDependentTasks(BO.Task boTask)
+    {
+        var dependentTasks = _dal.Dependency.ReadAll()
+            .Where(dep => dep.DependentTask == boTask.Id) // Filter dependent tasks for the given task ID
+            .Select(dep => dep.PreviousTask)
+            .Join(_dal.Task.ReadAll(),
+                prevTaskId => prevTaskId,
+                task => task.Id,
+                (prevTaskId, task) => task)
+            .Select(doT => ConvertFromDoToBoTask(doT))
+            .ToList();
+
+        return dependentTasks;
+    }
+
+    private BO.Task ConvertFromDoToBoTask(DO.Task doTask)
+    {
+        var boTask = new BO.Task();
+        BO.Tools.CopySimilarFields(doTask, boTask);
+        boTask = BO.Tools.UpdateEntity(boTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
+        return boTask;
+    }
+    private DO.Task ConvertFromBoToDoTask(BO.Task boTask)
+    {
+        var doTask = new DO.Task();
+        BO.Tools.CopySimilarFields(boTask, doTask);
+        doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (BO.EngineerExperience)doTask.DifficultyLevel);
+        return doTask;
+    }
+    public bool checkForActiveDependentTasks(BO.Task doTask, List<BO.Task> dependentTasks)
+    {
+        var activeDependentTask =
+            dependentTasks.Find(task => task?.CompleteDate is not null);
+
+        if (activeDependentTask is not null) return true;
+        return false;
+    }
+
+    public List<BO.TaskInList> GetSuitableTasks(int engineerId)
+    {
+        DO.Engineer? eng = _dal.Engineer.Read(engineerId);
+        if (eng == null)
+            throw new BO.Exceptions.BlDoesNotExistException($"Engineer with id={engineerId} does not exist and cannot be assigned to the task");
+        var tasks = _dal.Task.ReadAll();
+        List<Task> suitableTasks = new List<Task>();
+        foreach (var doTask in tasks)
+        {
+            if (doTask.DifficultyLevel <= eng.Level && doTask.EngineerId == null)
+            {
+                var boTask = ConvertFromDoToBoTask(doTask);
+                var dependentTasks = GetDependentTasks(boTask);
+                if (!checkForActiveDependentTasks(boTask, dependentTasks)) suitableTasks.Add(boTask);
+            }
+        }
+
+        return ConvertFromTaskToTaskList(suitableTasks);
+    }
+
+    public List<BO.TaskInList> ConvertFromTaskToTaskList(List<BO.Task> tasks)
+    {
+        {
+            return tasks.Select(task => new BO.TaskInList
+            {
+                Id = task.Id,
+                Alias = task.Alias,
+                Description = task.Description,
+                Status = CalcStatus(ConvertFromBoToDoTask(task))
+            }).ToList();
+        }
+    }
+
+
+
     /// <summary>
     /// Check if the TaskInList list from the user is need to update
     /// </summary>
@@ -449,7 +524,20 @@ internal class TaskImplementation : ITask
         Update(task);
         return task.StartDate;
     }
-
+    /// <summary>
+    /// StartDateCreation for task
+    /// </summary>
+    /// <returns>the date Suggested</returns>
+    public DateTime? StartDateCreation(int taskId)
+    {
+        if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
+            throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
+        var task = Read(taskId);
+        task.StartDate = _bl.Clock;
+        task.EstimatedDate = CalculateEstimatedDate(task);
+        Update(task);
+        return task.StartDate;
+    }
     /// <summary>
     /// CompleteDateCreation for task
     /// </summary>
@@ -461,6 +549,21 @@ internal class TaskImplementation : ITask
         task.CompleteDate = _bl.Clock;
         Update(task);
         return task.CompleteDate;
+    }
+
+
+    /// <summary>
+    /// CompleteDateCreation for task
+    /// </summary>
+    /// <returns>the complete date</returns>
+    public int CompleteDateAction(int taskId)
+    {
+        var task = Read(taskId);
+        if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
+            throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
+        task.CompleteDate = _bl.Clock;
+        Update(task);
+        return task.Id;
     }
     /// <summary>
     /// Calculate estimated date for task

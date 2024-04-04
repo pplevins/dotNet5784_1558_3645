@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace PL.admin_window;
 public class AddOrUpdateEngineerWindowData : DependencyObject
@@ -27,19 +26,17 @@ public class AddOrUpdateEngineerWindowData : DependencyObject
 /// </summary>
 public partial class AddOrUpdateEngineerWindow : Window
 {
-    BlApi.IBl? _bl;
+    private BlApi.IBl? _bl = BlApi.Factory.Get();
     public static readonly DependencyProperty DataDep = DependencyProperty.Register(nameof(Data), typeof(AddOrUpdateEngineerWindowData), typeof(AddOrUpdateEngineerWindow));
     public AddOrUpdateEngineerWindowData Data { get => (AddOrUpdateEngineerWindowData)GetValue(DataDep); set => SetValue(DataDep, value); }
 
     /// <summary>
     /// constructor for update window
     /// </summary>
-    /// <param name="_blForAdd"></param>
     /// <param name="c"></param>
-    public AddOrUpdateEngineerWindow(BlApi.IBl? _blForAdd, int id = 0)
+    public AddOrUpdateEngineerWindow(int id = 0)
     {
         //////////////////////////////////////////////////////////////////////////
-        _bl = _blForAdd;
         Data = new()
         {
             isReadOnlyID = id == 0 ? false : true,
@@ -72,58 +69,12 @@ public partial class AddOrUpdateEngineerWindow : Window
         {
             MessageBox.Show(ex.Message + ex.InnerException!.Message);
         }
-        //catch (BO.Exceptions. ex)
-        //{
-        //    MessageBox.Show(ex.Message);
-        //}
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message);
         }
     }
 
-    /// <summary>
-    /// dont put numbers in the text box
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void name_PreviewTextInput(object sender, TextCompositionEventArgs e)
-    {
-        //e.Handled = !Regex.IsMatch(e.Text, @"^(?=.*[a-zA-Z].{2})[a-zA-Z ,.'-]+$");
-    }
-
-
-    /// <summary>
-    /// dont put latters in the text box
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void email_PreviewTextInput(object sender, TextCompositionEventArgs e)
-    {
-        //e.Handled = !Regex.IsMatch(e.Text, @"^(?=.*[a-zA-Z].{2})[^\s@]+@[^\s@]+\.[^\s@]+$");
-    }
-
-
-    /// <summary>
-    /// dont put latters in the text box
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void id_PreviewTextInput(object sender, TextCompositionEventArgs e)
-    {
-        //e.Handled = !Regex.IsMatch(e.Text, "^[^0-9]+$");
-    }
-
-
-    /// <summary>
-    /// dont put letters in the text box
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void cost_PreviewTextInput(object sender, TextCompositionEventArgs e)
-    {
-        //e.Handled = !Regex.IsMatch(e.Text, @"^[0-9](?:\.[0-9])?$");
-    }
 
     /// <summary>
     /// function to conect the text box with the slider in too way with dependency property.

@@ -10,7 +10,7 @@
   <User>
     <Id>238858520</Id>
     <Password>eliamar@gmail.com</Password>
-    <UserPermission>Engineer</UserPermission>
+    <UserPermission>Manager</UserPermission>
     <Email>eliamar@gmail.com</Email>
     <IsActive>true</IsActive>
   </User>

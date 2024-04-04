@@ -1,5 +1,4 @@
-﻿using PL.admin_window;
-using PL.login_window;
+﻿using PL.login_window;
 using System.ComponentModel;
 using System.Windows;
 
@@ -75,19 +74,7 @@ namespace PL
         private void ShowAdminButton_Click(object sender, RoutedEventArgs e)
         {
 
-            var window = Application.Current.Windows.OfType<EngineerAndTaskList>().FirstOrDefault();
-            if (window != null)
-            {
-                window.Activate();
-                window.Focus();
-            }
-            else
-            {
-                new EngineerAndTaskList(_bl).Show();
-            }
-
-            //var window = Application.Current.Windows.OfType<UserLoginWindow>().FirstOrDefault();
-            ////var window = Application.Current.Windows.OfType<login_window>().FirstOrDefault();
+            //var window = Application.Current.Windows.OfType<EngineerAndTaskList>().FirstOrDefault();
             //if (window != null)
             //{
             //    window.Activate();
@@ -95,8 +82,19 @@ namespace PL
             //}
             //else
             //{
-            //    new UserLoginWindow(_bl, "EngineerAndTaskList").ShowDialog();
+            //    new EngineerAndTaskList().Show();
             //}
+
+            var window = Application.Current.Windows.OfType<UserLoginWindow>().FirstOrDefault();
+            if (window != null)
+            {
+                window.Activate();
+                window.Focus();
+            }
+            else
+            {
+                new UserLoginWindow("EngineerAndTaskList").ShowDialog();
+            }
         }
 
         /// <summary>
@@ -118,8 +116,7 @@ namespace PL
             //    new EngineerTrackingWindow(100).Show();
             //}
 
-
-            new UserLoginWindow(_bl, "engineer").Show();
+            new UserLoginWindow("engineer").Show();
         }
 
         /// <summary>

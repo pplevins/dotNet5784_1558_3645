@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Task = BO.Task;
 
 namespace PL.admin_window;
 /// <summary>
@@ -37,15 +36,6 @@ public class EngineerAndTaskListData : DependencyObject
     public static readonly DependencyProperty tasksListProperty =
         DependencyProperty.Register("TaskList", typeof(ObservableCollection<TaskInList>), typeof(EngineerAndTaskListData));
 
-    public static readonly DependencyProperty BLProperty =
-        DependencyProperty.Register("Bl", typeof(BlApi.IBl), typeof(EngineerAndTaskListData), new PropertyMetadata(null));
-
-    public BlApi.IBl Bl
-    {
-        get { return (BlApi.IBl)GetValue(BLProperty); }
-        set { SetValue(BLProperty, value); }
-    }
-
     /// <summary>
     /// Gets or sets the EngineerLevelSelector.
     /// </summary>
@@ -59,7 +49,7 @@ public partial class EngineerAndTaskList : Window
     /// <summary>
     /// access to the logical layer.
     /// </summary>
-    private BlApi.IBl? _bl;
+    private BlApi.IBl? _bl = BlApi.Factory.Get();
 
     public static readonly DependencyProperty DataDep = DependencyProperty.Register(nameof(Data), typeof(EngineerAndTaskListData), typeof(EngineerAndTaskList));
 
@@ -71,17 +61,14 @@ public partial class EngineerAndTaskList : Window
     /// <summary>
     /// constructor
     /// </summary>
-    public EngineerAndTaskList(BlApi.IBl? _bl)
+    public EngineerAndTaskList()
     {
-        this._bl = _bl;
-
         originalList = _bl?.Engineer.ReadAll();
         Data = new()
         {
             EngineerList = new ObservableCollection<Engineer>(originalList)!,
             TaskList = new ObservableCollection<TaskInList>(_bl?.Task.ReadAllTaskInList())!,
-            EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience)),
-            Bl = _bl
+            EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience))
         };
         InitializeComponent();
     }
@@ -117,7 +104,7 @@ public partial class EngineerAndTaskList : Window
     /// <param name="e"></param>
     private void Add_Engineer_Button_Click(object sender, RoutedEventArgs e)
     {
-        new AddOrUpdateEngineerWindow(_bl).ShowDialog();
+        new AddOrUpdateEngineerWindow().ShowDialog();
         OnChangeEngineer();
         //this.Close();
     }
@@ -151,7 +138,7 @@ public partial class EngineerAndTaskList : Window
             {
                 if (IsMouseCaptureWithin)
                 {
-                    new AddOrUpdateEngineerWindow(_bl, engineer.Id).ShowDialog();
+                    new AddOrUpdateEngineerWindow(engineer.Id).ShowDialog();
                     OnChangeEngineer();
                     //this.Close();
                 }
@@ -165,8 +152,6 @@ public partial class EngineerAndTaskList : Window
     ///// <param name="e"></param>
     private void TaskListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        //if (IsMouseCaptureWithin)
-        //    new TaskDatails(_bl, ((BO.Task)TaskListView.SelectedItem).Id, OnChangeTask).ShowDialog();
         var selected = ((ListView)sender).SelectedItem;
 
         BO.TaskInList item = (((FrameworkElement)e.OriginalSource).DataContext as BO.TaskInList)!;
