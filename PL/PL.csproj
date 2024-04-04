@@ -24,6 +24,11 @@
 		<None Remove="engineer2.jpg" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Syncfusion.Licensing" Version="25.1.38" />
+	  <PackageReference Include="Syncfusion.Shared.WPF" Version="25.1.38" />
+	</ItemGroup>
+
 
 	<ItemGroup>
 

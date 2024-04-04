@@ -224,5 +224,12 @@
                 <Button x:Name="button1" Content="Reset List" HorizontalAlignment="Center" Height="27" Grid.Row="2" VerticalAlignment="Center" Width="70" Click="Reset_button_Click" FontWeight="Bold" Foreground="Black"/>            
             </Grid>-->
         </TabItem>
+        <TabItem>
+            <TabItem.Header>
+                <TextBlock  Text="Gantt Chart" FontFamily="Georgia" FontWeight="Bold"/>
+            </TabItem.Header>
+
+            <local:GanttChartView/>
+        </TabItem>
     </TabControl>
 </Window>

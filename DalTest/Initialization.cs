@@ -116,7 +116,8 @@ public static class Initialization
             EngineerExperience level = (EngineerExperience)s_rand.Next(5);
             TimeSpan requiredTime = TimeSpan.FromDays(s_rand.Next(1, 5));
             TimeSpan time = new(s_rand.Next(1, 31), 0, 0, 0, 0);
-            DateTime taskCreation = DateTime.Now - time;
+            //DateTime taskCreation = DateTime.Now - time;
+            DateTime taskCreation = DateTime.Today - time;
 
             Task newTask = new(0, alias, description, false, deliverables, level, requiredTime, taskCreation);
 
