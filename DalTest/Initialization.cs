@@ -76,7 +76,7 @@ public static class Initialization
     private static void createUser(Engineer newEng)
     {
         UserPermission userPermission = (newEng.Id % 2 == 0) ? UserPermission.Manager : UserPermission.Engineer;
-        var new_User = new User(newEng.Id, newEng.Email, UserPermission.Engineer, newEng.Email);
+        var new_User = new User(newEng.Id, newEng.Email, userPermission, newEng.Email);
         s_dal!.User.Create(new_User);
     }
     /// <summary>

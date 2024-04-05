@@ -18,7 +18,7 @@ namespace PL.admin_window
     /// <summary>
     /// Interaction logic for GanttChartView.xaml
     /// </summary>
-    public partial class GanttChartView : Page
+    public partial class GanttChartView : UserControl
     {
         public GanttChartView()
         {

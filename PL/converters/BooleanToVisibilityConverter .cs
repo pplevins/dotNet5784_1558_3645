@@ -10,11 +10,11 @@ public class BooleanToVisibilityConverter : IValueConverter
     {
         if (value is bool boolValue)
         {
-            return boolValue ? Visibility.Visible : Visibility.Collapsed;
+            return boolValue ? Visibility.Collapsed : Visibility.Visible;
         }
         else
         {
-            return value != null ? Visibility.Visible : Visibility.Collapsed;
+            return value == null ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 

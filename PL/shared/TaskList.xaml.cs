@@ -174,15 +174,15 @@ public partial class TaskList : UserControl
                         TaskInEngineer taskInEngineer = new TaskInEngineer() { Alias = task.Alias, Id = task.Id };
                         new EndOrStartEngineerTask(true, EngineerIdSource, taskInEngineer).ShowDialog();
                         OnChangeTask();
+                        // Close the parent window
+                        Window parentWindow = Window.GetWindow(this);
+                        parentWindow?.Close();
                     }
                     else
                     {
                         new AddOrUpdateTaskWindow(_bl, task.Id).ShowDialog();
                         OnChangeTask();
                     }
-                    // Close the parent window
-                    Window parentWindow = Window.GetWindow(this);
-                    parentWindow?.Close();
                 }
             }
         }
@@ -218,5 +218,10 @@ public partial class TaskList : UserControl
         _bl?.ResetDB();
         TaskItemsSource = null;
         Data.DifficultyLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience));
+    }
+
+    private void Schedule_button_Click(Object sender, RoutedEventArgs e)
+    {
+        new SetScheduleWindow().ShowDialog();
     }
 }
