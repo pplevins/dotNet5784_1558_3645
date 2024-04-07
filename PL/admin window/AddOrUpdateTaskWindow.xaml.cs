@@ -143,6 +143,18 @@ public partial class AddOrUpdateTaskWindow : Window
         new AddOrUpdateTaskWindow(_bl).ShowDialog();
     }
 
+    private void SuggestDateButton(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Data.Task.ScheduledDate = _bl?.Task.SuggestScheduledDate(Data.Task.Id);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);
+        }
+    }
+
     /// <summary>
     /// dont put numbers in the text box
     /// </summary>

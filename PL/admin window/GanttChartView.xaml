@@ -7,6 +7,34 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="Gantt Chart" HorizontalAlignment="Center" FontSize="18"/>
+
+        <!-- Gantt Chart -->
+        <ScrollViewer Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Height="400" Width="800">
+                    <Canvas Name="ganttCanvas" Grid.Column="1" Width="900" Height="600"/>
+                </ScrollViewer>
+                <ItemsControl Name="taskList" Grid.Column="0" Margin="5"/>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Legend -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="Legend: " Margin="5"/>
+            <TextBlock Text="On Time" Background="LightGreen" Margin="5"/>
+            <TextBlock Text="Delayed" Background="LightCoral" Margin="5"/>
+        </StackPanel>
     </Grid>
 </UserControl>

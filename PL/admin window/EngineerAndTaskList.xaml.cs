@@ -1,4 +1,5 @@
 ﻿using BO;
+using PL.Shared;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -45,6 +46,8 @@ public class EngineerAndTaskListData : DependencyObject
     public static readonly DependencyProperty tasksListProperty =
         DependencyProperty.Register("TaskList", typeof(ObservableCollection<TaskInList>), typeof(EngineerAndTaskListData));
 
+    
+    
     /// <summary>
     /// Gets or sets the EngineerLevelSelector.
     /// </summary>
@@ -66,7 +69,17 @@ public partial class EngineerAndTaskList : Window
     public EngineerAndTaskListData Data { get => (EngineerAndTaskListData)GetValue(DataDep); 
         set { SetValue(DataDep, value);
             ((EngineerAndTaskListData)value).OnPropertyChanged();
-        } }
+        } 
+    }
+
+    public static readonly DependencyProperty isProjectSchduledProperty =
+        DependencyProperty.Register("isRelatedToEngineerSource", typeof(bool), typeof(EngineerAndTaskList), new PropertyMetadata(false));
+
+    public bool isProjectSchduled
+    {
+        get { return (bool)GetValue(isProjectSchduledProperty); }
+        set { SetValue(isProjectSchduledProperty, value); }
+    }
 
     /// <summary>
     /// constructor
@@ -176,6 +189,11 @@ public partial class EngineerAndTaskList : Window
                     new AddOrUpdateTaskWindow(_bl, taskk.Id).ShowDialog();
                     OnChangeTask();
                     //this.Close();
+                    if (_bl.CheckProjectStatus() == ProjectStatus.InProgress)
+                    {
+                        isProjectSchduled = true;
+                        GanttChartView ganttChartView = new GanttChartView();
+                    }
                 }
             }
         }

@@ -139,7 +139,7 @@
             <shared:TaskList TaskItemsSource="{Binding TaskList, Mode=TwoWay}"/>
 
         </TabItem>
-        <TabItem>
+        <TabItem x:Name="ganttTab" IsEnabled="{Binding isProjectSchduled}">
             <TabItem.Header>
                 <TextBlock  Text="Gantt Chart" FontFamily="Georgia" FontWeight="Bold"/>
             </TabItem.Header>

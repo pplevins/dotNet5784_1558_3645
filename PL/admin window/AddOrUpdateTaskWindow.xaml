@@ -53,7 +53,8 @@
             <!--<syncfusion:DateTimeEdit Grid.Column="2" Grid.Row="4" DateTime="{Binding Task.CreatedAtDate, Mode=TwoWay}" />-->
             <DatePicker Grid.Column="2" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Center" SelectedDate="{Binding Task.StartDate, Mode=TwoWay}" Height="24" Width="101"/>
             <DatePicker Grid.Column="2" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" SelectedDate="{Binding Task.CompleteDate, Mode=TwoWay}" Height="24" Width="101"/>
-            <Button    Content="{Binding buttonName}" Grid.Column="6" Grid.Row="10" HorizontalAlignment="Center" VerticalAlignment="Top" Cursor="Hand" Click="addOrUpdateTaskButton" Height="33" Width="90" BorderBrush="Black"/>
+            <Button    Content="{Binding buttonName}" Grid.Column="6" Grid.Row="10" HorizontalAlignment="Center" Cursor="Hand" Click="addOrUpdateTaskButton" Width="90" BorderBrush="Black" Margin="0,0,0,7"/>
+            <Button    Content="Suggest date" Grid.Column="5"  Grid.Row="5" HorizontalAlignment="Right" Cursor="Hand" Click="SuggestDateButton" Width="89" BorderBrush="Black" Margin="0,10,0,6"/>
             <ComboBox  Grid.Column="5" Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120"  ItemsSource="{Binding EngineerInTaskList, Mode=TwoWay}" x:Name="EngineerInTaskList" SelectedItem="{Binding Task.Engineer.Id, Mode=TwoWay}"  BorderBrush="Black" Height="22" SelectionChanged="EngineerInTaskList_SelectionChanged"/>
             <Label  Content="STATUS" Grid.Column="0" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="14" FontFamily="Elephant" Foreground="Black" Height="28" Width="75"/>
             <Label  Content="{Binding Task.Status}" Grid.Column="1" HorizontalAlignment="Left"  VerticalAlignment="Center" FontSize="14" FontFamily="Elephant" Background="LightGreen" Foreground="red" Height="28" Width="144"/>
