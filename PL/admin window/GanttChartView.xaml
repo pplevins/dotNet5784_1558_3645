@@ -24,7 +24,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer Height="400" Width="800">
-                    <Canvas Name="ganttCanvas" Grid.Column="1" Width="900" Height="600"/>
+                    <Canvas Name="ganttCanvas" Grid.Column="1" Width="2000" Height="1000"/>
                 </ScrollViewer>
                 <ItemsControl Name="taskList" Grid.Column="0" Margin="5"/>
             </Grid>

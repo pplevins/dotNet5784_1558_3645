@@ -414,11 +414,7 @@ internal class TaskImplementation : ITask
     }
     public bool checkForActiveDependentTasks(BO.Task doTask, List<BO.Task> dependentTasks)
     {
-        var activeDependentTask =
-            dependentTasks.Find(task => task?.CompleteDate is not null);
-
-        if (activeDependentTask is not null) return true;
-        return false;
+        return dependentTasks.Any(task => task?.CompleteDate is null);
     }
 
     public List<BO.TaskInList> GetSuitableTasks(int engineerId)
