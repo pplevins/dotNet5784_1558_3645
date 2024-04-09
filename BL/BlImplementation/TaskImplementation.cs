@@ -524,13 +524,14 @@ internal class TaskImplementation : ITask
     /// StartDateCreation for task
     /// </summary>
     /// <returns>the date Suggested</returns>
-    public DateTime? StartDateCreation(int taskId)
+    public DateTime? StartDateCreation(int taskId, int engineerId)
     {
         if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
             throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
         var task = Read(taskId);
         task.StartDate = _bl.Clock;
         task.EstimatedDate = CalculateEstimatedDate(task);
+        UpdateEngineerInTask(ConvertFromBoToDoTask(task), engineerId);
         Update(task);
         return task.StartDate;
     }

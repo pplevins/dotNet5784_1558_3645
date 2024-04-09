@@ -47,11 +47,16 @@ internal class Bl : IBl
             return BO.ProjectStatus.Planing;
         else
         {
-            if (_dal.Task.ReadAll().All(task => task?.ScheduledDate is not null))
+            if (_dal.Task.ReadAll().All(task => task?.ScheduledDate is not null) && IsProjectStartDateAfterSystemClock())
                 return BO.ProjectStatus.InProgress;
             else
                 return BO.ProjectStatus.MiddlePlaning;
         }
+    }
+
+    private bool IsProjectStartDateAfterSystemClock()
+    {
+        return (!ProjectStartDate.HasValue || DateTime.Compare(ProjectStartDate.Value, Clock) >= 0);
     }
 
     public void AdvanceYear(int years)

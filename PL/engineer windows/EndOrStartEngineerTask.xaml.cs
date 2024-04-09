@@ -94,7 +94,7 @@ namespace PL.engineer_windows
                 if (EngineerIdSource != null && TaskInEngineer?.Id != null)
                 {
                     int taskId = (int)TaskInEngineer?.Id;
-                    _bl.Task.StartDateCreation(taskId);
+                    _bl.Task.StartDateCreation(taskId, EngineerIdSource);
                 }
                 Close();
             }

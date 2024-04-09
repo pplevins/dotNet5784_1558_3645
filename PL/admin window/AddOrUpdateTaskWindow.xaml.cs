@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
@@ -28,6 +27,21 @@ public class AddOrUpdateTaskWindowData : DependencyObject, INotifyPropertyChange
         set => SetValue(taskProperty, value);
     }
 
+    private DateTime? _selectedDate;
+    public DateTime? SelectedDate
+    {
+        get => _selectedDate;
+        set
+        {
+            if (_selectedDate != value)
+            {
+                _selectedDate = value;
+                OnPropertyChanged(nameof(SelectedDate));
+            }
+        }
+    }
+
+
     public Array? EngineerLevel { get; set; }
 
     public Array? EngineerInTaskList { get; set; }
@@ -45,7 +59,9 @@ public partial class AddOrUpdateTaskWindow : Window
 {
     BlApi.IBl? _bl;
     public static readonly DependencyProperty DataDep = DependencyProperty.Register(nameof(Data), typeof(AddOrUpdateTaskWindowData), typeof(AddOrUpdateTaskWindow));
-    public AddOrUpdateTaskWindowData Data { get => (AddOrUpdateTaskWindowData)GetValue(DataDep);
+    public AddOrUpdateTaskWindowData Data
+    {
+        get => (AddOrUpdateTaskWindowData)GetValue(DataDep);
         set
         {
             SetValue(DataDep, value);
@@ -147,7 +163,9 @@ public partial class AddOrUpdateTaskWindow : Window
     {
         try
         {
-            Data.Task.ScheduledDate = _bl?.Task.SuggestScheduledDate(Data.Task.Id);
+            var date = _bl?.Task.SuggestScheduledDate(Data.Task.Id);
+            Data.SelectedDate = date;
+            Data.Task.ScheduledDate = date;
         }
         catch (Exception ex)
         {
