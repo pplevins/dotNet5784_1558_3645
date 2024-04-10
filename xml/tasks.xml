@@ -24,7 +24,7 @@
     <Deliverables>completed tests</Deliverables>
     <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
     <RequiredEffortTime>P4D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-05T20:12:01.8874887+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-05T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate>2024-04-24T00:00:00</ScheduledDate>
     <StartDate xsi:nil="true" />
@@ -40,9 +40,9 @@
     <Deliverables>finished test cases</Deliverables>
     <DifficultyLevel>Expert</DifficultyLevel>
     <RequiredEffortTime>P1D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-11T20:12:01.9018076+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-11T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
-    <ScheduledDate xsi:nil="true" />
+    <ScheduledDate>2024-04-23T00:00:00</ScheduledDate>
     <StartDate xsi:nil="true" />
     <DeadlineDate xsi:nil="true" />
     <CompleteDate xsi:nil="true" />
@@ -56,7 +56,7 @@
     <Deliverables>feedbacked code</Deliverables>
     <DifficultyLevel>Advanced</DifficultyLevel>
     <RequiredEffortTime>P3D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-11T20:12:01.9183868+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-11T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -72,7 +72,7 @@
     <Deliverables>debuged code</Deliverables>
     <DifficultyLevel>Advanced</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-22T20:12:01.9396417+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-22T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -88,7 +88,7 @@
     <Deliverables>New feature</Deliverables>
     <DifficultyLevel>Beginner</DifficultyLevel>
     <RequiredEffortTime>P3D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-08T20:12:01.9942919+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-08T00:00:00</CreatedAtDate>
     <EngineerId>238858520</EngineerId>
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -104,7 +104,7 @@
     <Deliverables>Improved database queries</Deliverables>
     <DifficultyLevel>Expert</DifficultyLevel>
     <RequiredEffortTime>P3D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-18T20:12:02.0308656+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-18T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -120,7 +120,7 @@
     <Deliverables>new information</Deliverables>
     <DifficultyLevel>Expert</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-10T20:12:02.0489113+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-10T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -136,7 +136,7 @@
     <Deliverables>unit tests</Deliverables>
     <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
     <RequiredEffortTime>P4D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-23T20:12:02.0633997+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-23T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -152,7 +152,7 @@
     <Deliverables>meeting Participation</Deliverables>
     <DifficultyLevel>AdvancedBeginner</DifficultyLevel>
     <RequiredEffortTime>P1D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-05T20:12:02.0801912+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-05T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -168,7 +168,7 @@
     <Deliverables>project timeline</Deliverables>
     <DifficultyLevel>Expert</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-04T20:12:02.100786+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-04T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -184,7 +184,7 @@
     <Deliverables>feedback improvement</Deliverables>
     <DifficultyLevel>Beginner</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-05T20:12:02.1168109+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-05T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -200,7 +200,7 @@
     <Deliverables>Collaboration work</Deliverables>
     <DifficultyLevel>Expert</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-11T20:12:02.1357768+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-11T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -216,7 +216,7 @@
     <Deliverables>updated documentation</Deliverables>
     <DifficultyLevel>Beginner</DifficultyLevel>
     <RequiredEffortTime>P4D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-13T20:12:02.2110236+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-13T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -232,7 +232,7 @@
     <Deliverables>API endpoints documentation</Deliverables>
     <DifficultyLevel>Advanced</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-12T20:12:02.2452764+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-12T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -248,7 +248,7 @@
     <Deliverables>UI mockup</Deliverables>
     <DifficultyLevel>Beginner</DifficultyLevel>
     <RequiredEffortTime>P1D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-22T20:12:02.2692957+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-22T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -264,7 +264,7 @@
     <Deliverables>Presentation Slides</Deliverables>
     <DifficultyLevel>Advanced</DifficultyLevel>
     <RequiredEffortTime>P1D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-20T20:12:02.2960264+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-20T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -280,7 +280,7 @@
     <Deliverables>resolve issues</Deliverables>
     <DifficultyLevel>Beginner</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-09T20:12:02.3121909+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-09T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -296,7 +296,7 @@
     <Deliverables>training session attendence</Deliverables>
     <DifficultyLevel>Expert</DifficultyLevel>
     <RequiredEffortTime>P2D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-22T20:12:02.3357674+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-22T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />
@@ -312,7 +312,7 @@
     <Deliverables>efficient software</Deliverables>
     <DifficultyLevel>Expert</DifficultyLevel>
     <RequiredEffortTime>P4D</RequiredEffortTime>
-    <CreatedAtDate>2024-03-19T20:12:02.3804056+02:00</CreatedAtDate>
+    <CreatedAtDate>2024-03-19T00:00:00</CreatedAtDate>
     <EngineerId xsi:nil="true" />
     <ScheduledDate xsi:nil="true" />
     <StartDate xsi:nil="true" />

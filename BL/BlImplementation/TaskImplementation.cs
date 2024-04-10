@@ -193,6 +193,7 @@ internal class TaskImplementation : ITask
                 select ConvertFromDoToBoTask(doTask));
     }
 
+
     /// <summary>
     /// Updates task in Bl
     /// </summary>
@@ -336,6 +337,8 @@ internal class TaskImplementation : ITask
         }
         return doTask;
     }
+
+
 
     /// <summary>
     /// Update the ScheduledDate property in task
@@ -631,7 +634,6 @@ internal class TaskImplementation : ITask
         task.Engineer = GetEngineer(engineerId);
         task.StartDate = _bl.Clock;
         task.EstimatedDate = CalculateEstimatedDate(task);
-        DO.Task doTask = UpdateEngineerInTask(ConvertFromBoToDoTask(task), engineerId);
         Update(task);
         return task.StartDate;
     }
