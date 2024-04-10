@@ -30,7 +30,7 @@ internal class Bl : IBl
         {
             if (ProjectStartDate is not null)
                 throw new InvalidOperationException("There's already date for the project. You can't reset.");
-            if (value < DateTime.Now)
+            if (value < Clock)
                 throw new InvalidOperationException("You can't set a past date.");
             if (value is not null)
                 _dal.ProjectStartDate = value;
@@ -56,7 +56,7 @@ internal class Bl : IBl
 
     private bool IsProjectStartDateAfterSystemClock()
     {
-        return (!ProjectStartDate.HasValue || DateTime.Compare(ProjectStartDate.Value, Clock) >= 0);
+        return (ProjectStartDate.HasValue && DateTime.Compare(ProjectStartDate.Value, Clock) <= 0);
     }
 
     public void AdvanceYear(int years)

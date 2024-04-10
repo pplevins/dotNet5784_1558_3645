@@ -30,25 +30,16 @@ internal class TaskImplementation : ITask
         BO.Tools.CopySimilarFields(boTask, doTask);
         try
         {
-            if (BO.Tools.ValidatePositiveNumber<int>(boTask.Id)
-                && BO.Tools.ValidateNonEmptyString(boTask.Alias)
-                )
-            {
-                int idTask = _dal.Task.Create(doTask);
-                CreateDependencies(boTask.Dependencies, idTask);
-                if (boTask.Engineer is not null)
-                    doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
-                return idTask;
-            }
-            return 0;
+            ValidateTask(boTask);
+            int idTask = _dal.Task.Create(doTask);
+            CreateDependencies(boTask.Dependencies, idTask);
+            if (boTask.Engineer is not null)
+                doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
+            return idTask;
         }
         catch (DO.Exceptions.DalAlreadyExistsException ex)
         {
             throw new BO.Exceptions.BlAlreadyExistsException($"Task with ID={boTask.Id} already exists", ex);
-        }
-        catch (ArgumentException ex)
-        {
-            throw new ArgumentException(ex.Message);
         }
     }
 
@@ -111,26 +102,27 @@ internal class TaskImplementation : ITask
         if (doTask == null)
             throw new BO.Exceptions.BlDoesNotExistException($"Task with ID={id} does Not exist");
         BO.Tools.CheckActive("Task", doTask);
-        return new BO.Task()
-        {
-            Id = id,
-            Alias = doTask.Alias,
-            Description = doTask.Description,
-            Deliverables = doTask.Deliverables,
-            DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
-            Status = CalcStatus(doTask),
-            Dependencies = CalcDependencies(id),
-            Milestone = null,
-            RequiredEffortTime = doTask.RequiredEffortTime,
-            CreatedAtDate = doTask.CreatedAtDate,
-            Engineer = GetEngineer(doTask.EngineerId),
-            Remarks = doTask.Remarks,
-            ScheduledDate = doTask.ScheduledDate,
-            StartDate = doTask.StartDate,
-            DeadlineDate = doTask.DeadlineDate,
-            CompleteDate = doTask.CompleteDate,
-            EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
-        };
+        //return new BO.Task()
+        //{
+        //    Id = id,
+        //    Alias = doTask.Alias,
+        //    Description = doTask.Description,
+        //    Deliverables = doTask.Deliverables,
+        //    DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
+        //    Status = CalcStatus(doTask),
+        //    Dependencies = CalcDependencies(id),
+        //    Milestone = null,
+        //    RequiredEffortTime = doTask.RequiredEffortTime,
+        //    CreatedAtDate = doTask.CreatedAtDate,
+        //    Engineer = GetEngineer(doTask.EngineerId),
+        //    Remarks = doTask.Remarks,
+        //    ScheduledDate = doTask.ScheduledDate,
+        //    StartDate = doTask.StartDate,
+        //    DeadlineDate = doTask.DeadlineDate,
+        //    CompleteDate = doTask.CompleteDate,
+        //    EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
+        //};
+        return ConvertFromDoToBoTask(doTask);
     }
 
     /// <summary>
@@ -145,26 +137,27 @@ internal class TaskImplementation : ITask
         if (doTask is null)
             throw new BO.Exceptions.BlDoesNotExistException($"Task does Not exist");
         BO.Tools.CheckActive("Task", doTask);
-        return new BO.Task()
-        {
-            Id = doTask.Id,
-            Alias = doTask.Alias,
-            Description = doTask.Description,
-            Deliverables = doTask.Deliverables,
-            DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
-            Status = CalcStatus(doTask),
-            Dependencies = CalcDependencies(doTask.Id),
-            Milestone = null,
-            RequiredEffortTime = doTask.RequiredEffortTime,
-            CreatedAtDate = doTask.CreatedAtDate,
-            Engineer = GetEngineer(doTask.EngineerId),
-            Remarks = doTask.Remarks,
-            ScheduledDate = doTask.ScheduledDate,
-            StartDate = doTask.StartDate,
-            DeadlineDate = doTask.DeadlineDate,
-            CompleteDate = doTask.CompleteDate,
-            EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
-        };
+        //return new BO.Task()
+        //{
+        //    Id = id,
+        //    Alias = doTask.Alias,
+        //    Description = doTask.Description,
+        //    Deliverables = doTask.Deliverables,
+        //    DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
+        //    Status = CalcStatus(doTask),
+        //    Dependencies = CalcDependencies(id),
+        //    Milestone = null,
+        //    RequiredEffortTime = doTask.RequiredEffortTime,
+        //    CreatedAtDate = doTask.CreatedAtDate,
+        //    Engineer = GetEngineer(doTask.EngineerId),
+        //    Remarks = doTask.Remarks,
+        //    ScheduledDate = doTask.ScheduledDate,
+        //    StartDate = doTask.StartDate,
+        //    DeadlineDate = doTask.DeadlineDate,
+        //    CompleteDate = doTask.CompleteDate,
+        //    EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
+        //};
+        return ConvertFromDoToBoTask(doTask);
     }
 
     /// <summary>
@@ -177,101 +170,171 @@ internal class TaskImplementation : ITask
         return (from DO.Task doTask in _dal.Task.ReadAll(filter)
                 where filter?.Invoke(doTask) ?? true
                 orderby doTask.Id
-                select new BO.Task
-                {
-                    Id = doTask.Id,
-                    Alias = doTask.Alias,
-                    Description = doTask.Description,
-                    Deliverables = doTask.Deliverables,
-                    DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
-                    Status = CalcStatus(doTask),
-                    Dependencies = CalcDependencies(doTask.Id),
-                    Milestone = null,
-                    RequiredEffortTime = doTask.RequiredEffortTime,
-                    CreatedAtDate = doTask.CreatedAtDate,
-                    Engineer = GetEngineer(doTask.EngineerId),
-                    Remarks = doTask.Remarks,
-                    ScheduledDate = doTask.ScheduledDate,
-                    StartDate = doTask.StartDate,
-                    DeadlineDate = doTask.DeadlineDate,
-                    CompleteDate = doTask.CompleteDate,
-                    EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
-                });
+                //select new BO.Task
+                //{
+                //    Id = doTask.Id,
+                //    Alias = doTask.Alias,
+                //    Description = doTask.Description,
+                //    Deliverables = doTask.Deliverables,
+                //    DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
+                //    Status = CalcStatus(doTask),
+                //    Dependencies = CalcDependencies(doTask.Id),
+                //    Milestone = null,
+                //    RequiredEffortTime = doTask.RequiredEffortTime,
+                //    CreatedAtDate = doTask.CreatedAtDate,
+                //    Engineer = GetEngineer(doTask.EngineerId),
+                //    Remarks = doTask.Remarks,
+                //    ScheduledDate = doTask.ScheduledDate,
+                //    StartDate = doTask.StartDate,
+                //    DeadlineDate = doTask.DeadlineDate,
+                //    CompleteDate = doTask.CompleteDate,
+                //    EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
+                //});
+                select ConvertFromDoToBoTask(doTask));
     }
 
     /// <summary>
     /// Updates task in Bl
     /// </summary>
     /// <param name="boTask">BO.task entity to update</param>
-    /// <exception cref="BO.Exceptions.BlUpdateCreateImpossibleException"></exception>
     /// <exception cref="BO.Exceptions.BlDoesNotExistException">in case the task does not exist</exception>
-    /// <exception cref="ArgumentNullException">in case some argument is null</exception>
-    /// <exception cref="ArgumentException">in case some argument is not valid</exception>
-    /// <exception cref="InvalidOperationException">in case some operation is invalid</exception>
     public void Update(BO.Task boTask)
     {
         try
         {
-            if (BO.Tools.ValidatePositiveNumber<int>(boTask.Id)
-                && BO.Tools.ValidateNonEmptyString(boTask.Alias)
-                )
-            {
-                //DO.Task doTask = new DO.Task();
-                DO.Task? doTask = _dal.Task.Read(boTask.Id);
-                string[] excludedProperties;
-                switch (_bl.CheckProjectStatus())
-                {
-                    case BO.ProjectStatus.Planing:
-                        excludedProperties = new string[] { "ScheduledDate", "CreatedAtDate", "StartDate", "CompleteDate" };
-                        BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
-                        doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
-                        break;
-                    case BO.ProjectStatus.MiddlePlaning:
-                        excludedProperties = new string[] { "DifficultyLevel", "CreatedAtDate", "StartDate", "CompleteDate", "RequiredEffortTime" };
-                        BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
-                        doTask = UpdateScheduledDate(doTask, boTask.ScheduledDate);
-                        break;
-                    case BO.ProjectStatus.InProgress:
-                        excludedProperties = new string[] { "DifficultyLevel", "ScheduledDate", "CreatedAtDate", "RequiredEffortTime" };
-                        BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
-                        break;
-                }
+            //if (BO.Tools.ValidatePositiveNumber<int>(boTask.Id)
+            //    && BO.Tools.ValidateNonEmptyString(boTask.Alias)
+            //    )
+            //{
+            //    //DO.Task doTask = new DO.Task();
+            //    DO.Task? doTask = _dal.Task.Read(boTask.Id);
+            //    string[] excludedProperties;
+            //    switch (_bl.CheckProjectStatus())
+            //    {
+            //        case BO.ProjectStatus.Planing:
+            //            excludedProperties = new string[] { "ScheduledDate", "CreatedAtDate", "StartDate", "CompleteDate" };
+            //            BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+            //            doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
+            //            break;
+            //        case BO.ProjectStatus.MiddlePlaning:
+            //            excludedProperties = new string[] { "DifficultyLevel", "CreatedAtDate", "StartDate", "CompleteDate", "RequiredEffortTime" };
+            //            BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+            //            doTask = UpdateScheduledDate(doTask, boTask.ScheduledDate);
+            //            break;
+            //        case BO.ProjectStatus.InProgress:
+            //            excludedProperties = new string[] { "DifficultyLevel", "ScheduledDate", "CreatedAtDate", "RequiredEffortTime" };
+            //            BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+            //            break;
+            //    }
 
-                //updates the dependencies
-                bool needChange = UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id));
-                if (needChange)
-                {
-                    DeleteDependencies(boTask.Id);
-                    CreateDependencies(boTask.Dependencies, boTask.Id);
-                }
+            //    //updates the dependencies
+            //    bool needChange = UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id));
+            //    if (needChange)
+            //    {
+            //        DeleteDependencies(boTask.Id);
+            //        CreateDependencies(boTask.Dependencies, boTask.Id);
+            //    }
 
-                //updates the engieer assign to the task
-                if (boTask.Engineer is not null)
-                {
-                    if (_bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
-                        throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot assign engineer to task at this stage of the project.");
-                    doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
-                }
-                _dal.Task.Update(doTask);
+            //    //updates the engieer assign to the task
+            //    if (boTask.Engineer is not null)
+            //    {
+            //        if (_bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
+            //            throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot assign engineer to task at this stage of the project.");
+            //        doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
+            //        doTask = BO.Tools.UpdateEntity(doTask, "StartDate", _bl.Clock);
+            //    }
+            //    _dal.Task.Update(doTask);
 
-            }
+            //}
+            ValidateTask(boTask);
+            DO.Task? doTask = _dal.Task.Read(boTask.Id);
+            doTask = UpdateFieldsBasedOnProjectStatus(boTask, doTask);
+            UpdateDependencies(boTask);
+            UpdateEngineerAssignment(boTask?.Engineer?.Id, doTask);
+
+            _dal.Task.Update(doTask);
         }
         catch (DO.Exceptions.DalDoesNotExistException ex)
         {
             throw new BO.Exceptions.BlDoesNotExistException($"Task with ID={boTask.Id} doesn't exists", ex);
         }
-        catch (ArgumentNullException ex)
+    }
+
+    /// <summary>
+    /// Validation for task. throw exception if failed
+    /// </summary>
+    /// <param name="boTask">Task to validate</param>
+    private void ValidateTask(BO.Task boTask)
+    {
+        BO.Tools.ValidatePositiveNumber<int>(boTask.Id);
+        BO.Tools.ValidateNonEmptyString(boTask.Alias);
+    }
+
+    /// <summary>
+    /// Check the status of the project and excluding the properties accordingly.
+    /// </summary>
+    /// <param name="boTask">BO.Task entity</param>
+    /// <param name="doTask">DO.Task entity</param>
+    /// <returns>the DO.Task entity with the updated dields.</returns>
+    /// <exception cref="InvalidOperationException">in case the status is not correct.</exception>
+    private DO.Task? UpdateFieldsBasedOnProjectStatus(BO.Task boTask, DO.Task? doTask)
+    {
+        string[] excludedProperties;
+        BO.ProjectStatus projectStatus = _bl.CheckProjectStatus();
+
+        switch (projectStatus)
         {
-            throw new ArgumentNullException(ex.Message);
+            case BO.ProjectStatus.Planing:
+                excludedProperties = new[] { nameof(DO.Task.ScheduledDate), nameof(DO.Task.CreatedAtDate), nameof(DO.Task.StartDate), nameof(DO.Task.CompleteDate) };
+                doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
+                break;
+            case BO.ProjectStatus.MiddlePlaning:
+                excludedProperties = new[] { nameof(DO.Task.DifficultyLevel), nameof(DO.Task.CreatedAtDate), nameof(DO.Task.StartDate), nameof(DO.Task.CompleteDate), nameof(DO.Task.RequiredEffortTime) };
+                doTask = UpdateScheduledDate(doTask, boTask.ScheduledDate);
+                break;
+            case BO.ProjectStatus.InProgress:
+                excludedProperties = new[] { nameof(DO.Task.DifficultyLevel), nameof(DO.Task.ScheduledDate), nameof(DO.Task.CreatedAtDate), nameof(DO.Task.RequiredEffortTime) };
+                break;
+            default:
+                throw new InvalidOperationException("Invalid project status.");
         }
-        catch (ArgumentException ex)
+
+        BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
+        return doTask;
+    }
+
+    /// <summary>
+    /// updates the dependencies in task.
+    /// </summary>
+    /// <param name="boTask">BO.Task entity</param>
+    private void UpdateDependencies(BO.Task boTask)
+    {
+        bool needChange = UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id));
+        if (needChange)
         {
-            throw new ArgumentException(ex.Message);
+            DeleteDependencies(boTask.Id);
+            CreateDependencies(boTask.Dependencies, boTask.Id);
         }
-        catch (InvalidOperationException ex)
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="engineerId"></param>
+    /// <param name="doTask"></param>
+    /// <returns></returns>
+    /// <exception cref="BO.Exceptions.BlUpdateCreateImpossibleException"></exception>
+    private DO.Task? UpdateEngineerAssignment(int? engineerId, DO.Task? doTask)
+    {
+        if (engineerId is not null)
         {
-            throw new InvalidOperationException(ex.Message);
+            if (_bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
+                throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot assign engineer to task at this stage of the project.");
+
+            doTask = UpdateEngineerInTask(doTask, engineerId.Value);
+            doTask = BO.Tools.UpdateEntity(doTask, nameof(DO.Task.StartDate), _bl.Clock);
         }
+        return doTask;
     }
 
     /// <summary>
@@ -293,7 +356,7 @@ internal class TaskImplementation : ITask
                 DO.Task? task;
                 task = _dal.Task.Read((int)taskId!);
                 if (_bl.ProjectStartDate <= date && task.ScheduledDate + task.RequiredEffortTime <= date)
-                    doTask = BO.Tools.UpdateEntity(doTask, "ScheduledDate", date);
+                    doTask = BO.Tools.UpdateEntity(doTask, nameof(DO.Task.ScheduledDate), date);
                 else
                     throw new InvalidOperationException($"Failed to update the ScheduledDate property for task id={doTask.Id} because not all Previous Tasks has dates or the ScheduledDate is earlier.");
             });
@@ -378,11 +441,14 @@ internal class TaskImplementation : ITask
                 if (CalcStatus(task) != BO.TaskStatus.Done)
                     throw new InvalidOperationException("You can't assign engineer to task with undone previous tasks.");
             });
-        return BO.Tools.UpdateEntity(doTask, "EngineerId", id);
+        return BO.Tools.UpdateEntity(doTask, nameof(DO.Task.EngineerId), id);
     }
 
-
-
+    /// <summary>
+    /// Gets list of the previos tasks
+    /// </summary>
+    /// <param name="boTask"></param>
+    /// <returns></returns>
     public List<BO.Task> GetDependentTasks(BO.Task boTask)
     {
         var dependentTasks = _dal.Dependency.ReadAll()
@@ -398,29 +464,59 @@ internal class TaskImplementation : ITask
         return dependentTasks;
     }
 
+    /// <summary>
+    /// Converts BO task entity to DO task entity, and arrange the appropriate properties
+    /// </summary>
+    /// <param name="doTask">DO task to convert</param>
+    /// <returns>converted BO task</returns>
     private BO.Task ConvertFromDoToBoTask(DO.Task doTask)
     {
-        var boTask = new BO.Task();
+        var boTask = new BO.Task()
+        {
+            DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
+            Status = CalcStatus(doTask),
+            Dependencies = CalcDependencies(doTask.Id),
+            Engineer = GetEngineer(doTask.Id),
+            EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
+        };
         BO.Tools.CopySimilarFields(doTask, boTask);
-        boTask = BO.Tools.UpdateEntity(boTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
         return boTask;
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="boTask"></param>
+    /// <returns></returns>
     private DO.Task ConvertFromBoToDoTask(BO.Task boTask)
     {
         var doTask = new DO.Task();
         BO.Tools.CopySimilarFields(boTask, doTask);
-        doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (BO.EngineerExperience)doTask.DifficultyLevel);
+        doTask = BO.Tools.UpdateEntity(doTask, nameof(DO.Task.DifficultyLevel), (BO.EngineerExperience)doTask.DifficultyLevel);
         return doTask;
     }
-    public bool checkForActiveDependentTasks(BO.Task doTask, List<BO.Task> dependentTasks)
+
+    /// <summary>
+    /// Checks if task has a previos tasks that didn't finished.
+    /// </summary>
+    /// <param name="doTask">The dependent task.</param>
+    /// <param name="dependentTasks">the previous tasks list.</param>
+    /// <returns>true if there's a task that didn't finished.</returns>
+    public bool CheckForActiveDependentTasks(BO.Task doTask, List<BO.Task> dependentTasks)
     {
         return dependentTasks.Any(task => task?.CompleteDate is null);
     }
 
+    /// <summary>
+    /// Gets suitable tasks for engineer to work on.
+    /// </summary>
+    /// <param name="engineerId">ID of the working engineer.</param>
+    /// <returns>list of the suitable tasks.</returns>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException"></exception>
     public List<BO.TaskInList> GetSuitableTasks(int engineerId)
     {
         DO.Engineer? eng = _dal.Engineer.Read(engineerId);
-        if (eng == null)
+        if (eng is null)
             throw new BO.Exceptions.BlDoesNotExistException($"Engineer with id={engineerId} does not exist and cannot be assigned to the task");
         var tasks = _dal.Task.ReadAll();
         List<Task> suitableTasks = new List<Task>();
@@ -430,13 +526,17 @@ internal class TaskImplementation : ITask
             {
                 var boTask = ConvertFromDoToBoTask(doTask);
                 var dependentTasks = GetDependentTasks(boTask);
-                if (!checkForActiveDependentTasks(boTask, dependentTasks)) suitableTasks.Add(boTask);
+                if (!CheckForActiveDependentTasks(boTask, dependentTasks)) suitableTasks.Add(boTask);
             }
         }
-
         return ConvertFromTaskToTaskList(suitableTasks);
     }
 
+    /// <summary>
+    /// converts list of task to list of TaskInList for presentation.
+    /// </summary>
+    /// <param name="tasks">list of tasks.</param>
+    /// <returns>list of TaskInList.</returns>
     public List<BO.TaskInList> ConvertFromTaskToTaskList(List<BO.Task> tasks)
     {
         {
@@ -449,8 +549,6 @@ internal class TaskImplementation : ITask
             }).ToList();
         }
     }
-
-
 
     /// <summary>
     /// Check if the TaskInList list from the user is need to update
@@ -520,6 +618,7 @@ internal class TaskImplementation : ITask
         Update(task);
         return task.StartDate;
     }
+
     /// <summary>
     /// StartDateCreation for task
     /// </summary>
@@ -529,12 +628,14 @@ internal class TaskImplementation : ITask
         if (_bl.CheckProjectStatus() == ProjectStatus.Planing)
             throw new InvalidOperationException("You can't enter dates to tasks, before entering start date of the project");
         var task = Read(taskId);
+        task.Engineer = GetEngineer(engineerId);
         task.StartDate = _bl.Clock;
         task.EstimatedDate = CalculateEstimatedDate(task);
-        UpdateEngineerInTask(ConvertFromBoToDoTask(task), engineerId);
+        DO.Task doTask = UpdateEngineerInTask(ConvertFromBoToDoTask(task), engineerId);
         Update(task);
         return task.StartDate;
     }
+
     /// <summary>
     /// CompleteDateCreation for task
     /// </summary>
@@ -547,7 +648,6 @@ internal class TaskImplementation : ITask
         Update(task);
         return task.CompleteDate;
     }
-
 
     /// <summary>
     /// CompleteDateCreation for task
@@ -562,21 +662,30 @@ internal class TaskImplementation : ITask
         Update(task);
         return task.Id;
     }
+
     /// <summary>
     /// Calculate estimated date for task
     /// </summary>
     /// <returns>the estimated date</returns>
     public DateTime? CalculateEstimatedDate(Task task)
     {
-        return task!.StartDate + task.RequiredEffortTime;
+        return new[] { task.ScheduledDate + task.RequiredEffortTime, task.StartDate + task.RequiredEffortTime }.Max();
     }
 
+    /// <summary>
+    /// reseting all the task and dependency database.
+    /// </summary>
     public void Reset()
     {
         _dal.Task.Reset();
         _dal.Dependency.Reset();
     }
 
+    /// <summary>
+    /// Read all TaskInList for the PL.
+    /// </summary>
+    /// <param name="filter">filter to apply.</param>
+    /// <returns>list of TaskInList.</returns>
     public IEnumerable<BO.TaskInList?> ReadAllTaskInList(Func<DO.Task, bool>? filter = null)
     {
         return (from DO.Task doTask in _dal.Task.ReadAll(filter)
@@ -591,4 +700,3 @@ internal class TaskImplementation : ITask
                 });
     }
 }
-

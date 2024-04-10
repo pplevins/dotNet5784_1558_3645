@@ -60,7 +60,7 @@ public partial class GanttChartView : UserControl, INotifyPropertyChanged
         {
             TextBlock dayMarker = new TextBlock
             {
-                Text = $"{_bl?.ProjectStartDate!.Value.AddDays(i)}",
+                Text = $"{_bl?.ProjectStartDate!.Value.AddDays(i).ToShortDateString()}",
                 Margin = new Thickness(startX + i * markerWidth, startY, 0, 0)
             };
             ganttCanvas.Children.Add(dayMarker);

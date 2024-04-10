@@ -1,0 +1,51 @@
+﻿<Window x:Class="PL.admin_window.AdminEntryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PL.admin_window"
+        mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Title="AdminEntryWindow" Height="500" Width="800">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="50" />
+                </Style>
+            </Style.Resources>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush TileMode="None" Stretch="UniformToFill" ImageSource="\images\task1.jpg"/>
+        </Grid.Background>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Content="{ Binding welcomeString }" Grid.Row="0" Grid.Column="1" Background="#7FDDDDDD" Foreground="#FF41710E" FontSize="20" FontWeight="Bold"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="{ Binding statusString }"/>
+        <Button x:Name="Button2" Grid.Row="1" Grid.Column="1" Click="ShowEngineerButton_Click" Cursor="Hand" Content="Lists" HorizontalAlignment="Center"
+        VerticalAlignment="Center"  Height="90" Foreground="#FF41710E" 
+        FontSize="30" FontWeight="Bold" Width="200" RenderTransformOrigin="0.517,0.874" Background="#7FE1E1E1" >
+            <Button.Effect>
+                <DropShadowEffect/>
+            </Button.Effect>
+        </Button>
+        <Button x:Name="Button3" Grid.Row="2" Grid.Column="1" Click="InitializeDB_Click" Cursor="Hand" Content="InitDB" HorizontalAlignment="Center"
+VerticalAlignment="Center"  Height="90" Foreground="#FF41710E" 
+FontSize="30" FontWeight="Bold" Width="200" RenderTransformOrigin="0.517,0.874" Background="#7FE1E1E1" >
+            <Button.Effect>
+                <DropShadowEffect/>
+            </Button.Effect>
+        </Button>
+    </Grid>
+</Window>

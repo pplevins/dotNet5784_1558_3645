@@ -41,6 +41,18 @@ public class AddOrUpdateTaskWindowData : DependencyObject, INotifyPropertyChange
         }
     }
 
+    private string? _engName;
+
+    public string? EngName 
+    {
+        get => _engName;
+        set 
+        { 
+            _engName = value;
+            OnPropertyChanged(nameof(EngName));
+        } 
+    }
+
 
     public Array? EngineerLevel { get; set; }
 
@@ -86,8 +98,11 @@ public partial class AddOrUpdateTaskWindow : Window
             EngineerInTaskList = _bl.Engineer.ReadAll().Select(item => item.Id).ToArray(),
             addMode = id == 0 ? Visibility.Visible : Visibility.Hidden,
             updateMode = id != 0 ? Visibility.Visible : Visibility.Hidden,
-            buttonName = id == 0 ? "CREATE" : "UPDATE",
+            buttonName = id == 0 ? "CREATE" : "UPDATE"
         };
+
+        Data.SelectedDate = Data.Task?.ScheduledDate;
+        Data.EngName = Data.Task?.Engineer?.Name;
 
         InitializeComponent();
     }
@@ -108,6 +123,7 @@ public partial class AddOrUpdateTaskWindow : Window
                 Id = engineer.Id,
                 Name = engineer.Name
             };
+            Data.EngName = Data.Task.Engineer.Name;
         }
     }
 
@@ -139,10 +155,6 @@ public partial class AddOrUpdateTaskWindow : Window
         {
             MessageBox.Show(ex.Message + ex.InnerException!.Message);
         }
-        //catch (BO.Exceptions. ex)
-        //{
-        //    MessageBox.Show(ex.Message);
-        //}
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message);
