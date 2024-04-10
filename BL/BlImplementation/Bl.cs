@@ -47,16 +47,19 @@ internal class Bl : IBl
             return BO.ProjectStatus.Planing;
         else
         {
-            if (_dal.Task.ReadAll().All(task => task?.ScheduledDate is not null) && IsProjectStartDateAfterSystemClock())
+            if (_dal.Task.ReadAll().All(task => task?.ScheduledDate is not null) && IsProjectStartDateBeforeSystemClock())
                 return BO.ProjectStatus.InProgress;
             else
                 return BO.ProjectStatus.MiddlePlaning;
         }
     }
-
-    private bool IsProjectStartDateAfterSystemClock()
+    /// <summary>
+    /// Checks if the project start date is before the current system clock time.
+    /// </summary>
+    /// <returns>True if the project start date is before the system clock time, otherwise false.</returns>
+    private bool IsProjectStartDateBeforeSystemClock()
     {
-        return (!ProjectStartDate.HasValue || DateTime.Compare(ProjectStartDate.Value, Clock) >= 0);
+        return (DateTime.Compare(ProjectStartDate.Value, Clock) < 0);
     }
 
     public void AdvanceYear(int years)
