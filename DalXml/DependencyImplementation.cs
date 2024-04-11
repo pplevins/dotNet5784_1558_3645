@@ -74,6 +74,7 @@ internal class DependencyImplementation : IDependency
         XElement? rootElem = XMLTools.LoadListFromXMLElement(s_dependencies_xml);
         rootElem.RemoveAll();
         XMLTools.SaveListToXMLElement(rootElem, s_dependencies_xml);
+        Config.ResetNextDependencyId();
     }
 
     /// <inheritdoc />

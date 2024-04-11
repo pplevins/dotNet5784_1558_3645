@@ -166,9 +166,9 @@ public partial class AddOrUpdateTaskWindow : Window
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void ViewDependentTaskButton(object sender, RoutedEventArgs e)
+    private void AddDependentTaskButton(object sender, RoutedEventArgs e)
     {
-        new AddOrUpdateTaskWindow(_bl).ShowDialog();
+        new AddDependencyWindow(Data.Task).ShowDialog();
     }
 
     private void SuggestDateButton(object sender, RoutedEventArgs e)
@@ -239,37 +239,5 @@ public partial class AddOrUpdateTaskWindow : Window
         //    Data.Engineer.Cost = Convert.ToDouble(textPrice?.Text);
         //else
         //    Data.Engineer.Cost = 0;
-    }
-}
-
-public class TimeSpanToStringConverter : IValueConverter
-{
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is TimeSpan timeSpan)
-        {
-            return $"{timeSpan.Days}.{timeSpan.Hours:00}:{timeSpan.Minutes:00}:{timeSpan.Seconds}";
-        }
-        return value?.ToString();
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        if (value is string timeString)
-        {
-            string[] parts = timeString.Split('.');
-            if (parts.Length == 2 && int.TryParse(parts[0], out int days))
-            {
-                string[] timeParts = parts[1].Split(':');
-                if (timeParts.Length == 3 &&
-                    int.TryParse(timeParts[0], out int hours) &&
-                    int.TryParse(timeParts[1], out int minutes) &&
-                    int.TryParse(timeParts[2], out int seconds))
-                {
-                    return new TimeSpan(days, hours, minutes, seconds);
-                }
-            }
-        }
-        return DependencyProperty.UnsetValue; // Return DependencyProperty.UnsetValue if conversion fails
     }
 }

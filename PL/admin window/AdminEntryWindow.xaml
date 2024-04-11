@@ -31,18 +31,34 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Label Content="{ Binding welcomeString }" Grid.Row="0" Grid.Column="1" Background="#7FDDDDDD" Foreground="#FF41710E" FontSize="20" FontWeight="Bold"/>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="{ Binding statusString }"/>
-        <Button x:Name="Button2" Grid.Row="1" Grid.Column="1" Click="ShowEngineerButton_Click" Cursor="Hand" Content="Lists" HorizontalAlignment="Center"
+        <Label Content="{ Binding Data.welcomeString }" Grid.Row="0" Grid.Column="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#7FDDDDDD" Foreground="#FF41710E" FontSize="20" FontWeight="Bold"/>
+        <Label Grid.Row="0" Grid.Column="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#7FDDDDDD" Foreground="#FF41710E" FontSize="20" FontWeight="Bold"/>
+        <Label Grid.Row="0" Grid.Column="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Background="#7FDDDDDD" Foreground="#FF41710E" FontSize="20" FontWeight="Bold"/>
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Project Status:" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" FontWeight="SemiBold" Foreground="#FF41710E"/>
+            <TextBlock Grid.Row="1" Text="{Binding Data.statusString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold" Foreground="#FF41710E"/>
+        </Grid>
+        <Button x:Name="Button2" Grid.Row="1" Grid.Column="1" Click="ShowEngineerAndTaskList_Click" Cursor="Hand" Content="View Lists" HorizontalAlignment="Center"
         VerticalAlignment="Center"  Height="90" Foreground="#FF41710E" 
         FontSize="30" FontWeight="Bold" Width="200" RenderTransformOrigin="0.517,0.874" Background="#7FE1E1E1" >
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>
         </Button>
-        <Button x:Name="Button3" Grid.Row="2" Grid.Column="1" Click="InitializeDB_Click" Cursor="Hand" Content="InitDB" HorizontalAlignment="Center"
-VerticalAlignment="Center"  Height="90" Foreground="#FF41710E" 
+        <Button x:Name="Button3" Grid.Row="2" Grid.Column="1" Click="GanttWindow_Click" Cursor="Hand" Content="Gantt Chart" HorizontalAlignment="Center"
+VerticalAlignment="Center"  Height="90" Foreground="#FF41710E"
 FontSize="30" FontWeight="Bold" Width="200" RenderTransformOrigin="0.517,0.874" Background="#7FE1E1E1" >
+            <Button.Effect>
+                <DropShadowEffect/>
+            </Button.Effect>
+        </Button>
+        <Button x:Name="Button" Grid.Row="3" Grid.Column="1" Click="Schedule_button_Click" Cursor="Hand" Content="Set Project Date" HorizontalAlignment="Center"
+VerticalAlignment="Center"  Height="90" Foreground="#FF41710E"
+FontSize="25" FontWeight="Bold" Width="200" RenderTransformOrigin="0.517,0.874" Background="#7FE1E1E1" >
             <Button.Effect>
                 <DropShadowEffect/>
             </Button.Effect>

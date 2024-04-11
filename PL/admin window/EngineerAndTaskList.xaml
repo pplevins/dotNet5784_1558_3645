@@ -43,7 +43,7 @@
                 </Setter>
             </Style>
         </TabControl.Resources>
-        <TabItem>
+        <TabItem Selector.Selected="TabItem_SelectionChanged">
             <TabItem.Header>
                 <TextBlock  Text="ENGINEER CATALOG" FontFamily="Georgia" FontWeight="Bold"/>
             </TabItem.Header>
@@ -131,7 +131,7 @@
 
             </Grid>
         </TabItem>
-        <TabItem>
+        <TabItem Selector.Selected="TabItem_SelectionChanged">
             <TabItem.Header>
                 <TextBlock  Text="Task CATALOG" FontFamily="Georgia" FontWeight="Bold"/>
             </TabItem.Header>
@@ -139,12 +139,12 @@
             <shared:TaskList TaskItemsSource="{Binding TaskList, Mode=TwoWay}"/>
 
         </TabItem>
-        <TabItem x:Name="ganttTab" IsEnabled="{Binding isProjectSchduled}">
+        <!--<TabItem x:Name="ganttTab" IsEnabled="{Binding isProjectSchduled}">
             <TabItem.Header>
                 <TextBlock  Text="Gantt Chart" FontFamily="Georgia" FontWeight="Bold"/>
             </TabItem.Header>
 
             <local:GanttChartView/>
-        </TabItem>
+        </TabItem>-->
     </TabControl>
 </Window>

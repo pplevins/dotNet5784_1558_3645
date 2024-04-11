@@ -17,4 +17,6 @@ public interface ITask : ICrud<BO.Task, DO.Task>
     public List<BO.Task> GetDependentTasks(BO.Task boTask);
     public List<BO.TaskInList?> GetSuitableTasks(int engineerId);
     public int CompleteDateAction(int taskId);
+    public List<TaskInList> CalcDependenciesToChoose(int taskId);
+    public void addDependency(BO.Task task, int depId);
 }

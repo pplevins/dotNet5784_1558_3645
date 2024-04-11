@@ -1,5 +1,6 @@
 ﻿using BlApi;
 using BO;
+using DO;
 using Task = BO.Task;
 
 namespace BlImplementation;
@@ -102,26 +103,6 @@ internal class TaskImplementation : ITask
         if (doTask == null)
             throw new BO.Exceptions.BlDoesNotExistException($"Task with ID={id} does Not exist");
         BO.Tools.CheckActive("Task", doTask);
-        //return new BO.Task()
-        //{
-        //    Id = id,
-        //    Alias = doTask.Alias,
-        //    Description = doTask.Description,
-        //    Deliverables = doTask.Deliverables,
-        //    DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
-        //    Status = CalcStatus(doTask),
-        //    Dependencies = CalcDependencies(id),
-        //    Milestone = null,
-        //    RequiredEffortTime = doTask.RequiredEffortTime,
-        //    CreatedAtDate = doTask.CreatedAtDate,
-        //    Engineer = GetEngineer(doTask.EngineerId),
-        //    Remarks = doTask.Remarks,
-        //    ScheduledDate = doTask.ScheduledDate,
-        //    StartDate = doTask.StartDate,
-        //    DeadlineDate = doTask.DeadlineDate,
-        //    CompleteDate = doTask.CompleteDate,
-        //    EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
-        //};
         return ConvertFromDoToBoTask(doTask);
     }
 
@@ -137,26 +118,6 @@ internal class TaskImplementation : ITask
         if (doTask is null)
             throw new BO.Exceptions.BlDoesNotExistException($"Task does Not exist");
         BO.Tools.CheckActive("Task", doTask);
-        //return new BO.Task()
-        //{
-        //    Id = id,
-        //    Alias = doTask.Alias,
-        //    Description = doTask.Description,
-        //    Deliverables = doTask.Deliverables,
-        //    DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
-        //    Status = CalcStatus(doTask),
-        //    Dependencies = CalcDependencies(id),
-        //    Milestone = null,
-        //    RequiredEffortTime = doTask.RequiredEffortTime,
-        //    CreatedAtDate = doTask.CreatedAtDate,
-        //    Engineer = GetEngineer(doTask.EngineerId),
-        //    Remarks = doTask.Remarks,
-        //    ScheduledDate = doTask.ScheduledDate,
-        //    StartDate = doTask.StartDate,
-        //    DeadlineDate = doTask.DeadlineDate,
-        //    CompleteDate = doTask.CompleteDate,
-        //    EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
-        //};
         return ConvertFromDoToBoTask(doTask);
     }
 
@@ -170,26 +131,6 @@ internal class TaskImplementation : ITask
         return (from DO.Task doTask in _dal.Task.ReadAll(filter)
                 where filter?.Invoke(doTask) ?? true
                 orderby doTask.Id
-                //select new BO.Task
-                //{
-                //    Id = doTask.Id,
-                //    Alias = doTask.Alias,
-                //    Description = doTask.Description,
-                //    Deliverables = doTask.Deliverables,
-                //    DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
-                //    Status = CalcStatus(doTask),
-                //    Dependencies = CalcDependencies(doTask.Id),
-                //    Milestone = null,
-                //    RequiredEffortTime = doTask.RequiredEffortTime,
-                //    CreatedAtDate = doTask.CreatedAtDate,
-                //    Engineer = GetEngineer(doTask.EngineerId),
-                //    Remarks = doTask.Remarks,
-                //    ScheduledDate = doTask.ScheduledDate,
-                //    StartDate = doTask.StartDate,
-                //    DeadlineDate = doTask.DeadlineDate,
-                //    CompleteDate = doTask.CompleteDate,
-                //    EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
-                //});
                 select ConvertFromDoToBoTask(doTask));
     }
 
@@ -203,50 +144,6 @@ internal class TaskImplementation : ITask
     {
         try
         {
-            //if (BO.Tools.ValidatePositiveNumber<int>(boTask.Id)
-            //    && BO.Tools.ValidateNonEmptyString(boTask.Alias)
-            //    )
-            //{
-            //    //DO.Task doTask = new DO.Task();
-            //    DO.Task? doTask = _dal.Task.Read(boTask.Id);
-            //    string[] excludedProperties;
-            //    switch (_bl.CheckProjectStatus())
-            //    {
-            //        case BO.ProjectStatus.Planing:
-            //            excludedProperties = new string[] { "ScheduledDate", "CreatedAtDate", "StartDate", "CompleteDate" };
-            //            BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
-            //            doTask = BO.Tools.UpdateEntity(doTask, "DifficultyLevel", (DO.EngineerExperience)boTask.DifficultyLevel);
-            //            break;
-            //        case BO.ProjectStatus.MiddlePlaning:
-            //            excludedProperties = new string[] { "DifficultyLevel", "CreatedAtDate", "StartDate", "CompleteDate", "RequiredEffortTime" };
-            //            BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
-            //            doTask = UpdateScheduledDate(doTask, boTask.ScheduledDate);
-            //            break;
-            //        case BO.ProjectStatus.InProgress:
-            //            excludedProperties = new string[] { "DifficultyLevel", "ScheduledDate", "CreatedAtDate", "RequiredEffortTime" };
-            //            BO.Tools.CopySimilarFields(boTask, doTask, null, excludedProperties);
-            //            break;
-            //    }
-
-            //    //updates the dependencies
-            //    bool needChange = UpdateDependenciesCheck(boTask.Dependencies, _dal.Dependency.ReadAll().Where(dep => dep.DependentTask == boTask.Id));
-            //    if (needChange)
-            //    {
-            //        DeleteDependencies(boTask.Id);
-            //        CreateDependencies(boTask.Dependencies, boTask.Id);
-            //    }
-
-            //    //updates the engieer assign to the task
-            //    if (boTask.Engineer is not null)
-            //    {
-            //        if (_bl.CheckProjectStatus() < BO.ProjectStatus.InProgress)
-            //            throw new BO.Exceptions.BlUpdateCreateImpossibleException("Cannot assign engineer to task at this stage of the project.");
-            //        doTask = UpdateEngineerInTask(doTask, boTask.Engineer.Id);
-            //        doTask = BO.Tools.UpdateEntity(doTask, "StartDate", _bl.Clock);
-            //    }
-            //    _dal.Task.Update(doTask);
-
-            //}
             ValidateTask(boTask);
             DO.Task? doTask = _dal.Task.Read(boTask.Id);
             doTask = UpdateFieldsBasedOnProjectStatus(boTask, doTask);
@@ -479,7 +376,7 @@ internal class TaskImplementation : ITask
             DifficultyLevel = (BO.EngineerExperience)doTask.DifficultyLevel,
             Status = CalcStatus(doTask),
             Dependencies = CalcDependencies(doTask.Id),
-            Engineer = GetEngineer(doTask.Id),
+            Engineer = GetEngineer(doTask.EngineerId),
             EstimatedDate = new[] { doTask.ScheduledDate + doTask.RequiredEffortTime, doTask.StartDate + doTask.RequiredEffortTime }.Max()
         };
         BO.Tools.CopySimilarFields(doTask, boTask);
@@ -554,6 +451,58 @@ internal class TaskImplementation : ITask
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="task"></param>
+    /// <param name="depId"></param>
+    /// <exception cref="BO.Exceptions.BlDoesNotExistException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void addDependency(BO.Task task, int depId)
+    {
+        if (!_bl.Task.ReadAll().Any(dep => dep.Id == depId))
+            throw new BO.Exceptions.BlDoesNotExistException($"Task with id={depId} does not exist");
+        if (_dal.Dependency.ReadAll().Any(dep => dep.DependentTask == depId && dep.PreviousTask == task.Id))
+            throw new InvalidOperationException($"Can't depend task id={task.Id} on task id={depId} because a circular dependency is created");
+        List<BO.TaskInList> dependencies = CalcDependencies(task.Id);
+        BO.Task depTask = Read(depId);
+        BO.TaskInList newDep = new BO.TaskInList()
+        {
+            Id = depId,
+            Alias = depTask.Alias,
+            Description = depTask.Description,
+            Status = depTask.Status
+        };
+        dependencies.Add(newDep);
+        task.Dependencies = dependencies;
+    }
+
+    /// <summary>
+    /// Gets a list of task that can be dependent on given task.
+    /// </summary>
+    /// <param name="taskId">the id of the given task</param>
+    /// <returns>list of task to choose dependency.</returns>
+    public List<TaskInList> CalcDependenciesToChoose(int taskId)
+    {
+        List<TaskInList> depsToAdd = new List<TaskInList>();
+        _bl.Task.ReadAll().ToList().ForEach(task =>
+        {
+            if (_dal.Dependency.ReadAll().Any(dep => dep.DependentTask == taskId && dep.PreviousTask == task.Id)) { }
+            else
+            {
+                BO.TaskInList taskInList = new BO.TaskInList()
+                {
+                    Id = task.Id,
+                    Alias = task.Alias,
+                    Description = task.Description,
+                    Status = task.Status
+                };
+                depsToAdd.Add(taskInList);
+            }
+        });
+        return depsToAdd;
+    }
+
+    /// <summary>
     /// Check if the TaskInList list from the user is need to update
     /// </summary>
     /// <param name="dependentTasks">the TaskInList list</param>
@@ -566,7 +515,7 @@ internal class TaskImplementation : ITask
         if (dependentTasks is null || dependencies is null)
             return true;
         var depToUpadte = dependentTasks?.Select(dep => dep.Id);
-        var depToCheck = dependencies.Select(dep => dep.DependentTask);
+        var depToCheck = dependencies.Select(dep => dep.PreviousTask);
 
         if (depToCheck.OrderBy(id => id).SequenceEqual(depToUpadte?.OrderBy(id => id)))
             return false;

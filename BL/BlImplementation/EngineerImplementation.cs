@@ -218,7 +218,7 @@ internal class EngineerImplementation : IEngineer
                         DifficultyLevel = doTask.DifficultyLevel,
                         RequiredEffortTime = doTask.RequiredEffortTime,
                         CreatedAtDate = doTask.CreatedAtDate,
-                        EngineerId = boEngineer.Task.Id,
+                        EngineerId = boEngineer.Id,
                         Remarks = doTask.Remarks,
                         ScheduledDate = doTask.ScheduledDate,
                         StartDate = doTask.StartDate,

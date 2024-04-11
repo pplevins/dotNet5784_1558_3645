@@ -133,18 +133,6 @@ public partial class EngineerAndTaskList : Window
     }
 
     /// <summary>
-    /// button to add task
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Add_Task_Button_Click(object sender, RoutedEventArgs e)
-    {
-        new AddOrUpdateTaskWindow(_bl).ShowDialog();
-        OnChangeTask();
-        //this.Close();
-    }
-
-    /// <summary>
     /// event double click to open the new window of update engineer with the id that chooce.
     /// </summary>
     /// <param name="sender"></param>
@@ -162,42 +150,14 @@ public partial class EngineerAndTaskList : Window
                 if (IsMouseCaptureWithin)
                 {
                     new AddOrUpdateEngineerWindow(engineer.Id).ShowDialog();
+                    OnChangeTask();
                     OnChangeEngineer();
                     //this.Close();
                 }
             }
         }
     }
-    ///// <summary>
-    ///// function to the mouse double click that send us the window with the details of the task
-    ///// </summary>
-    ///// <param name="sender"></param>
-    ///// <param name="e"></param>
-    private void TaskListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-        var selected = ((ListView)sender).SelectedItem;
-
-        BO.TaskInList item = (((FrameworkElement)e.OriginalSource).DataContext as BO.TaskInList)!;
-
-        if (item != null)
-        {
-            if (selected is BO.TaskInList task)
-            {
-                if (IsMouseCaptureWithin)
-                {
-                    BO.Task taskk = _bl.Task.Read(task.Id);
-                    new AddOrUpdateTaskWindow(_bl, taskk.Id).ShowDialog();
-                    OnChangeTask();
-                    //this.Close();
-                    if (_bl.CheckProjectStatus() == ProjectStatus.InProgress)
-                    {
-                        isProjectSchduled = true;
-                        GanttChartView ganttChartView = new GanttChartView();
-                    }
-                }
-            }
-        }
-    }
+    
     /// <summary>
     /// deleget for the engineer list that we want to update him aoutomaticly.
     /// </summary>
@@ -212,5 +172,16 @@ public partial class EngineerAndTaskList : Window
     private void OnChangeTask()
     {
         Data.TaskList = new ObservableCollection<TaskInList>(_bl?.Task.ReadAllTaskInList());
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void TabItem_SelectionChanged(object sender, RoutedEventArgs e)
+    {
+        OnChangeEngineer();
+        OnChangeTask();
     }
 }

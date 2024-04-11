@@ -19,7 +19,7 @@ namespace PL.admin_window;
 /// <summary>
 /// Interaction logic for GanttChartView.xaml
 /// </summary>
-public partial class GanttChartView : UserControl, INotifyPropertyChanged
+public partial class GanttChartView : Window, INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,7 +51,7 @@ public partial class GanttChartView : UserControl, INotifyPropertyChanged
         ganttCanvas.Children.Clear();
 
         // Draw title with day markers
-        double markerWidth = 50;
+        double markerWidth = 70;
         double markerHeight = 20;
         double startX = 100;
         double startY = 20;
@@ -61,7 +61,8 @@ public partial class GanttChartView : UserControl, INotifyPropertyChanged
             TextBlock dayMarker = new TextBlock
             {
                 Text = $"{_bl?.ProjectStartDate!.Value.AddDays(i).ToShortDateString()}",
-                Margin = new Thickness(startX + i * markerWidth, startY, 0, 0)
+                Margin = new Thickness(startX + i * markerWidth, startY, 0, 0),
+                //FontSize = 10
             };
             ganttCanvas.Children.Add(dayMarker);
         }
@@ -87,10 +88,12 @@ public partial class GanttChartView : UserControl, INotifyPropertyChanged
             Canvas.SetLeft(rect, taskX);
             Canvas.SetTop(rect, taskY);
 
+            string dependencies = task.Dependencies.Any() ? string.Join(", ", task.Dependencies.Select(dep => dep.Id)) : "None";
+
             TextBlock textBlock = new TextBlock
             {
-                Text = $"{task.Id}: {task.Alias}",
-                Margin = new Thickness(5),
+                Text = $"{task.Id}: {task.Alias}. Depend in: {dependencies}",
+            Margin = new Thickness(5),
                 VerticalAlignment = VerticalAlignment.Center
             };
 
@@ -105,16 +108,17 @@ public partial class GanttChartView : UserControl, INotifyPropertyChanged
 
     private bool IsDelayed(BO.Task task)
     {
-        return false;
+        return (!task.CompleteDate.HasValue && DateTime.Compare(_bl.Clock, task.EstimatedDate!.Value) > 0) 
+                || (task.CompleteDate.HasValue && DateTime.Compare(task.ScheduledDate!.Value, task.CompleteDate.Value) < 0);
     }
 
     public void UpdateTaskList()
     {
-        taskList.Items.Clear();
-        foreach (var task in Tasks)
-        {
-            taskList.Items.Add(task.Id);
-        }
+        //taskList.Items.Clear();
+        //foreach (var task in Tasks)
+        //{
+        //    taskList.Items.Add(task.Id);
+        //}
     }
 
     protected virtual void OnPropertyChanged(string propertyName)
@@ -122,138 +126,3 @@ public partial class GanttChartView : UserControl, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
-
-/*using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
-
-namespace ganttChart1;
-
-public partial class MainWindow : Window, INotifyPropertyChanged
-{
-public event PropertyChangedEventHandler PropertyChanged;
-
-private List<Task> _tasks;
-
-public List<Task> Tasks
-{
-    get { return _tasks; }
-    set
-    {
-        _tasks = value;
-        OnPropertyChanged(nameof(Tasks));
-        DrawGanttChart();
-        UpdateTaskList();
-    }
-}
-
-public MainWindow()
-{
-    InitializeComponent();
-
-    // Dummy task data
-    Tasks = new List<Task>
-    {
-        new Task("Task 1", new DateTime(2024, 4, 1), 3),
-        new Task("Task 2", new DateTime(2024, 4, 4), 2),
-        new Task("Task 3", new DateTime(2024, 4, 6), 4),
-        new Task("Task 4", new DateTime(2024, 4, 3), 5),
-        new Task("Task 5", new DateTime(2024, 4, 8), 2),
-    };
-}
-
-private void DrawGanttChart()
-{
-    ganttCanvas.Children.Clear();
-
-    // Draw title with day markers
-    double markerWidth = 50;
-    double markerHeight = 20;
-    double startX = 100;
-    double startY = 20;
-    DateTime startDate = Tasks[0].StartDate;
-    for (int i = 0; i <= (Tasks[^1].EndDate - startDate).Days; i++)
-    {
-        TextBlock dayMarker = new TextBlock
-        {
-            Text = $"Day {i + 1}",
-            Margin = new Thickness(startX + i * markerWidth, startY, 0, 0)
-        };
-        ganttCanvas.Children.Add(dayMarker);
-    }
-
-    // Draw tasks
-    double taskHeight = 30;
-    double taskMargin = 10;
-    double taskY = startY + markerHeight + taskMargin;
-    foreach (var task in Tasks)
-    {
-        double taskX = (task.StartDate - startDate).TotalDays * markerWidth + startX;
-        double taskWidth = task.Duration * markerWidth;
-
-        Rectangle rect = new Rectangle
-        {
-            Width = taskWidth,
-            Height = taskHeight,
-            Fill = task.IsDelayed ? Brushes.LightCoral : Brushes.LightGreen,
-            Stroke = Brushes.Black,
-            StrokeThickness = 1
-        };
-
-        Canvas.SetLeft(rect, taskX);
-        Canvas.SetTop(rect, taskY);
-
-        TextBlock textBlock = new TextBlock
-        {
-            Text = task.Name,
-            Margin = new Thickness(5),
-            VerticalAlignment = VerticalAlignment.Center
-        };
-
-        ganttCanvas.Children.Add(rect);
-        ganttCanvas.Children.Add(textBlock);
-        Canvas.SetLeft(textBlock, taskX + 5);
-        Canvas.SetTop(textBlock, taskY + 5);
-
-        taskY += taskHeight + taskMargin;
-    }
-}
-
-private void UpdateTaskList()
-{
-    taskList.Items.Clear();
-    foreach (var task in Tasks)
-    {
-        taskList.Items.Add(task.Name);
-    }
-}
-
-protected virtual void OnPropertyChanged(string propertyName)
-{
-    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-}
-}
-
-public class Task
-{
-public string Name { get; set; }
-public DateTime StartDate { get; set; }
-public int Duration { get; set; }
-public bool IsDelayed { get; set; }
-
-public DateTime EndDate => StartDate.AddDays(Duration);
-
-public Task(string name, DateTime startDate, int duration)
-{
-    Name = name;
-    StartDate = startDate;
-    Duration = duration;
-    IsDelayed = false; // By default, tasks are assumed to be on time
-}
-}
-*/

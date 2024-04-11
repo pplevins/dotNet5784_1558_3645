@@ -80,5 +80,6 @@ internal class TaskImplementation : ITask
         // Clear the list of Tasks
         tasks.Clear();
         XMLTools.SaveListToXMLSerializer<DO.Task>(tasks, s_tasks_xml);
+        Config.ResetNextTaskId();
     }
 }

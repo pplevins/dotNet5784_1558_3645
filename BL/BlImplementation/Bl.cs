@@ -6,11 +6,14 @@ internal class Bl : IBl
     private static DateTime s_Clock = DateTime.Now.Date;
     public DateTime Clock { get { return s_Clock; } private set { s_Clock = value; } }
     public void InitializeDB() => DalTest.Initialization.Do();
+
+    private bool isReset = false;
     public void ResetDB()
     {
         Engineer.Reset();
         User.Reset();
         Task.Reset();
+        isReset = true;
         ProjectStartDate = null;
     }
 
@@ -28,7 +31,12 @@ internal class Bl : IBl
         get { return _dal.ProjectStartDate; }
         set
         {
-            if (ProjectStartDate is not null)
+            if (isReset)
+            {
+                _dal.ProjectStartDate = value;
+                return;
+            }
+                if (ProjectStartDate is not null)
                 throw new InvalidOperationException("There's already date for the project. You can't reset.");
             if (value < Clock)
                 throw new InvalidOperationException("You can't set a past date.");

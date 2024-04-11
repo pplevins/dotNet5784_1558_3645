@@ -1,11 +1,16 @@
-﻿<UserControl x:Class="PL.admin_window.GanttChartView"
+﻿<Window x:Class="PL.admin_window.GanttChartView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PL.admin_window"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             Title="Gantt Chart Example" Width="Auto" Height="Auto"
+             SizeToContent="WidthAndHeight"
+             MinWidth="800"
+             MinHeight="600"
+             ResizeMode="CanResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -17,16 +22,14 @@
         <TextBlock Grid.Row="0" Text="Gantt Chart" HorizontalAlignment="Center" FontSize="18"/>
 
         <!-- Gantt Chart -->
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <ScrollViewer Height="400" Width="800">
-                    <Canvas Name="ganttCanvas" Grid.Column="1" Width="2000" Height="1000"/>
-                </ScrollViewer>
-                <ItemsControl Name="taskList" Grid.Column="0" Margin="5"/>
+                <Canvas x:Name="ganttCanvas" Grid.Column="1" Width="2500" Height="1200"/>
+                <!--<ItemsControl Name="taskList" Grid.Column="0" Margin="5"/>-->
             </Grid>
         </ScrollViewer>
 
@@ -37,4 +40,4 @@
             <TextBlock Text="Delayed" Background="LightCoral" Margin="5"/>
         </StackPanel>
     </Grid>
-</UserControl>
+</Window>

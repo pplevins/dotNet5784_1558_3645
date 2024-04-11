@@ -10,5 +10,8 @@ internal static class Config
         get { return XMLTools.GetProjectStartDate(s_data_config_xml, "ProjectStartDate"); }
         set { XMLTools.SetProjectStartDate(s_data_config_xml, "ProjectStartDate", value); }
     }
+    internal static void ResetNextTaskId() { XMLTools.ResetIds(s_data_config_xml, "NextTaskId"); }
+    internal static void ResetNextDependencyId() { XMLTools.ResetIds(s_data_config_xml, "NextDependencyId"); }
+
 }
 

@@ -93,7 +93,7 @@ namespace PL
             }
             else
             {
-                new UserLoginWindow("EngineerAndTaskList").ShowDialog();
+                new UserLoginWindow("AdminEntryWindow").ShowDialog();
             }
         }
 

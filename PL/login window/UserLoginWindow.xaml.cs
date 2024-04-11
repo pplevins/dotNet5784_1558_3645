@@ -1,4 +1,5 @@
-﻿using PL.admin_window;
+﻿using BO;
+using PL.admin_window;
 using PL.engineer_main_windows;
 using System.Windows;
 
@@ -42,9 +43,9 @@ namespace PL.login_window
             try
             {
                 var user = _bl.User.Login(Data?.User);
-                if (_locked_page == "EngineerAndTaskList")
+                if (_locked_page == "AdminEntryWindow")
                 {
-                    if (user?.UserPermission == BO.UserPermission.Manager) goToAdminPage();
+                    if (user?.UserPermission == BO.UserPermission.Manager) goToAdminPage(user.Id);
                     else MessageBox.Show("you only an engineer, not a manager");
                 }
                 else goToEngineerPage(user.Id);
@@ -69,10 +70,10 @@ namespace PL.login_window
         }
 
 
-        private void goToAdminPage()
+        private void goToAdminPage(int adminId)
         {
 
-            var window = Application.Current.Windows.OfType<EngineerAndTaskList>().FirstOrDefault();
+            var window = Application.Current.Windows.OfType<AdminEntryWindow>().FirstOrDefault();
             if (window != null)
             {
                 window.Activate();
@@ -80,7 +81,7 @@ namespace PL.login_window
             }
             else
             {
-                new EngineerAndTaskList().Show();
+                new AdminEntryWindow(adminId).Show();
             }
         }
 

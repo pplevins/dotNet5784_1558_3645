@@ -18,6 +18,10 @@ internal static class DataSource
         /// </summary>
         private static int nextTaskId = startTaskId;
         internal static int NextTaskId { get => nextTaskId++; }
+        internal static void ResetTaskId()
+        {
+            nextTaskId = startTaskId;
+        }
         /// <summary>
         /// The starting identifier for dependencies.
         /// </summary>
@@ -27,6 +31,10 @@ internal static class DataSource
         /// </summary>
         private static int nextDependencyId = startDependencyId;
         internal static int NextDependencyId { get => nextDependencyId++; }
+        internal static void ResetDependencyId()
+        {
+            nextDependencyId = startDependencyId;
+        }
 
         /// <summary>
         /// The start date of the project.

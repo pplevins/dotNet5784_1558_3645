@@ -74,6 +74,7 @@ internal class DependencyImplementation : IDependency
     {
         // Clear the list of dependencies
         DataSource.Dependencies.Clear();
+        DataSource.Config.ResetDependencyId();
     }
 
 }

@@ -46,6 +46,12 @@ static class XMLTools
         root.Element(elemName)?.SetValue((elem).ToString()!);
         XMLTools.SaveListToXMLElement(root, data_config_xml);
     }
+    public static void ResetIds(string data_config_xml, string elemName)
+    {
+        XElement root = XMLTools.LoadListFromXMLElement(data_config_xml);
+        root.Element(elemName)?.SetValue("1");
+        XMLTools.SaveListToXMLElement(root, data_config_xml);
+    }
     #endregion
 
     #region SaveLoadWithXElement

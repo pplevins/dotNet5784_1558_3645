@@ -76,6 +76,7 @@ internal class TaskImplementation : ITask
     {
         // Clear the list of tasks
         DataSource.Tasks.Clear();
+        DataSource.Config.ResetTaskId();
     }
 }
 
