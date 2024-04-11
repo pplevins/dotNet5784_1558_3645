@@ -75,7 +75,9 @@ public static class Initialization
     /// </summary>
     private static void createUser(Engineer newEng)
     {
-        UserPermission userPermission = (newEng.Id % 2 == 0) ? UserPermission.Manager : UserPermission.Engineer;
+        UserPermission userPermission;
+        if (newEng.Name.Equals("Eli Amar")) userPermission = UserPermission.Manager;
+        else userPermission = (newEng.Id % 2 == 0) ? UserPermission.Manager : UserPermission.Engineer;
         var new_User = new User(newEng.Id, newEng.Email, userPermission, newEng.Email);
         s_dal!.User.Create(new_User);
     }
@@ -142,6 +144,8 @@ public static class Initialization
         s_dal.Engineer.Reset();
         s_dal.Task.Reset();
         s_dal.Dependency.Reset();
+        s_dal.User.Reset();
+        s_dal.ProjectStartDate = null;
 
         createTasks();
         createEngineers();

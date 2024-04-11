@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <User>
-    <Id>300816617</Id>
+    <Id>233111584</Id>
     <Password>danilevi@gmail.com</Password>
-    <UserPermission>Engineer</UserPermission>
+    <UserPermission>Manager</UserPermission>
     <Email>danilevi@gmail.com</Email>
     <IsActive>true</IsActive>
   </User>
   <User>
-    <Id>238858520</Id>
+    <Id>352663303</Id>
     <Password>eliamar@gmail.com</Password>
     <UserPermission>Manager</UserPermission>
     <Email>eliamar@gmail.com</Email>
     <IsActive>true</IsActive>
   </User>
   <User>
-    <Id>351659842</Id>
+    <Id>209093525</Id>
     <Password>yaircohen@gmail.com</Password>
     <UserPermission>Engineer</UserPermission>
     <Email>yaircohen@gmail.com</Email>
     <IsActive>true</IsActive>
   </User>
   <User>
-    <Id>237549654</Id>
+    <Id>265795836</Id>
     <Password>arielalevin@gmail.com</Password>
-    <UserPermission>Engineer</UserPermission>
+    <UserPermission>Manager</UserPermission>
     <Email>arielalevin@gmail.com</Email>
     <IsActive>true</IsActive>
   </User>
   <User>
-    <Id>224408458</Id>
+    <Id>355744141</Id>
     <Password>dinaklein@gmail.com</Password>
     <UserPermission>Engineer</UserPermission>
     <Email>dinaklein@gmail.com</Email>
     <IsActive>true</IsActive>
   </User>
   <User>
-    <Id>361082666</Id>
+    <Id>319174603</Id>
     <Password>shiraisraelof@gmail.com</Password>
     <UserPermission>Engineer</UserPermission>
     <Email>shiraisraelof@gmail.com</Email>
