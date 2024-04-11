@@ -9,7 +9,6 @@
 /// <param name="DifficultyLevel">Difficulty level of the task</param>
 /// <param name="Status">Status of the task</param>
 /// <param name="Dependencies">List of all Dependent tasks</param>
-/// <param name="Milestone">Milestone of the Task</param>
 /// <param name="RequiredEffortTime">Required numbers of days to complete the task</param>
 /// <param name="CreatedAtDate">The date the task created at</param>
 /// <param name="Engineer">Identifier of the engineer assigned to the task</param>
@@ -28,7 +27,6 @@ public class Task
     public EngineerExperience DifficultyLevel { get; set; }
     public TaskStatus Status { get; set; }
     public List<BO.TaskInList> Dependencies { get; set; }
-    public MilestoneInTask? Milestone { get; set; }
     public TimeSpan? RequiredEffortTime { get; set; }
     public DateTime? CreatedAtDate { get; set; }
     public EngineerInTask? Engineer { get; set; }

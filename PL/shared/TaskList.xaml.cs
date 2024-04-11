@@ -14,12 +14,24 @@ namespace PL.Shared;
 /// </summary>
 public class TaskListData : DependencyObject
 {
-
     /// <summary>
     /// Gets or sets the DifficultyLevelSelector.
     /// </summary>
-    public Array? DifficultyLevelSelector { get; set; }
 
+    public List<string>? DifficultyLevelSelector
+    {
+        get
+        {
+            var enumNames = Enum.GetNames(typeof(BO.EngineerExperience)).ToList();
+            enumNames.Insert(0, "All");
+            return enumNames;
+        }
+        set { SetValue(difficultyLevelSelectorProperty, value); }
+    }
+
+    // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty difficultyLevelSelectorProperty =
+        DependencyProperty.Register("DifficultyLevelSelector", typeof(List<string>), typeof(TaskListData));
 }
 
 
@@ -110,7 +122,7 @@ public partial class TaskList : UserControl
         originalList = _bl?.Task.ReadAllTaskInList();
         Data = new TaskListData
         {
-            DifficultyLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience))
+            DifficultyLevelSelector = AddAllOptionAtStart(),
         };
         InitializeComponent();
     }
@@ -118,24 +130,21 @@ public partial class TaskList : UserControl
 
     private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        if (originalList == null)
-            return;
-
-        //string searchText = Data?.SearchTextBox?.Text?.ToLower();
         string searchText = SearchTextBoxSource?.ToLower();
         if (string.IsNullOrWhiteSpace(searchText))
         {
-            TaskItemsSource = new ObservableCollection<TaskInList>(originalList);
+            TaskItemsSource = new ObservableCollection<TaskInList>(_bl.Task.ReadAllTaskInList());
         }
         else
         {
-            TaskItemsSource = new ObservableCollection<TaskInList>(originalList.Where(task => task.Alias.ToLower().StartsWith(searchText) || task.Description.ToLower().StartsWith(searchText)));
+            TaskItemsSource = new ObservableCollection<TaskInList>(_bl.Task.ReadAllTaskInList().Where(task => task.Alias.ToLower().StartsWith(searchText) || task.Description.ToLower().StartsWith(searchText)));
         }
     }
 
     private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
     {
         SearchTextBoxSource = string.Empty;
+        TaskItemsSource = new ObservableCollection<TaskInList>(_bl.Task.ReadAllTaskInList());
     }
 
 
@@ -147,8 +156,13 @@ public partial class TaskList : UserControl
     private void DifficultyLevelSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var selected = ((ComboBox)sender).SelectedItem;
+        //if (selected != null)
+        //    TaskItemsSource = new ObservableCollection<BO.TaskInList>(_bl.Task.ReadAllTaskInList(item => (BO.EngineerExperience)DifficultyLevelSelector.SelectedItem == (BO.EngineerExperience)item.DifficultyLevel));
         if (selected != null)
-            TaskItemsSource = new ObservableCollection<BO.TaskInList>(_bl.Task.ReadAllTaskInList(item => (BO.EngineerExperience)DifficultyLevelSelector.SelectedItem == (BO.EngineerExperience)item.DifficultyLevel));
+        {
+            if (Equals((string)DifficultyLevelSelector?.SelectedItem, "All")) TaskItemsSource = new ObservableCollection<BO.TaskInList>(_bl?.Task.ReadAllTaskInList());
+            else TaskItemsSource = new ObservableCollection<BO.TaskInList>(_bl?.Task.ReadAllTaskInList(item => Equals((string)DifficultyLevelSelector?.SelectedItem, item.DifficultyLevel.ToString())));
+        }
     }
 
 
@@ -187,6 +201,14 @@ public partial class TaskList : UserControl
             }
         }
     }
+
+    private List<string> AddAllOptionAtStart()
+    {
+        var enumNames = Enum.GetNames(typeof(BO.EngineerExperience)).ToList();
+        enumNames.Insert(0, "All");
+        return enumNames;
+    }
+
     /// <summary>
     /// deleget for the order list that we want to update him aoutomaticly.
     /// </summary>
@@ -217,7 +239,7 @@ public partial class TaskList : UserControl
     {
         _bl?.ResetDB();
         TaskItemsSource = null;
-        Data.DifficultyLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience));
+        Data.DifficultyLevelSelector = AddAllOptionAtStart();
     }
 
     private void Schedule_button_Click(Object sender, RoutedEventArgs e)

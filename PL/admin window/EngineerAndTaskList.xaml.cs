@@ -1,5 +1,4 @@
 ﻿using BO;
-using PL.Shared;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -45,17 +44,28 @@ public class EngineerAndTaskListData : DependencyObject
     // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
     public static readonly DependencyProperty tasksListProperty =
         DependencyProperty.Register("TaskList", typeof(ObservableCollection<TaskInList>), typeof(EngineerAndTaskListData));
+    // <summary>
+    // Gets or sets the EngineerLevelSelector.
+    // </summary>
 
-    
-    
-    /// <summary>
-    /// Gets or sets the EngineerLevelSelector.
-    /// </summary>
-    public Array? EngineerLevelSelector { get; set; }
+    public List<string>? EngineerLevelSelector
+    {
+        get
+        {
+            var enumNames = Enum.GetNames(typeof(BO.EngineerExperience)).ToList();
+            enumNames.Insert(0, "All");
+            return enumNames;
+        }
+        set { SetValue(engineerLevelSelectorProperty, value); }
+    }
+
+    // Using a DependencyProperty as the backing store for tasksListProperty.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty engineerLevelSelectorProperty =
+        DependencyProperty.Register("EngineerLevelSelector", typeof(List<string>), typeof(EngineerAndTaskListData));
 }
 public partial class EngineerAndTaskList : Window
 {
-    private IEnumerable<Engineer>? originalList;
+    //private IEnumerable<Engineer>? originalList;
     /// <summary>
     /// access to the logical layer.
     /// </summary>
@@ -66,10 +76,14 @@ public partial class EngineerAndTaskList : Window
     /// <summary>
     /// Gets or sets the data for the AdminWindow.
     /// </summary>
-    public EngineerAndTaskListData Data { get => (EngineerAndTaskListData)GetValue(DataDep); 
-        set { SetValue(DataDep, value);
+    public EngineerAndTaskListData Data
+    {
+        get => (EngineerAndTaskListData)GetValue(DataDep);
+        set
+        {
+            SetValue(DataDep, value);
             ((EngineerAndTaskListData)value).OnPropertyChanged();
-        } 
+        }
     }
 
     public static readonly DependencyProperty isProjectSchduledProperty =
@@ -86,12 +100,11 @@ public partial class EngineerAndTaskList : Window
     /// </summary>
     public EngineerAndTaskList()
     {
-        originalList = _bl?.Engineer.ReadAll();
         Data = new()
         {
-            EngineerList = new ObservableCollection<Engineer>(originalList)!,
+            EngineerList = new ObservableCollection<Engineer>(_bl?.Engineer.ReadAll())!,
             TaskList = new ObservableCollection<TaskInList>(_bl?.Task.ReadAllTaskInList())!,
-            EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience))
+            EngineerLevelSelector = AddAllOptionAtStart()
         };
         InitializeComponent();
     }
@@ -104,7 +117,12 @@ public partial class EngineerAndTaskList : Window
     private void EngineerLevelSelector_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var selected = ((ComboBox)sender).SelectedItem;
-        if (selected != null) Data.EngineerList = new ObservableCollection<Engineer>(originalList?.Where(item => (BO.EngineerExperience)EngineerLevelSelector.SelectedItem == item?.Level)); ;
+        if (selected != null)
+        {
+            if (Equals((string)EngineerLevelSelector?.SelectedItem, "All")) Data.EngineerList = new ObservableCollection<Engineer>(_bl?.Engineer.ReadAll());
+            else Data.EngineerList = new ObservableCollection<Engineer>(_bl?.Engineer.ReadAll()?.Where(item => Equals((string)EngineerLevelSelector?.SelectedItem, item?.Level.ToString())));
+        }
+
     }
 
     /// <summary>
@@ -118,7 +136,7 @@ public partial class EngineerAndTaskList : Window
 
         Data.EngineerList = null;
         Data.TaskList = null;
-        Data.EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience));
+        //Data.EngineerLevelSelector = Enum.GetValues(typeof(BO.EngineerExperience));
     }
     /// <summary>
     /// button to add engineer
@@ -129,7 +147,6 @@ public partial class EngineerAndTaskList : Window
     {
         new AddOrUpdateEngineerWindow().ShowDialog();
         OnChangeEngineer();
-        //this.Close();
     }
 
     /// <summary>
@@ -152,12 +169,11 @@ public partial class EngineerAndTaskList : Window
                     new AddOrUpdateEngineerWindow(engineer.Id).ShowDialog();
                     OnChangeTask();
                     OnChangeEngineer();
-                    //this.Close();
                 }
             }
         }
     }
-    
+
     /// <summary>
     /// deleget for the engineer list that we want to update him aoutomaticly.
     /// </summary>
@@ -172,6 +188,14 @@ public partial class EngineerAndTaskList : Window
     private void OnChangeTask()
     {
         Data.TaskList = new ObservableCollection<TaskInList>(_bl?.Task.ReadAllTaskInList());
+    }
+
+
+    private List<string> AddAllOptionAtStart()
+    {
+        var enumNames = Enum.GetNames(typeof(BO.EngineerExperience)).ToList();
+        enumNames.Insert(0, "All");
+        return enumNames;
     }
 
     /// <summary>

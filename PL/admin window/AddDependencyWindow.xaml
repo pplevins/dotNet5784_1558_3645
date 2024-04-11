@@ -6,6 +6,7 @@
         DataContext="{Binding Data,RelativeSource={RelativeSource Self }}"
         xmlns:local="clr-namespace:PL.admin_window"
         mc:Ignorable="d"
+        Icon="/images/task1.jpg"
         Title="AddDependencyWindow" Height="300" Width="400">
     <Grid>
         <Grid.Background>

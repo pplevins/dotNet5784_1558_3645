@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PL.admin_window"
         mc:Ignorable="d"
+        Icon="/images/task1.jpg"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="AdminEntryWindow" Height="500" Width="800">
     <Window.Resources>

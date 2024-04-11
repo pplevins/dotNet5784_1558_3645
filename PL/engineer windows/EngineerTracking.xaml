@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:PL.engineer_main_windows"
         xmlns:shared="clr-namespace:PL.Shared"
         xmlns:currentTask="clr-namespace:PL.engineer_windows"
+        Icon="/images/task1.jpg"
         mc:Ignorable="d"
         Title="EngineerTrackingWindow" Height="450" Width="600">
     <Grid>

@@ -18,7 +18,6 @@ internal class Bl : IBl
     }
 
     private DalApi.IDal _dal = DalApi.Factory.Get;
-    public IMilestone Milestone => new MilestoneImplementation();
     public IEngineer Engineer => new EngineerImplementation();
     public IUser User => new UserImplementation();
     public ITask Task => new TaskImplementation(this);
@@ -36,7 +35,7 @@ internal class Bl : IBl
                 _dal.ProjectStartDate = value;
                 return;
             }
-                if (ProjectStartDate is not null)
+            if (ProjectStartDate is not null)
                 throw new InvalidOperationException("There's already date for the project. You can't reset.");
             if (value < Clock)
                 throw new InvalidOperationException("You can't set a past date.");

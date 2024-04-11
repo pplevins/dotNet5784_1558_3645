@@ -1,5 +1,4 @@
-﻿using BO;
-using PL.admin_window;
+﻿using PL.admin_window;
 using PL.engineer_main_windows;
 using System.Windows;
 
@@ -90,16 +89,7 @@ namespace PL.login_window
         /// </summary>
         private void goToEngineerPage(int engineerId)
         {
-            var window = Application.Current.Windows.OfType<EngineerTrackingWindow>().FirstOrDefault();
-            if (window != null)
-            {
-                window.Activate();
-                window.Focus();
-            }
-            else
-            {
-                new EngineerTrackingWindow(engineerId).Show();
-            }
+            new EngineerTrackingWindow(engineerId).Show();
         }
     }
 }

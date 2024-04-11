@@ -1,6 +1,5 @@
 ﻿using BlApi;
 using BO;
-using DO;
 using Task = BO.Task;
 
 namespace BlImplementation;
@@ -365,7 +364,7 @@ internal class TaskImplementation : ITask
     }
 
     /// <summary>
-    /// Converts BO task entity to DO task entity, and arrange the appropriate properties
+    /// Converts DO task entity to BO task entity, and arrange the appropriate properties
     /// </summary>
     /// <param name="doTask">DO task to convert</param>
     /// <returns>converted BO task</returns>
@@ -384,7 +383,7 @@ internal class TaskImplementation : ITask
     }
 
     /// <summary>
-    /// 
+    /// Converts BO task entity to DO task entity, and arrange the appropriate properties
     /// </summary>
     /// <param name="boTask"></param>
     /// <returns></returns>

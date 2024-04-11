@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:PL.engineer_windows"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             Icon="/images/task1.jpg"
              mc:Ignorable="d">
     <Grid>
         <Grid.Background>

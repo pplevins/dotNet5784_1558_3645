@@ -7,7 +7,6 @@ public interface IBl
 {
     public void InitializeDB();
     public void ResetDB();
-    IMilestone Milestone { get; }
     IEngineer Engineer { get; }
     IUser User { get; }
     ITask Task { get; }

@@ -10,6 +10,7 @@
         xmlns:validation="clr-namespace:PL.validation"
         DataContext="{Binding Data,RelativeSource={RelativeSource Self }}"
         mc:Ignorable="d"
+        Icon="/images/task1.jpg"
         Title="AddTaskWindow" Height="460" Width="1000">
     <Window.Resources>
         <ControlTemplate x:Key="ValidationErrorTemplate">

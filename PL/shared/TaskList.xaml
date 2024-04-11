@@ -83,7 +83,7 @@
                     <ColumnDefinition Width="4*"/>
                 </Grid.ColumnDefinitions>
                 <Label x:Name="label" Content="LEVEL :" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="100" Background="{x:Null}" FontSize="15" FontFamily="Aharoni" FontWeight="Bold" Foreground="#FFD9D9D9" Height="30" Margin="0,0,5,0"/>
-                <ComboBox ItemsSource="{Binding Data.DifficultyLevelSelector, RelativeSource={RelativeSource AncestorType=UserControl}}" x:Name="DifficultyLevelSelector" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"  Width="200" Height="30" SelectionChanged="DifficultyLevelSelector_SelectionChanged"/>
+                <ComboBox ItemsSource="{Binding Data.DifficultyLevelSelector, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" x:Name="DifficultyLevelSelector" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"  Width="200" Height="30" SelectionChanged="DifficultyLevelSelector_SelectionChanged"/>
             </Grid>
 
 

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:PL.admin_window"
         DataContext="{Binding Data,RelativeSource={RelativeSource Self }}"
         mc:Ignorable="d"
+        Icon="/images/task1.jpg"
         Title="Set Project start date" Height="300" Width="400">
     <Grid>
         <Grid.Background>

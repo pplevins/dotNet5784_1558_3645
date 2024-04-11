@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         DataContext="{Binding Data,RelativeSource={RelativeSource Self }}"
         mc:Ignorable="d"
+        Icon="/images/task1.jpg"
         xmlns:validation="clr-namespace:PL.validation"
         Title="AddEngineerWindow" Height="460" Width="600">
 

@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:PL"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        Icon="images/task1.jpg"
         Title="MainWindow" Height="500" Width="800">
     <Window.Resources>
         <Style TargetType="Button">

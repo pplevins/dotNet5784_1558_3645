@@ -73,18 +73,6 @@ namespace PL
         /// <param name="e">Event arguments.</param>
         private void ShowAdminButton_Click(object sender, RoutedEventArgs e)
         {
-
-            //var window = Application.Current.Windows.OfType<EngineerAndTaskList>().FirstOrDefault();
-            //if (window != null)
-            //{
-            //    window.Activate();
-            //    window.Focus();
-            //}
-            //else
-            //{
-            //    new EngineerAndTaskList().Show();
-            //}
-
             var window = Application.Current.Windows.OfType<UserLoginWindow>().FirstOrDefault();
             if (window != null)
             {
@@ -104,18 +92,6 @@ namespace PL
         /// <param name="e">Event arguments.</param>
         private void ShowEngineerButton_Click(object sender, RoutedEventArgs e)
         {
-            //var window = Application.Current.Windows.OfType<EngineerTrackingWindow>().FirstOrDefault();
-            ////var window = Application.Current.Windows.OfType<login_window>().FirstOrDefault();
-            //if (window != null)
-            //{
-            //    window.Activate();
-            //    window.Focus();
-            //}
-            //else
-            //{
-            //    new EngineerTrackingWindow(100).Show();
-            //}
-
             new UserLoginWindow("engineer").Show();
         }
 
