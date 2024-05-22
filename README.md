@@ -1,27 +1,67 @@
+# Project Management Application
 
-# dotNet5784_-1558_3645
+A C# .NET application for single project management with a graphical UI (implemented with WPF) for managers and engineers.
 
-## Stage 0:
-* Opening project and version control repositories with github.com and git.
-* Basic work with C#.
+## Table of Contents
+- [Features](#features)
+- [Architecture](#architecture)
+- [Technologies Used](#technologies-used)
+- [Setup Instructions](#setup-instructions)
+- [Usage Instructions](#usage-instructions)
+- [Screenshots](#screenshots)
 
-## Stage 1:
-* Creating the data layer (data entities) - DO.
-* Creating a basic data layer - DalList.
-* Creating an infrastructure to save the data - DataSource.
-* User interface (console) - testing program of the Data layer - DalTest.
-* Data initialization.
+## Features
+- Task scheduling
+- Assigning engineers to tasks
+- List views for engineers and tasks
+- Gantt chart for project progress visualization
+- Data storage using XML files
+- LINQ queries for data retrieval
 
-## Stage 2:
-* Improving the data layer (using a generic interface).
-* Update DalList with LINQ.
-* Creating and adding custom exceptions.
-* Adapting the testing program to use the exceptions.
+## Architecture
+The project follows a 3-tier architecture:
 
-## Stage 3:
-* Building the DalXml using XElement and XmlSerializer.
+### Data Layer (DL)
+- **Storage:** XML files
+- **Queries:** LINQ
 
-## Bonuses:
-* Parsing the inputs using TryParse() - Stage 1.
-* Implementing the Engineer and Task entities with soft deletion (using the flag isActive in the entity's properties) - Stage 1 - 2.
-* Implementing the CRUD interfaces using Strategy Design Pattern - Stage 2 - 3.
+### Business Layer (BL)
+- **Language:** C#
+- **Design Patterns:** Singleton, Factory, Dependency Injection
+
+### Presentation Layer (PL)
+- **Framework:** WPF
+- **Patterns:** Observer, Data Binding
+
+## Technologies Used
+- C#
+- .NET Framework
+- WPF (Windows Presentation Foundation)
+- LINQ (Language Integrated Query)
+- XML for data storage
+
+## Setup Instructions
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/yourusername/project-management-application.git
+    ```
+2. **Navigate to the project directory:**
+    ```bash
+    cd project-management-application
+    ```
+3. **Open the solution file in Visual Studio:**
+    ```bash
+    start ProjectManagementApplication.sln
+    ```
+
+## Usage Instructions
+1. **Build the project in Visual Studio.**
+2. **Run the application.**
+3. **Use the graphical UI to manage tasks and engineers:**
+    - Schedule tasks
+    - Assign engineers to tasks
+    - View lists of engineers and tasks
+    - Monitor progress with the Gantt chart
+
+## Screenshots
+_Add relevant screenshots of the application here._
