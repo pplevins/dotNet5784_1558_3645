@@ -43,15 +43,15 @@ The project follows a 3-tier architecture:
 ## Setup Instructions
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/project-management-application.git
+    git clone https://github.com/pplevins/dotNet5784_1558_3645.git
     ```
 2. **Navigate to the project directory:**
     ```bash
-    cd project-management-application
+    cd dotNet5784_1558_3645
     ```
 3. **Open the solution file in Visual Studio:**
     ```bash
-    start ProjectManagementApplication.sln
+    start dotNet5784_1558_3645.sln
     ```
 
 ## Usage Instructions
