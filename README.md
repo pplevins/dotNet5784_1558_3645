@@ -25,11 +25,10 @@ The project follows a 3-tier architecture:
 ### Data Layer (DL)
 - **Storage:** XML files
 - **Queries:** LINQ
-- **Design Patterns:** Strategy
 
 ### Business Layer (BL)
 - **Language:** C#
-- **Design Patterns:** Singleton, Factory, Dependency Injection
+- **Design Patterns:** Singleton, Factory, Dependency Injection, Strategy
 
 ### Presentation Layer (PL)
 - **Framework:** WPF
