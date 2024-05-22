@@ -64,4 +64,4 @@ The project follows a 3-tier architecture:
     - Monitor progress with the Gantt chart
 
 ## Screenshots
-![Image Alt text](PL/images/projectPreview.png "Optional title")
+![Image Alt text](PL/images/projectPreview.png "Project Preview")
