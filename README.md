@@ -2,13 +2,14 @@
 
 A C# .NET application for single project management with a graphical UI (implemented with WPF) for managers and engineers.
 
+![Image Alt text](PL/images/projectPreview.png "Project Preview")
+
 ## Table of Contents
 - [Features](#features)
 - [Architecture](#architecture)
 - [Technologies Used](#technologies-used)
 - [Setup Instructions](#setup-instructions)
 - [Usage Instructions](#usage-instructions)
-- [Screenshots](#screenshots)
 
 ## Features
 - Task scheduling
@@ -24,6 +25,7 @@ The project follows a 3-tier architecture:
 ### Data Layer (DL)
 - **Storage:** XML files
 - **Queries:** LINQ
+- **Design Patterns:** Strategy
 
 ### Business Layer (BL)
 - **Language:** C#
@@ -62,6 +64,3 @@ The project follows a 3-tier architecture:
     - Assign engineers to tasks
     - View lists of engineers and tasks
     - Monitor progress with the Gantt chart
-
-## Screenshots
-![Image Alt text](PL/images/projectPreview.png "Project Preview")
